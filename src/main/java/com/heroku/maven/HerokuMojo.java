@@ -1,5 +1,6 @@
 package com.heroku.maven;
 
+import com.heroku.api.App;
 import com.heroku.api.Curl;
 import com.heroku.api.Slug;
 import com.heroku.api.Tar;
@@ -29,15 +30,6 @@ import java.util.Map;
  * @execute phase="package"
  */
 public class HerokuMojo extends AbstractMojo {
-
-  private static Map<String,String> jdkUrlStrings = new HashMap<String,String>();
-
-  static {
-    jdkUrlStrings.put("1.6", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.6-latest.tar.gz");
-    jdkUrlStrings.put("1.7", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.7-latest.tar.gz");
-    jdkUrlStrings.put("1.8", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.8-latest.tar.gz");
-  }
-
   /**
    * The maven project.
    *
@@ -100,90 +92,26 @@ public class HerokuMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    getLog().info("---> Packaging application...");
-    getLog().info("     - app: " + appName);
-
-    getTargetDir().mkdirs();
+    getTargetDir().mkdir();
     getHerokuDir().mkdir();
     getAppDir().mkdir();
 
     List<File> includedDirs = new ArrayList<File>();
     includedDirs.add(getTargetDir());
 
-    // build the slug
-    try {
-      for (File file : includedDirs) {
-        getLog().info("     - including: ./" + relativize(getTargetDir().getParentFile(), file));
-        FileUtils.copyDirectory(file, new File(getAppDir(), FilenameUtils.getBaseName(file.getPath())));
-      }
-    } catch (IOException ioe) {
-      throw new MojoFailureException("There was an error packaging the application for deployment.", ioe);
-    }
+    MavenApp app = new MavenApp(appName, includedDirs, getTargetDir(), getAppDir(), getHerokuDir(), getLog());
 
     try {
-      if (jdkUrl == null) {
-        getLog().info("     - installing: OpenJDK " + jdkVersion);
-        vendorJdk(getAppDir(), new URL(jdkUrlStrings.get(jdkVersion)));
-      } else {
-        getLog().info("     - installing: " + jdkUrl);
-        vendorJdk(getAppDir(), new URL(jdkUrl));
-      }
+      app.prepare(jdkVersion, jdkUrl);
     } catch (Exception e) {
-      throw new MojoFailureException("There was an error downloading the JDK.", e);
+      throw new MojoFailureException("Failed to prepare the application!", e);
     }
-//    addSlugExtras();
-
-    // log included files
-
-    // copy included files to getAppDir()
-
-    // add slug extras
 
     try {
-      deploy();
-    } catch (Curl.CurlException ce) {
-      throw new MojoFailureException(ce.getReponse(), ce);
+      app.deploy(getConfigVars(), getProcessTypes());
     } catch (Exception e) {
-      throw new MojoFailureException(e.getMessage(), e);
+      throw new MojoFailureException("Failed to deploy the application!", e);
     }
-  }
-
-  private void deploy() throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
-
-    Slug slug = new Slug(appName, getEncodedApiKey(), getProcessTypes());
-    getLog().debug("Heroku Slug request: " + slug.getSlugRequest());
-
-    getLog().info("---> Creating slug...");
-    File slugFile = Tar.create("slug", "./app", getHerokuDir());
-    getLog().info("     - file: ./" + relativize(getTargetDir().getParentFile(), slugFile));
-    getLog().info("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
-
-    // config var stuff...
-
-    Map slugResponse = slug.create();
-    getLog().debug("Heroku Slug response: " + slugResponse);
-    getLog().debug("Heroku Blob URL: " + slug.getBlobUrl());
-    getLog().debug("Heroku Slug Id: " + slug.getSlugId());
-
-    getLog().info("---> Uploading slug...");
-    slug.upload(slugFile);
-    getLog().info("     - stack: " + slug.getStackName());
-    getLog().info("     - process types: " + ((Map)slugResponse.get("process_types")).keySet());
-
-    getLog().info("---> Releasing...");
-    Map releaseResponse = slug.release();
-    getLog().debug("Heroku Release response: " + releaseResponse);
-    getLog().info("     - version: " + releaseResponse.get("version"));
-  }
-
-  private void vendorJdk(File appDir, URL jdkUrl) throws IOException, InterruptedException {
-    File jdkHome = new File(appDir, ".jdk");
-    jdkHome.mkdir();
-
-    File jdkTgz = new File(getHerokuDir(), "jdk-pkg.tar.gz");
-    FileUtils.copyURLToFile(jdkUrl, jdkTgz);
-
-    Tar.extract(jdkTgz, jdkHome);
   }
 
   private File getHerokuDir() {
@@ -203,31 +131,7 @@ public class HerokuMojo extends AbstractMojo {
     return processTypes;
   }
 
-  private String getEncodedApiKey() throws IOException {
-    if (encodedApiKey == null) {
-      String apiKey = System.getenv("HEROKU_API_KEY");
-      if (null == apiKey || apiKey.equals("")) {
-        ProcessBuilder pb = new ProcessBuilder().command("heroku", "auth:token");
-        Process p = pb.start();
-
-        BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        apiKey = "";
-        while ((line = bri.readLine()) != null) {
-          apiKey += line;
-        }
-      }
-      encodedApiKey = new BASE64Encoder().encode((":" + apiKey).getBytes());
-    }
-    return encodedApiKey;
-  }
-
-  private String buildSlug(File targetDir, File appTargetDir, File herokuDir) {
-
-    return "";
-  }
-
-  private String relativize(File base, File path) {
-    return base.toURI().relativize(path.toURI()).getPath();
+  private Map<String,String> getConfigVars() {
+    return configVars;
   }
 }

@@ -1,15 +1,15 @@
 package com.heroku.maven;
 
-import org.apache.maven.model.Build;
-import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import sun.misc.BASE64Encoder;
 
-import java.io.*;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
@@ -22,13 +22,13 @@ public class HerokuMojo extends AbstractMojo {
   /**
    * The maven project.
    *
-   * @parameter expression="project"
+   * @parameter property="project"
    * @readonly
    */
   private MavenProject project;
 
   /**
-   * @parameter expression="project.build.directory/project.build.finalName"
+   * @parameter property="project.build.directory/project.build.finalName"
    * @readonly
    */
   private File outputPath;
@@ -39,7 +39,7 @@ public class HerokuMojo extends AbstractMojo {
    * Command line -Dheroku.appName=...
    *
    * @required
-   * @parameter expression="heroku.appName"
+   * @parameter property="heroku.appName"
    */
   protected String appName = null;
 
@@ -48,7 +48,7 @@ public class HerokuMojo extends AbstractMojo {
    * <br/>
    * Command line -Dheroku.jdkVersion=...
    *
-   * @parameter expression="heroku.jdkVersion"
+   * @parameter property="heroku.jdkVersion"
    *            default-value="1.7"
    */
   protected String jdkVersion = null;
@@ -58,14 +58,14 @@ public class HerokuMojo extends AbstractMojo {
    * <br/>
    * Command line -Dheroku.jdkUrl=...
    *
-   * @parameter expression="heroku.jdkUrl"
+   * @parameter property="heroku.jdkUrl"
    */
   protected String jdkUrl = null;
 
   /**
    * Configuration variables that will be set on the Heroku app.
    *
-   * @parameter expression="heroku.configVars"
+   * @parameter property="heroku.configVars"
    */
   protected Map<String,String> configVars = null;
 
@@ -73,7 +73,7 @@ public class HerokuMojo extends AbstractMojo {
    * The process types used to run on Heroku (similar to Procfile).
    *
    * @required
-   * @parameter expression="heroku.configVars"
+   * @parameter property="heroku.configVars"
    */
   protected Map<String,String> processTypes = null;
 

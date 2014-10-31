@@ -1,7 +1,5 @@
 package com.heroku.api;
 
-import sun.plugin.dom.exception.InvalidStateException;
-
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
@@ -61,7 +59,7 @@ public class Slug {
 
   public void upload(File slugFile) throws IOException {
     if (blobUrl == null) {
-      throw new InvalidStateException("Slug must be created before uploading!");
+      throw new IllegalStateException("Slug must be created before uploading!");
     }
 
     URL url = new URL(blobUrl);
@@ -92,9 +90,9 @@ public class Slug {
     }
   }
 
-  public void release() {
+  public void release() throws IOException, Curl.CurlException {
     if (slugId == null) {
-      throw new InvalidStateException("Slug must be created before uploading!");
+      throw new IllegalStateException("Slug must be created before uploading!");
     }
 
     String urlStr = "https://api.heroku.com/apps/" + appName + "/releases";

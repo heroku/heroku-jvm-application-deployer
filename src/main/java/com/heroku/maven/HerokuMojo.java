@@ -1,5 +1,11 @@
 package com.heroku.maven;
 
+import com.heroku.api.Curl;
+import com.heroku.api.Slug;
+import com.heroku.api.Tar;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -10,15 +16,27 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Deploys an application to Heroku
  *
- * @goal heroku
- * @requiresDependencyResolution test
+ * @goal deploy
+ * @execute phase="package"
  */
 public class HerokuMojo extends AbstractMojo {
+
+  private static Map<String,String> jdkUrlStrings = new HashMap<String,String>();
+
+  static {
+    jdkUrlStrings.put("1.6", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.6-latest.tar.gz");
+    jdkUrlStrings.put("1.7", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.7-latest.tar.gz");
+    jdkUrlStrings.put("1.8", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.8-latest.tar.gz");
+  }
+
   /**
    * The maven project.
    *
@@ -28,7 +46,7 @@ public class HerokuMojo extends AbstractMojo {
   private MavenProject project;
 
   /**
-   * @parameter property="project.build.directory/project.build.finalName"
+   * @parameter property="project.build.directory"
    * @readonly
    */
   private File outputPath;
@@ -81,15 +99,28 @@ public class HerokuMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-
-  }
-
-  private void deploy(File targetDir) {
-
     getLog().info("---> Packaging application...");
     getLog().info("     - app: " + appName);
 
+    getTargetDir().mkdirs();
+    getHerokuDir().mkdir();
+    getAppDir().mkdir();
+
+    List<File> includedDirs = new ArrayList<File>();
+    includedDirs.add(getTargetDir());
+
     // build the slug
+    try {
+      for (File file : includedDirs) {
+        getLog().info("     - including: ./" + relativize(getTargetDir().getParentFile(), file));
+        FileUtils.copyDirectory(file, new File(getAppDir(), FilenameUtils.getBaseName(file.getPath())));
+      }
+    } catch (IOException ioe) {
+      throw new MojoFailureException("There was an error packaging the application for deployment.", ioe);
+    }
+
+//    vendorJdk();
+//    addSlugExtras();
 
     // log included files
 
@@ -97,17 +128,39 @@ public class HerokuMojo extends AbstractMojo {
 
     // add slug extras
 
-    // createSlugData
+    try {
+      deploy();
+    } catch (Curl.CurlException ce) {
+      throw new MojoFailureException(ce.getReponse(), ce);
+    } catch (Exception e) {
+      throw new MojoFailureException(e.getMessage(), e);
+    }
+  }
 
-    // create Tar
+  private void deploy() throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+
+    Slug slug = new Slug(appName, getEncodedApiKey(), processTypes);
+
+    getLog().info("---> Creating slug...");
+    File slugFile = Tar.create("slug", "./app", getHerokuDir());
+    getLog().info("     - file: ./" + relativize(getTargetDir().getParentFile(), slugFile));
+    getLog().info("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
 
     // config var stuff...
 
-    // create slug
+    slug.create();
+    getLog().debug("Heroku Blob URL: " + slug.getBlobUrl());
+    getLog().debug("Heroku Slug Id: " + slug.getSlugId());
 
-    // upload slug
+    getLog().info("---> Uploading slug...");
+    slug.upload(slugFile);
+    getLog().info("     - stack: " + slug.getStackName());
+    getLog().info("     - process types: " + "");
 
-    // release slug
+    getLog().info("---> Releasing...");
+//    Map releaseResponse = slug.release();
+//    getLog().debug("Heroku Release response: " + releaseResponse);
+//    getLog().info("     - version: " + releaseResponse.version.as[Double].get.toInt);
   }
 
   private File getHerokuDir() {
@@ -116,10 +169,6 @@ public class HerokuMojo extends AbstractMojo {
 
   private File getAppDir() {
     return new File(getHerokuDir(), "app");
-  }
-
-  private File getAppTargetDir() {
-    return new File(getAppDir(), "target");
   }
 
   private File getTargetDir() {
@@ -151,5 +200,9 @@ public class HerokuMojo extends AbstractMojo {
   private String buildSlug(File targetDir, File appTargetDir, File herokuDir) {
 
     return "";
+  }
+
+  private String relativize(File base, File path) {
+    return base.toURI().relativize(path.toURI()).getPath();
   }
 }

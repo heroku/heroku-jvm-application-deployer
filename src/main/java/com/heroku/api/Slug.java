@@ -1,5 +1,7 @@
 package com.heroku.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
@@ -24,33 +26,34 @@ public class Slug {
   public Slug(String appName, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
     this.appName = appName;
 
-    Map<String,String> headers = new HashMap<String,String>();
+    headers = new HashMap<String,String>();
     headers.put("Authorization", encodedApiKey);
     headers.put("Content-Type", "application/json");
     headers.put("Accept", "application/vnd.heroku+json; version=3");
 
-    String json = "{" +
+    createJson = "{" +
         "\"buildpack_provided_description\":\"maven-heroku-plugin\"," +
         "\"process_types\":{";
 
     boolean first = true;
     for (String key : processTypes.keySet()) {
       String value = processTypes.get(key);
-      if (!first) json += ", ";
+      if (!first) createJson += ", ";
       first = false;
-      json += "\"" + key + "\"" + ":" + "\"" + sanitizeJson(value) + "\"";
+      createJson += "\"" + key + "\"" + ":" + "\"" + sanitizeJson(value) + "\"";
     }
-    json +=  "}}";
-
-    this.createJson = json;
+    createJson +=  "}}";
   }
 
-  public void create(String data) throws IOException, Curl.CurlException {
-    // invoke api with createJson
-    // store blobUrl
+  public String getBlobUrl() { return blobUrl; }
+  public String getSlugId() { return slugId; }
+  public String getStackName() { return stackName; }
 
+  public void create() throws IOException, Curl.CurlException {
     String urlStr = "https://api.heroku.com/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";
-    String slugResponse = Curl.post(urlStr, data, headers);
+    Map slugResponse = Curl.post(urlStr, createJson, headers);
+
+    System.out.println(slugResponse);
 
     // parse for blobUrl and slugId
 

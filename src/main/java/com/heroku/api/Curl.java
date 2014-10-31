@@ -1,5 +1,8 @@
 package com.heroku.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +12,7 @@ import java.net.URL;
 import java.util.Map;
 
 public class Curl {
-  public static String post(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
+  public static Map post(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
     URL url = new URL(urlStr);
     HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
     con.setDoInput(true);
@@ -23,14 +26,13 @@ public class Curl {
     return handleResponse(con);
   }
 
-  private static String handleResponse(HttpsURLConnection con) throws IOException, CurlException {
+  private static Map handleResponse(HttpsURLConnection con) throws IOException, CurlException {
     try {
       String output = readStream(con.getInputStream());
-//      parse(output)
-      return output;
+      return (new ObjectMapper()).readValue(output, Map.class);
     } catch (Exception e) {
       String output = readStream(con.getErrorStream());
-      throw new CurlException(con.getResponseCode(), e);
+      throw new CurlException(con.getResponseCode(), output, e);
     }
   }
 
@@ -47,15 +49,22 @@ public class Curl {
 
   public static class CurlException extends Exception {
 
-    private int code;
+    private Integer code;
 
-    public CurlException(int code, Exception cause) {
+    private String response;
+
+    public CurlException(Integer code, String response, Exception cause) {
       super("There was an exception invoking the remote service: HTTP(" + code + ")", cause);
       this.code = code;
+      this.response = response;
     }
 
-    public int getCode() {
+    public Integer getCode() {
       return code;
+    }
+
+    public String getReponse() {
+      return response;
     }
   }
 }

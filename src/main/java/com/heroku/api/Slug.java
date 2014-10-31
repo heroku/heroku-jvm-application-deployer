@@ -1,6 +1,6 @@
 package com.heroku.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.io.FileUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -48,62 +48,41 @@ public class Slug {
   public String getBlobUrl() { return blobUrl; }
   public String getSlugId() { return slugId; }
   public String getStackName() { return stackName; }
-  public String getSlugData() { return createJson; }
+  public String getSlugRequest() { return createJson; }
 
-  public void create() throws IOException, Curl.CurlException {
+  public Map create() throws IOException, Curl.CurlException {
     String urlStr = "https://api.heroku.com/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";
     Map slugResponse = Curl.post(urlStr, createJson, headers);
 
-    System.out.println(slugResponse);
+    Map blobJson = (Map)slugResponse.get("blob");
+    blobUrl = (String)blobJson.get("url");
 
-    // parse for blobUrl and slugId
+    slugId = (String)slugResponse.get("id");
 
+    Map stackJson = (Map)slugResponse.get("stack");
+    stackName = (String)stackJson.get("name");
 
+    return slugResponse;
   }
 
-  public void upload(File slugFile) throws IOException {
+  public void upload(File slugFile) throws IOException, Curl.CurlException {
     if (blobUrl == null) {
       throw new IllegalStateException("Slug must be created before uploading!");
     }
 
-    URL url = new URL(blobUrl);
-    HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
-
-    connection.setDoOutput(true);
-    connection.setRequestMethod("PUT");
-    connection.setConnectTimeout(0);
-    connection.setRequestProperty("Content-Type", "");
-
-    connection.connect();
-    OutputStream out = connection.getOutputStream();
-    BufferedInputStream in = new BufferedInputStream(new FileInputStream(slugFile));
-
-    byte[] buffer = new byte[1024];
-    int length = in.read(buffer);
-    while (length != -1) {
-      out.write(buffer, 0, length);
-      out.flush();
-      length = in.read(buffer);
-    }
-    out.close();
-    in.close();
-    int responseCode = connection.getResponseCode();
-
-    if (responseCode != 200) {
-      throw new RuntimeException("Failed to upload slug (HTTP/1.1 " + responseCode + ")");
-    }
+    Curl.put(blobUrl, slugFile);
   }
 
-  public void release() throws IOException, Curl.CurlException {
+  public Map release() throws IOException, Curl.CurlException {
     if (slugId == null) {
-      throw new IllegalStateException("Slug must be created before uploading!");
+      throw new IllegalStateException("Slug must be created before releasing!");
     }
 
     String urlStr = "https://api.heroku.com/apps/" + appName + "/releases";
 
     String data = "{\"slug\":\"" + slugId + "\"}";
 
-    Curl.post(urlStr, data, headers);
+    return Curl.post(urlStr, data, headers);
   }
 
   private String sanitizeJson(String json) {

@@ -27,7 +27,7 @@ public class Tar {
 
   public static void extract(File tarFile, File outputDir) throws IOException, InterruptedException {
 //    if (useNativeTar()) {
-      ProcessBuilder pb = new ProcessBuilder().command("pxf", tarFile.getAbsolutePath(), "-C", outputDir.getAbsolutePath());
+      ProcessBuilder pb = new ProcessBuilder().command("tar", "pxf", tarFile.getAbsolutePath(), "-C", outputDir.getAbsolutePath());
       pb.start().waitFor();
 //    } else {
 //      new Unpack(tarFile, outputDir).apply();

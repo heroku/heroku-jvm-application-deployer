@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.Map;
 
@@ -27,6 +24,35 @@ public class Curl {
     con.getOutputStream().write(data.getBytes("UTF-8"));
 
     return handleResponse(con);
+  }
+
+  public static void put(String urlStr, File file) throws IOException, CurlException {
+    URL url = new URL(urlStr);
+    HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
+
+    connection.setDoOutput(true);
+    connection.setRequestMethod("PUT");
+    connection.setConnectTimeout(0);
+    connection.setRequestProperty("Content-Type", "");
+
+    connection.connect();
+    OutputStream out = connection.getOutputStream();
+    BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+
+    byte[] buffer = new byte[1024];
+    int length = in.read(buffer);
+    while (length != -1) {
+      out.write(buffer, 0, length);
+      out.flush();
+      length = in.read(buffer);
+    }
+    out.close();
+    in.close();
+    int responseCode = connection.getResponseCode();
+
+    if (responseCode != 200) {
+      throw new CurlException(responseCode, "Failed to upload slug!");
+    }
   }
 
   private static Map handleResponse(HttpsURLConnection con) throws IOException, CurlException {
@@ -58,6 +84,12 @@ public class Curl {
 
     public CurlException(Integer code, String response, Exception cause) {
       super("There was an exception invoking the remote service: HTTP(" + code + ")", cause);
+      this.code = code;
+      this.response = response;
+    }
+
+    public CurlException(Integer code, String response) {
+      super("There was an exception invoking the remote service: HTTP(" + code + ")");
       this.code = code;
       this.response = response;
     }

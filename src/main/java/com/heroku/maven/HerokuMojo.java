@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +120,17 @@ public class HerokuMojo extends AbstractMojo {
       throw new MojoFailureException("There was an error packaging the application for deployment.", ioe);
     }
 
-//    vendorJdk();
+    try {
+      if (jdkUrl == null) {
+        getLog().info("     - installing: OpenJDK " + jdkVersion);
+        vendorJdk(getAppDir(), new URL(jdkUrlStrings.get(jdkVersion)));
+      } else {
+        getLog().info("     - installing: " + jdkUrl);
+        vendorJdk(getAppDir(), new URL(jdkUrl));
+      }
+    } catch (Exception e) {
+      throw new MojoFailureException("There was an error downloading the JDK.", e);
+    }
 //    addSlugExtras();
 
     // log included files
@@ -140,7 +151,7 @@ public class HerokuMojo extends AbstractMojo {
   private void deploy() throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
 
     Slug slug = new Slug(appName, getEncodedApiKey(), getProcessTypes());
-    getLog().debug("Heroku Slug data: " + slug.getSlugData());
+    getLog().debug("Heroku Slug request: " + slug.getSlugRequest());
 
     getLog().info("---> Creating slug...");
     File slugFile = Tar.create("slug", "./app", getHerokuDir());
@@ -149,19 +160,30 @@ public class HerokuMojo extends AbstractMojo {
 
     // config var stuff...
 
-    slug.create();
+    Map slugResponse = slug.create();
+    getLog().debug("Heroku Slug response: " + slugResponse);
     getLog().debug("Heroku Blob URL: " + slug.getBlobUrl());
     getLog().debug("Heroku Slug Id: " + slug.getSlugId());
 
     getLog().info("---> Uploading slug...");
     slug.upload(slugFile);
     getLog().info("     - stack: " + slug.getStackName());
-    getLog().info("     - process types: " + "");
+    getLog().info("     - process types: " + ((Map)slugResponse.get("process_types")).keySet());
 
     getLog().info("---> Releasing...");
-//    Map releaseResponse = slug.release();
-//    getLog().debug("Heroku Release response: " + releaseResponse);
-//    getLog().info("     - version: " + releaseResponse.version.as[Double].get.toInt);
+    Map releaseResponse = slug.release();
+    getLog().debug("Heroku Release response: " + releaseResponse);
+    getLog().info("     - version: " + releaseResponse.get("version"));
+  }
+
+  private void vendorJdk(File appDir, URL jdkUrl) throws IOException, InterruptedException {
+    File jdkHome = new File(appDir, ".jdk");
+    jdkHome.mkdir();
+
+    File jdkTgz = new File(getHerokuDir(), "jdk-pkg.tar.gz");
+    FileUtils.copyURLToFile(jdkUrl, jdkTgz);
+
+    Tar.extract(jdkTgz, jdkHome);
   }
 
   private File getHerokuDir() {
@@ -173,20 +195,10 @@ public class HerokuMojo extends AbstractMojo {
   }
 
   private File getTargetDir() {
-//    Model model = project.getModel();
-//    Build build = model.getBuild();
-//    return new File(build.getDirectory());
     return outputPath;
   }
 
   private Map<String,String> getProcessTypes() {
-//    Map<String,String> defaultProcessTypes = new HashMap<String,String>();
-//
-//    if (hasWarFile) {
-//      defaultProcessTypes.put("web", "");
-//    } else {
-//
-//    }
     if (processTypes.isEmpty()) throw new IllegalArgumentException("Must provide a process type!");
     return processTypes;
   }

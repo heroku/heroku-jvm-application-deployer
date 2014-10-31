@@ -16,12 +16,15 @@ public class Curl {
     URL url = new URL(urlStr);
     HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
     con.setDoInput(true);
+    con.setDoOutput(true);
     con.setRequestMethod("POST");
 
     for (String key : headers.keySet()) {
       String value = headers.get(key);
       con.setRequestProperty(key, value);
     }
+
+    con.getOutputStream().write(data.getBytes("UTF-8"));
 
     return handleResponse(con);
   }

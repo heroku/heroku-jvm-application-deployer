@@ -32,7 +32,7 @@ public class Slug {
     headers.put("Accept", "application/vnd.heroku+json; version=3");
 
     createJson = "{" +
-        "\"buildpack_provided_description\":\"maven-heroku-plugin\"," +
+        "\"buildpack_provided_description\":\"heroku-maven-plugin\"," +
         "\"process_types\":{";
 
     boolean first = true;
@@ -48,6 +48,7 @@ public class Slug {
   public String getBlobUrl() { return blobUrl; }
   public String getSlugId() { return slugId; }
   public String getStackName() { return stackName; }
+  public String getSlugData() { return createJson; }
 
   public void create() throws IOException, Curl.CurlException {
     String urlStr = "https://api.heroku.com/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";

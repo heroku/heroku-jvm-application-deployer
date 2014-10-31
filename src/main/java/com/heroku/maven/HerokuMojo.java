@@ -91,7 +91,7 @@ public class HerokuMojo extends AbstractMojo {
    * The process types used to run on Heroku (similar to Procfile).
    *
    * @required
-   * @parameter property="heroku.configVars"
+   * @parameter property="heroku.processTypes"
    */
   protected Map<String,String> processTypes = null;
 
@@ -139,7 +139,8 @@ public class HerokuMojo extends AbstractMojo {
 
   private void deploy() throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
 
-    Slug slug = new Slug(appName, getEncodedApiKey(), processTypes);
+    Slug slug = new Slug(appName, getEncodedApiKey(), getProcessTypes());
+    getLog().debug("Heroku Slug data: " + slug.getSlugData());
 
     getLog().info("---> Creating slug...");
     File slugFile = Tar.create("slug", "./app", getHerokuDir());
@@ -176,6 +177,18 @@ public class HerokuMojo extends AbstractMojo {
 //    Build build = model.getBuild();
 //    return new File(build.getDirectory());
     return outputPath;
+  }
+
+  private Map<String,String> getProcessTypes() {
+//    Map<String,String> defaultProcessTypes = new HashMap<String,String>();
+//
+//    if (hasWarFile) {
+//      defaultProcessTypes.put("web", "");
+//    } else {
+//
+//    }
+    if (processTypes.isEmpty()) throw new IllegalArgumentException("Must provide a process type!");
+    return processTypes;
   }
 
   private String getEncodedApiKey() throws IOException {

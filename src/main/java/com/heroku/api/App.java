@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +27,7 @@ public class App {
 
   private String name;
 
-  private List<File> includedFiles;
-
   private File targetDir;
-
-  private File appDir;
-
-  private File herokuDir;
 
   private String encodedApiKey = null;
 
@@ -40,22 +35,38 @@ public class App {
 
   public void logDebug(String message) { /* nothing by default */ }
 
-  public App(String name, List<File> includedFiles, File targetDir, File appDir, File herokuDir) {
+  public App(String name, File targetDir) {
     this.name = name;
-    this.includedFiles = includedFiles;
     this.targetDir = targetDir;
-    this.appDir = appDir;
-    this.herokuDir = herokuDir;
+
+    getHerokuDir().mkdir();
+    getAppDir().mkdir();
   }
 
-  public void prepare(String jdkVersion, String jdkUrl) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String jdkUrl, Map<String,String> processTypes) throws Exception {
+    prepare(includedFiles, jdkVersion, jdkUrl);
+
+    Map<String,String> existingConfigVars = getConfigVars();
+    logDebug("Heroku existing config variables: " + existingConfigVars.keySet());
+
+    Map<String,String> newConfigVars = new HashMap<String, String>();
+    newConfigVars.putAll(addConfigVar("PATH", ".jdk/bin:/usr/local/bin:/usr/bin:/bin", existingConfigVars, true));
+    for (String key : configVars.keySet()) {
+      newConfigVars.putAll(addConfigVar(key, configVars.get(key), existingConfigVars));
+    }
+    setConfigVars(newConfigVars);
+
+    deploySlug(processTypes);
+  }
+
+  public void prepare(List<File> includedFiles, String jdkVersion, String jdkUrl) throws Exception {
     logInfo("---> Packaging application...");
     logInfo("     - app: " + name);
 
     try {
       for (File file : includedFiles) {
         logInfo("     - including: ./" + relativize(targetDir.getParentFile(), file));
-        FileUtils.copyDirectory(file, new File(appDir, FilenameUtils.getBaseName(file.getPath())));
+        FileUtils.copyDirectory(file, new File(getAppDir(), FilenameUtils.getBaseName(file.getPath())));
       }
     } catch (IOException ioe) {
       throw new Exception("There was an error packaging the application for deployment.", ioe);
@@ -76,12 +87,54 @@ public class App {
     }
   }
 
-  public Slug deploy(Map<String,String> configVars, Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+  public Map<String,String> getConfigVars() throws Exception {
+    String urlStr = "https://api.heroku.com/apps/" + URLEncoder.encode(name, "UTF-8") + "/config-vars";
+
+    Map<String,String> headers = new HashMap<String,String>();
+    headers.put("Authorization", getEncodedApiKey());
+    headers.put("Accept", "application/vnd.heroku+json; version=3");
+
+    Map m = Curl.get(urlStr, headers);
+    Map<String,String> configVars = new HashMap<String,String>();
+    for (Object key : m.keySet()) {
+      Object value = m.get(key);
+      if ((key instanceof String) && (value instanceof String)) {
+        configVars.put(key.toString(), value.toString());
+      } else {
+        throw new Exception("Unexpected return type: " + m);
+      }
+    }
+    return configVars;
+  }
+
+  public void setConfigVars(Map<String,String> configVars) throws IOException, Curl.CurlException {
+    if (!configVars.isEmpty()) {
+      String urlStr = "https://api.heroku.com/apps/" + URLEncoder.encode(name, "UTF-8") + "/config_vars";
+
+      String data = "{";
+      boolean first = true;
+      for (String key : configVars.keySet()) {
+        String value = configVars.get(key);
+        if (!first) data += ", ";
+        first = false;
+        data += "\"" + key + "\"" + ":" + "\"" + sanitizeJson(value) + "\"";
+      }
+      data +=  "}";
+
+      Map<String,String> headers = new HashMap<String,String>();
+      headers.put("Authorization", getEncodedApiKey());
+      headers.put("Accept", "application/json");
+
+      Curl.put(urlStr, data, headers);
+    }
+  }
+
+  public Slug deploySlug(Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
     Slug slug = new Slug(name, getEncodedApiKey(), processTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
 
     logInfo("---> Creating slug...");
-    File slugFile = Tar.create("slug", "./app", herokuDir);
+    File slugFile = Tar.create("slug", "./app", getHerokuDir());
     logInfo("     - file: ./" + relativize(targetDir.getParentFile(), slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
 
@@ -106,10 +159,10 @@ public class App {
   }
 
   private void vendorJdk(URL jdkUrl) throws IOException, InterruptedException {
-    File jdkHome = new File(appDir, ".jdk");
+    File jdkHome = new File(getAppDir(), ".jdk");
     jdkHome.mkdir();
 
-    File jdkTgz = new File(herokuDir, "jdk-pkg.tar.gz");
+    File jdkTgz = new File(getHerokuDir(), "jdk-pkg.tar.gz");
     FileUtils.copyURLToFile(jdkUrl, jdkTgz);
 
     Tar.extract(jdkTgz, jdkHome);
@@ -136,5 +189,33 @@ public class App {
       encodedApiKey = new BASE64Encoder().encode((":" + apiKey).getBytes());
     }
     return encodedApiKey;
+  }
+
+  private Map<String,String> addConfigVar(String key, String value, Map<String,String> existingConfigVars) {
+    return addConfigVar(key, value, existingConfigVars, false);
+  }
+
+  private Map<String,String> addConfigVar(String key, String value, Map<String,String> existingConfigVars, Boolean force) {
+    Map<String,String> m = new HashMap<String,String>();
+    if (!existingConfigVars.containsKey(key) || (!value.equals(existingConfigVars.get(key)) && force)) {
+      m.put(key, value);
+    }
+    return m;
+  }
+
+  protected File getAppDir() {
+    return new File(getHerokuDir(), "app");
+  }
+
+  protected File getHerokuDir() {
+    return new File(targetDir, "heroku");
+  }
+
+  protected File getTargetDir() {
+    return targetDir;
+  }
+
+  protected String sanitizeJson(String json) {
+    return json.replace("\\", "\\\\").replace("\"", "\\\"");
   }
 }

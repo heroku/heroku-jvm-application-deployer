@@ -1,25 +1,12 @@
 package com.heroku.maven;
 
-import com.heroku.api.App;
-import com.heroku.api.Curl;
-import com.heroku.api.Slug;
-import com.heroku.api.Tar;
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import sun.misc.BASE64Encoder;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,33 +80,17 @@ public class HerokuMojo extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     getTargetDir().mkdir();
-    getHerokuDir().mkdir();
-    getAppDir().mkdir();
 
     List<File> includedDirs = new ArrayList<File>();
     includedDirs.add(getTargetDir());
 
-    MavenApp app = new MavenApp(appName, includedDirs, getTargetDir(), getAppDir(), getHerokuDir(), getLog());
-
     try {
-      app.prepare(jdkVersion, jdkUrl);
+      (new MavenApp(appName, getTargetDir(), getLog())).deploy(
+          includedDirs, getConfigVars(), jdkVersion, jdkUrl, getProcessTypes()
+      );
     } catch (Exception e) {
-      throw new MojoFailureException("Failed to prepare the application!", e);
+      throw new MojoFailureException("Failed to deploy application", e);
     }
-
-    try {
-      app.deploy(getConfigVars(), getProcessTypes());
-    } catch (Exception e) {
-      throw new MojoFailureException("Failed to deploy the application!", e);
-    }
-  }
-
-  private File getHerokuDir() {
-    return new File(getTargetDir(), "heroku");
-  }
-
-  private File getAppDir() {
-    return new File(getHerokuDir(), "app");
   }
 
   private File getTargetDir() {
@@ -132,6 +103,7 @@ public class HerokuMojo extends AbstractMojo {
   }
 
   private Map<String,String> getConfigVars() {
+
     return configVars;
   }
 }

@@ -9,12 +9,43 @@ import java.net.URL;
 import java.util.Map;
 
 public class Curl {
+  public static Map get(String urlStr, Map<String,String> headers) throws IOException, CurlException {
+    URL url = new URL(urlStr);
+    HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
+    con.setDoInput(true);
+    con.setRequestMethod("GET");
+
+    for (String key : headers.keySet()) {
+      String value = headers.get(key);
+      con.setRequestProperty(key, value);
+    }
+
+    return handleResponse(con);
+  }
+
   public static Map post(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
     URL url = new URL(urlStr);
     HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
     con.setDoInput(true);
     con.setDoOutput(true);
     con.setRequestMethod("POST");
+
+    for (String key : headers.keySet()) {
+      String value = headers.get(key);
+      con.setRequestProperty(key, value);
+    }
+
+    con.getOutputStream().write(data.getBytes("UTF-8"));
+
+    return handleResponse(con);
+  }
+
+  public static Map put(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
+    URL url = new URL(urlStr);
+    HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
+    con.setDoInput(true);
+    con.setDoOutput(true);
+    con.setRequestMethod("PUT");
 
     for (String key : headers.keySet()) {
       String value = headers.get(key);

@@ -9,6 +9,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Deploys an application to Heroku
@@ -20,26 +21,15 @@ import java.util.List;
 public class DeployMojo extends HerokuMojo {
 
   /**
-   * The current Maven session.
+   * The process types used to run on Heroku (similar to Procfile).
    *
-   * @parameter property="session"
    * @required
-   * @readonly
+   * @parameter property="heroku.processTypes"
    */
-  protected MavenSession mavenSession;
-
-  /**
-   * The Maven BuildPluginManager component.
-   *
-   * @component
-   * @required
-   */
-  protected BuildPluginManager pluginManager;
+  protected Map<String,String> processTypes = null;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    getTargetDir().mkdir();
-
     CopyDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
 
     List<File> includedDirs = new ArrayList<File>();
@@ -47,7 +37,7 @@ public class DeployMojo extends HerokuMojo {
 
     try {
       (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog())).deploy(
-          includedDirs, getConfigVars(), jdkVersion, jdkUrl, getProcessTypes()
+          includedDirs, getConfigVars(), jdkVersion, jdkUrl, processTypes
       );
     } catch (Exception e) {
       throw new MojoFailureException("Failed to deploy application", e);

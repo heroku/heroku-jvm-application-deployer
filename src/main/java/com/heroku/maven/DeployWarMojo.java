@@ -1,10 +1,14 @@
 package com.heroku.maven;
 
 import com.heroku.api.WarApp;
+import com.heroku.maven.executor.CopyDependencies;
+import com.heroku.maven.executor.CopyWebappRunner;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +29,27 @@ public class DeployWarMojo extends HerokuMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    getTargetDir().mkdir();
+    CopyWebappRunner.execute(this.mavenProject, this.mavenSession, this.pluginManager);
 
-    List<File> includedDirs = new ArrayList<File>();
-    includedDirs.add(getTargetDir());
+    File webappRunnerJar = new File(getTargetDir(), "dependency/webapp-runner.jar");
+
+    if (null == warFile) {
+      File [] files = getTargetDir().listFiles(new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+          return name.endsWith(".war");
+        }
+      });
+      if (files.length == 0) {
+        throw new MojoFailureException("Could not find WAR file! Must specify file path in plugin configuration.");
+      } else {
+        warFile = files[0];
+      }
+    }
 
     try {
-      (new WarApp(appName, warFile, getTargetDir().getParentFile(), getTargetDir())).deploy(
-          includedDirs, getConfigVars(), jdkVersion, jdkUrl
+      (new MavenWarApp(appName, warFile, webappRunnerJar, getTargetDir().getParentFile(), getTargetDir(), getLog())).deploy(
+          new ArrayList<File>(), getConfigVars(), jdkVersion, jdkUrl
       );
     } catch (Exception e) {
       throw new MojoFailureException("Failed to deploy application", e);

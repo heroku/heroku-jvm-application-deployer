@@ -74,8 +74,12 @@ public class App {
 
     try {
       for (File file : includedFiles) {
-        logInfo("     - including: ./" + relativize(rootDir, file));
-        FileUtils.copyDirectory(file, new File(getAppDir(), FilenameUtils.getBaseName(file.getPath())));
+        logInfo("     - including: ./" + relativize(file));
+        if (file.isDirectory()) {
+          FileUtils.copyDirectory(file, new File(getAppDir(), relativize(file)));
+        } else {
+          FileUtils.copyFile(file, new File(getAppDir(), relativize(file)));
+        }
       }
     } catch (IOException ioe) {
       throw new Exception("There was an error packaging the application for deployment.", ioe);
@@ -144,7 +148,7 @@ public class App {
 
     logInfo("---> Creating slug...");
     File slugFile = Tar.create("slug", "./app", getHerokuDir());
-    logInfo("     - file: ./" + relativize(rootDir, slugFile));
+    logInfo("     - file: ./" + relativize(slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
 
     // config var stuff...
@@ -177,8 +181,8 @@ public class App {
     Tar.extract(jdkTgz, jdkHome);
   }
 
-  private String relativize(File base, File path) {
-    return base.toURI().relativize(path.toURI()).getPath();
+  protected String relativize(File path) {
+    return rootDir.toURI().relativize(path.toURI()).getPath();
   }
 
   private String getEncodedApiKey() throws IOException {

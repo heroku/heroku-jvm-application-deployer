@@ -17,6 +17,23 @@ import java.util.Map;
 public abstract class HerokuMojo extends AbstractMojo {
 
   /**
+   * The current Maven session.
+   *
+   * @parameter property="session"
+   * @required
+   * @readonly
+   */
+  protected MavenSession mavenSession;
+
+  /**
+   * The Maven BuildPluginManager component.
+   *
+   * @component
+   * @required
+   */
+  protected BuildPluginManager pluginManager;
+
+  /**
    * The project currently being build.
    *
    * @parameter property="project"
@@ -67,21 +84,8 @@ public abstract class HerokuMojo extends AbstractMojo {
    */
   protected Map<String,String> configVars = null;
 
-  /**
-   * The process types used to run on Heroku (similar to Procfile).
-   *
-   * @required
-   * @parameter property="heroku.processTypes"
-   */
-  protected Map<String,String> processTypes = null;
-
   protected File getTargetDir() {
     return outputPath;
-  }
-
-  protected Map<String,String> getProcessTypes() {
-    if (processTypes.isEmpty()) throw new IllegalArgumentException("Must provide a process type!");
-    return processTypes;
   }
 
   protected Map<String,String> getConfigVars() {

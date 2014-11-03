@@ -31,4 +31,8 @@ public class MavenApp extends App {
     log.debug(message);
   }
 
+  public void logWarn(String message) {
+    log.warn(message);
+  }
+
 }

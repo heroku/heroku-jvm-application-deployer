@@ -20,4 +20,8 @@ public class MavenWarApp extends WarApp {
   public void logDebug(String message) {
     log.debug(message);
   }
+
+  public void logWarn(String message) {
+    log.warn(message);
+  }
 }

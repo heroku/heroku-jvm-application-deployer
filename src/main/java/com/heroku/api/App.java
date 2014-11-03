@@ -39,6 +39,8 @@ public class App {
 
   public void logDebug(String message) { /* nothing by default */ }
 
+  public void logWarn(String message) { /* nothing by default */ }
+
   public App(String name) {
     this(name, new File(System.getProperty("user.dir")), createTempDir());
   }
@@ -143,6 +145,9 @@ public class App {
   }
 
   public Slug deploySlug(Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+
+    if (processTypes.isEmpty()) logWarn("No processTypes specified!");
+
     Slug slug = new Slug(name, getEncodedApiKey(), processTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
 

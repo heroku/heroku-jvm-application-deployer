@@ -86,7 +86,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <invoker.skip>true</invoker.skip>
-    <maven.version>3.0.5</maven.version>
+    <maven.version>3.2.3</maven.version>
   </properties>
   <build>
     <plugins>

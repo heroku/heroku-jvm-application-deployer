@@ -10,13 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Deploys an application to Heroku
- *
- * @goal deploy
- * @execute phase="package"
- */
-public class HerokuMojo extends AbstractMojo {
+public abstract class HerokuMojo extends AbstractMojo {
   /**
    * The maven project.
    *
@@ -75,35 +69,16 @@ public class HerokuMojo extends AbstractMojo {
    */
   protected Map<String,String> processTypes = null;
 
-  private String encodedApiKey = null;
-
-  @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
-    getTargetDir().mkdir();
-
-    List<File> includedDirs = new ArrayList<File>();
-    includedDirs.add(getTargetDir());
-
-    try {
-      (new MavenApp(appName, getTargetDir(), getLog())).deploy(
-          includedDirs, getConfigVars(), jdkVersion, jdkUrl, getProcessTypes()
-      );
-    } catch (Exception e) {
-      throw new MojoFailureException("Failed to deploy application", e);
-    }
-  }
-
-  private File getTargetDir() {
+  protected File getTargetDir() {
     return outputPath;
   }
 
-  private Map<String,String> getProcessTypes() {
+  protected Map<String,String> getProcessTypes() {
     if (processTypes.isEmpty()) throw new IllegalArgumentException("Must provide a process type!");
     return processTypes;
   }
 
-  private Map<String,String> getConfigVars() {
-
+  protected Map<String,String> getConfigVars() {
     return configVars;
   }
 }

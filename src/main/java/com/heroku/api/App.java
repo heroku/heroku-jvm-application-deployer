@@ -17,6 +17,8 @@ import java.util.Map;
 
 public class App {
 
+  private static final Integer TEMP_DIR_ATTEMPTS = 10000;
+
   private static Map<String,String> jdkUrlStrings = new HashMap<String,String>();
 
   static {
@@ -27,6 +29,8 @@ public class App {
 
   private String name;
 
+  private File rootDir;
+
   private File targetDir;
 
   private String encodedApiKey = null;
@@ -35,8 +39,13 @@ public class App {
 
   public void logDebug(String message) { /* nothing by default */ }
 
-  public App(String name, File targetDir) {
+  public App(String name) {
+    this(name, new File(System.getProperty("user.dir")), createTempDir());
+  }
+
+  public App(String name, File rootDir, File targetDir) {
     this.name = name;
+    this.rootDir = rootDir;
     this.targetDir = targetDir;
 
     getHerokuDir().mkdir();
@@ -65,7 +74,7 @@ public class App {
 
     try {
       for (File file : includedFiles) {
-        logInfo("     - including: ./" + relativize(targetDir.getParentFile(), file));
+        logInfo("     - including: ./" + relativize(rootDir, file));
         FileUtils.copyDirectory(file, new File(getAppDir(), FilenameUtils.getBaseName(file.getPath())));
       }
     } catch (IOException ioe) {
@@ -135,7 +144,7 @@ public class App {
 
     logInfo("---> Creating slug...");
     File slugFile = Tar.create("slug", "./app", getHerokuDir());
-    logInfo("     - file: ./" + relativize(targetDir.getParentFile(), slugFile));
+    logInfo("     - file: ./" + relativize(rootDir, slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
 
     // config var stuff...
@@ -211,11 +220,26 @@ public class App {
     return new File(targetDir, "heroku");
   }
 
-  protected File getTargetDir() {
-    return targetDir;
+  protected File getRootDir() {
+    return rootDir;
   }
 
   protected String sanitizeJson(String json) {
     return json.replace("\\", "\\\\").replace("\"", "\\\"");
+  }
+
+  private static File createTempDir() {
+    File baseDir = new File(System.getProperty("java.io.tmpdir"));
+    String baseName = System.currentTimeMillis() + "-";
+
+    for (int counter = 0; counter < TEMP_DIR_ATTEMPTS; counter++) {
+      File tempDir = new File(baseDir, baseName + counter);
+      if (tempDir.mkdir()) {
+        return tempDir;
+      }
+    }
+    throw new IllegalStateException("Failed to create directory within "
+        + TEMP_DIR_ATTEMPTS + " attempts (tried "
+        + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
   }
 }

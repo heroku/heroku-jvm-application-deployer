@@ -11,8 +11,8 @@ public class MavenApp extends App {
 
   private Log log;
 
-  public MavenApp(String name, File targetDir, Log log) {
-    super(name, targetDir);
+  public MavenApp(String name, File rootDir, File targetDir, Log log) {
+    super(name, rootDir, targetDir);
     this.log = log;
   }
 
@@ -20,7 +20,7 @@ public class MavenApp extends App {
   public void prepare(List<File> includedFiles, String jdkVersion, String jdkUrl) throws Exception {
     super.prepare(includedFiles, jdkVersion, jdkUrl);
 
-    FileUtils.copyFile(new File(getTargetDir().getParentFile(), "pom.xml"), new File(getAppDir(), "pom.xml"));
+    FileUtils.copyFile(new File(getRootDir(), "pom.xml"), new File(getAppDir(), "pom.xml"));
   }
 
   public void logInfo(String message) {

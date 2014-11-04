@@ -84,7 +84,7 @@ public abstract class HerokuMojo extends AbstractMojo {
    * A set of file patterns to include in the zip.
    * @parameter alias="includes"
    */
-  protected String[] mIncludes;
+  protected String[] mIncludes = new String[0];
 
   protected File getTargetDir() {
     return outputPath;

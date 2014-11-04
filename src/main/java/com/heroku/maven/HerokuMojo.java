@@ -1,13 +1,9 @@
 package com.heroku.maven;
 
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,11 +80,31 @@ public abstract class HerokuMojo extends AbstractMojo {
    */
   protected Map<String,String> configVars = null;
 
+  /**
+   * A set of file patterns to include in the zip.
+   * @parameter alias="includes"
+   */
+  protected String[] mIncludes;
+
   protected File getTargetDir() {
     return outputPath;
   }
 
   protected Map<String,String> getConfigVars() {
     return configVars;
+  }
+
+  protected List<File> getIncludes() {
+    List<File> files = new ArrayList<File>(mIncludes.length);
+
+    for (String s : mIncludes) {
+      files.add(new File(s));
+    }
+
+    return files;
+  }
+
+  public void setIncludes(String[] includes) {
+    mIncludes = includes;
   }
 }

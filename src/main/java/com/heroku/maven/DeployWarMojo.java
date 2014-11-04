@@ -49,7 +49,7 @@ public class DeployWarMojo extends HerokuMojo {
 
     try {
       (new MavenWarApp(appName, warFile, webappRunnerJar, getTargetDir().getParentFile(), getTargetDir(), getLog())).deploy(
-          new ArrayList<File>(), getConfigVars(), jdkVersion, jdkUrl
+          new ArrayList<File>(getIncludes()), getConfigVars(), jdkVersion, jdkUrl
       );
     } catch (Exception e) {
       throw new MojoFailureException("Failed to deploy application", e);

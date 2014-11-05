@@ -45,6 +45,42 @@ $ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy
 
 And replace "xxx-xxx-xxxx" with the value of your Heroku API token.
 
+## Deploying WAR Files
+
+Add the following to your `pom.xml`, but replace the `<web>` element with the command used to run your application.
+
+```
+<build>
+  <plugins>
+    <plugin>
+      <groupId>com.heroku.maven</groupId>
+      <artifactId>heroku-maven-plugin</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <configuration>
+        <appName>${heroku.appName}</appName>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+
+This assumes your project will generate a WAR file in the `target` directory. If the WAR file is located somewhere else,
+you can specify this with the `<warFile>` configuration element.
+
+Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, run:
+
+```
+$ mvn heroku:deploy-war
+```
+
+If you do not have the toolbelt installed, then run:
+
+```
+$ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy
+```
+
+And replace "xxx-xxx-xxxx" with the value of your Heroku API token.
+
 
 ## Hacking
 

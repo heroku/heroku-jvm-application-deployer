@@ -11,12 +11,12 @@
   <artifactId>platform-client</artifactId>
   <version>0.1.1-SNAPSHOT</version>
 
-  <distributionManagement>
-    <repository>
-      <id>bintray</id>
-      <url>https://api.bintray.com/maven/heroku/maven/platform-client</url>
-    </repository>
-  </distributionManagement>
+  <!--<distributionManagement>-->
+    <!--<repository>-->
+      <!--<id>bintray</id>-->
+      <!--<url>https://api.bintray.com/maven/heroku/maven/platform-client</url>-->
+    <!--</repository>-->
+  <!--</distributionManagement>-->
 
   <dependencies>
     <dependency>

@@ -12,12 +12,6 @@
 
   <packaging>maven-plugin</packaging>
 
-  <distributionManagement>
-    <repository>
-      <id>bintray</id>
-      <url>https://api.bintray.com/maven/heroku/maven/heroku-maven-plugin</url>
-    </repository>
-  </distributionManagement>
 
   <dependencies>
     <dependency>

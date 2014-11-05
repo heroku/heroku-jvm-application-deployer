@@ -3,11 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.heroku.maven</groupId>
-  <artifactId>heroku-maven-plugin</artifactId>
+  <artifactId>heroku-parent</artifactId>
   <version>0.1.0-SNAPSHOT</version>
+  <modules>
+    <module>platform-client</module>
+    <module>maven-plugin</module>
+  </modules>
 
-  <packaging>maven-plugin</packaging>
-  <name>Heroku Maven Mojo</name>
+  <packaging>pom</packaging>
 
   <description>
     Maven plugin for deploying applications to Heroku
@@ -21,13 +24,6 @@
     <url>http://github.com/heroku/heroku-maven-plugin</url>
     <tag>heroku-maven-plugin-1.0</tag>
   </scm>
-
-  <distributionManagement>
-    <repository>
-      <id>bintray</id>
-      <url>https://api.bintray.com/maven/heroku/maven/heroku-maven-plugin</url>
-    </repository>
-  </distributionManagement>
 
   <licenses>
     <license>
@@ -44,50 +40,6 @@
       <timezone>CST</timezone>
     </developer>
   </developers>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>${maven.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
-      <version>${maven.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-      <version>${maven.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>1.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.4</version>
-    </dependency>
-  </dependencies>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -182,7 +134,7 @@
             <artifactId>maven-invoker-plugin</artifactId>
             <version>1.5</version>
             <configuration>
-              <projectsDirectory>src/it</projectsDirectory>
+              <projectsDirectory>maven-plugin/src/it</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <preBuildHookScript>setup.groovy</preBuildHookScript>
               <postBuildHookScript>verify.groovy</postBuildHookScript>

@@ -1,16 +1,12 @@
 package com.heroku.maven;
 
-import com.heroku.api.WarApp;
-import com.heroku.maven.executor.CopyDependencies;
 import com.heroku.maven.executor.CopyWebappRunner;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Deploys a war file to Heroku

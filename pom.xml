@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.heroku.maven</groupId>
   <artifactId>heroku-maven-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
 
   <packaging>maven-plugin</packaging>
   <name>Heroku Maven Mojo</name>
@@ -19,15 +17,15 @@
 
   <scm>
     <connection>scm:git:git://github.com/heroku/heroku-maven-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/heroku/heroku-maven-plugins.git</developerConnection>
-    <url>http://github.com/heroku/heroku-maven-plugins</url>
-    <tag>HEAD</tag>
+    <developerConnection>scm:git:ssh://git@github.com/heroku/heroku-maven-plugin.git</developerConnection>
+    <url>http://github.com/heroku/heroku-maven-plugin</url>
+    <tag>heroku-maven-plugin-1.0</tag>
   </scm>
 
   <distributionManagement>
     <repository>
       <id>bintray</id>
-      <url>https://api.bintray.com/heroku/heroku-jars/heroku-maven-plugin</url>
+      <url>https://api.bintray.com/maven/heroku/maven/heroku-maven-plugin</url>
     </repository>
   </distributionManagement>
 
@@ -132,7 +130,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.5.1</version>
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
           <releaseProfiles>release</releaseProfiles>

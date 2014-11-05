@@ -3,12 +3,12 @@
   <parent>
     <artifactId>heroku-parent</artifactId>
     <groupId>com.heroku.maven</groupId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>heroku-maven-plugin</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1</version>
 
   <packaging>maven-plugin</packaging>
 
@@ -17,7 +17,7 @@
     <dependency>
       <groupId>com.heroku.api</groupId>
       <artifactId>platform-client</artifactId>
-      <version>0.1.1-SNAPSHOT</version>
+      <version>0.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>

@@ -32,7 +32,7 @@ public class DeployMojo extends HerokuMojo {
   public void execute() throws MojoExecutionException, MojoFailureException {
     CopyDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
 
-    List<File> includedDirs = new ArrayList<File>();
+    List<File> includedDirs = getIncludes();
     includedDirs.add(getTargetDir());
 
     try {

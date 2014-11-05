@@ -13,12 +13,19 @@ try {
         throw new RuntimeException("the build was not successful")
     }
 
-    def process = "curl https://${appName}.herokuapp.com".execute()
+    def process = "heroku run cat test.txt -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    if (!output.contains("It worked!")) {
+        throw new RuntimeException("slug did not contain test file: ${output}")
+    }
+
+    process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text
     if (!output.contains("Hello from Java!")) {
         throw new RuntimeException("app is not running: ${output}")
     }
 } finally {
-   ("heroku destroy " + appName + " --confirm " + appName).execute().waitFor();
+   ("heroku destroy ${appName} --confirm ${appName}").execute().waitFor();
 }

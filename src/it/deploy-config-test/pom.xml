@@ -32,6 +32,10 @@
           <includes>
             <include>test.txt</include>
           </includes>
+          <jdkVersion>1.8</jdkVersion>
+          <configVars>
+            <MY_VAR>SomeValue</MY_VAR>
+          </configVars>
         </configuration>
       </plugin>
     </plugins>

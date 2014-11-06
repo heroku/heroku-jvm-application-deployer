@@ -17,9 +17,9 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
 <build>
   <plugins>
     <plugin>
-      <groupId>com.heroku.maven</groupId>
+      <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.1.0</version>
       <configuration>
         <appName>${heroku.appName}</appName>
         <processTypes>
@@ -53,9 +53,9 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
 <build>
   <plugins>
     <plugin>
-      <groupId>com.heroku.maven</groupId>
+      <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.1.0</version>
       <configuration>
         <appName>${heroku.appName}</appName>
       </configuration>

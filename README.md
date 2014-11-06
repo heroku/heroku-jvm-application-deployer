@@ -123,11 +123,11 @@ Finally, you can include additional directories in the slug as long as they are 
 </includes>
 ```
 
-See the integrations tests under `maven-plugin/src/it` for more examples.
+See the integration tests under `maven-plugin/src/it` for more examples.
 
 ## Deploying to Multiple Apps
 
-In most real-world scenarios, you will need to deploy your application dev, test and prod environments. This is best 
+In most real-world scenarios, you will need to deploy your application to dev, test and prod environments. This is best 
 handled with Maven profiles. For example:
 
 ```

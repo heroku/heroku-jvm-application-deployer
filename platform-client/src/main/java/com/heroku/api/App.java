@@ -103,7 +103,7 @@ public class App {
   }
 
   public Map<String,String> getConfigVars() throws Exception {
-    String urlStr = "https://api.heroku.com/apps/" + URLEncoder.encode(name, "UTF-8") + "/config-vars";
+    String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(name, "UTF-8") + "/config-vars";
 
     Map<String,String> headers = new HashMap<String,String>();
     headers.put("Authorization", getEncodedApiKey());
@@ -124,7 +124,7 @@ public class App {
 
   public void setConfigVars(Map<String,String> configVars) throws IOException, Curl.CurlException {
     if (!configVars.isEmpty()) {
-      String urlStr = "https://api.heroku.com/apps/" + URLEncoder.encode(name, "UTF-8") + "/config_vars";
+      String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(name, "UTF-8") + "/config_vars";
 
       String data = "{";
       boolean first = true;

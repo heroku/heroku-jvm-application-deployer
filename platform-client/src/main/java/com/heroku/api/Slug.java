@@ -23,6 +23,8 @@ public class Slug {
 
   private Map<String,String> headers;
 
+  public static final String BASE_URL = "https://api.heroku.com";
+
   public Slug(String appName, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
     this.appName = appName;
 
@@ -51,7 +53,7 @@ public class Slug {
   public String getSlugRequest() { return createJson; }
 
   public Map create() throws IOException, Curl.CurlException {
-    String urlStr = "https://api.heroku.com/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";
+    String urlStr = BASE_URL + "/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";
     Map slugResponse = Curl.post(urlStr, createJson, headers);
 
     Map blobJson = (Map)slugResponse.get("blob");
@@ -78,7 +80,7 @@ public class Slug {
       throw new IllegalStateException("Slug must be created before releasing!");
     }
 
-    String urlStr = "https://api.heroku.com/apps/" + appName + "/releases";
+    String urlStr = BASE_URL + "/apps/" + appName + "/releases";
 
     String data = "{\"slug\":\"" + slugId + "\"}";
 

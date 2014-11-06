@@ -76,7 +76,7 @@ $ mvn heroku:deploy-war
 If you do not have the toolbelt installed, then run:
 
 ```
-$ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy
+$ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy-war
 ```
 
 And replace "xxx-xxx-xxxx" with the value of your Heroku API token.

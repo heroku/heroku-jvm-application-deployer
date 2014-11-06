@@ -1,6 +1,6 @@
-package com.heroku.sdk;
+package com.heroku.sdk.maven;
 
-import com.heroku.sdk.executor.CopyWebappRunner;
+import com.heroku.sdk.maven.executor.CopyWebappRunner;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 

@@ -1,4 +1,4 @@
-package com.heroku.sdk;
+package com.heroku.sdk.deploy;
 
 public class SystemSettings {
 

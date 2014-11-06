@@ -1,4 +1,4 @@
-package com.heroku.sdk;
+package com.heroku.sdk.deploy;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
@@ -175,7 +175,7 @@ public class App {
     return slug;
   }
 
-  private void vendorJdk(URL jdkUrl) throws IOException, InterruptedException {
+  private void vendorJdk(URL jdkUrl) throws IOException, InterruptedException, ArchiveException {
     File jdkHome = new File(getAppDir(), ".jdk");
     jdkHome.mkdir();
 

@@ -1,4 +1,4 @@
-package com.heroku.sdk;
+package com.heroku.sdk.deploy;
 
 import java.io.*;
 import java.net.URLEncoder;

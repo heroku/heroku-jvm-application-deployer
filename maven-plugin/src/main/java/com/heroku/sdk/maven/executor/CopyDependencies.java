@@ -1,4 +1,4 @@
-package com.heroku.sdk.executor;
+package com.heroku.sdk.maven.executor;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.BuildPluginManager;

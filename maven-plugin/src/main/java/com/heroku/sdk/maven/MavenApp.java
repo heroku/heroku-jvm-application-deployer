@@ -1,5 +1,6 @@
-package com.heroku.sdk;
+package com.heroku.sdk.maven;
 
+import com.heroku.sdk.deploy.App;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
 

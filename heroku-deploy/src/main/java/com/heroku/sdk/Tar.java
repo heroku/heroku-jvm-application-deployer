@@ -1,13 +1,8 @@
 package com.heroku.sdk;
 
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.*;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.compressors.CompressorException;
-import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -30,13 +25,13 @@ public class Tar {
     }
   }
 
-  public static void extract(File tarFile, File outputDir) throws IOException, InterruptedException {
-//    if (useNativeTar()) {
+  public static void extract(File tarFile, File outputDir) throws IOException, InterruptedException, ArchiveException {
+    if (useNativeTar()) {
       ProcessBuilder pb = new ProcessBuilder().command("tar", "pxf", tarFile.getAbsolutePath(), "-C", outputDir.getAbsolutePath());
       pb.start().waitFor();
-//    } else {
-//      new Unpack(tarFile, outputDir).apply();
-//    }
+    } else {
+      new Unpack(tarFile, outputDir).apply();
+    }
   }
 
   public static class Pack {
@@ -122,40 +117,35 @@ public class Tar {
       this.outputDir = outputDir;
     }
 
-    private InputStream decompress(BufferedInputStream input) throws CompressorException {
-      return new CompressorStreamFactory().createCompressorInputStream(input);
-    }
-
     private ArchiveInputStream extract(InputStream input) throws ArchiveException {
       return new ArchiveStreamFactory().createArchiveInputStream(input);
     }
 
-//    val input = extract(decompress(new BufferedInputStream(new FileInputStream(tarFile))))
-//    private Stream<ArchiveEntry> stream: Stream[ArchiveEntry] = input.getNextEntry match {
-//      case null => Stream.empty
-//      case entry => entry #:: stream
-//    }
-
-    private void decompress(File sourceFile, File targetFile) throws IOException {
-      FileInputStream fis = new FileInputStream(sourceFile);
+    public void apply() throws IOException, ArchiveException {
+      FileInputStream fis = new FileInputStream(tarFile);
       GZIPInputStream gzs = new GZIPInputStream(fis);
-      FileOutputStream fos = new FileOutputStream(targetFile);
-
       try {
-//        byte[] buffer = new byte[1024];
-//        int length;
-//        while ((length = gzis.read(buffer)) > 0) {
-//          fos.write(buffer, 0, length);
-//        }
-        IOUtils.copy(gzs, fos);
+        ArchiveInputStream archiveInputStream = extract(new BufferedInputStream(gzs));
+
+        ArchiveEntry entry = archiveInputStream.getNextEntry();
+        while (entry != null) {
+          if (entry.isDirectory()) {
+            FileUtils.forceMkdir(new File(outputDir, entry.getName()));
+          } else {
+            File destPath = new File(outputDir, entry.getName());
+
+            IOUtils.copy(archiveInputStream, new FileOutputStream(destPath));
+
+            if (((TarArchiveEntry) entry).getMode() == 493) {
+              destPath.setExecutable(true);
+            }
+          }
+          entry = archiveInputStream.getNextEntry();
+        }
       } finally {
-        fos.close();
         gzs.close();
       }
-    }
 
-    public File apply() {
-      return null;
     }
   }
 

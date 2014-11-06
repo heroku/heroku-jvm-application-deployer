@@ -145,7 +145,6 @@ handled with Maven profiles. For example:
     </plugin>
   </plugins>
 </build>
-
 <profiles>
   <profile>
     <id>test</id>
@@ -161,20 +160,20 @@ handled with Maven profiles. For example:
       </plugins>
     </build>
   </profile>
-    <profile>
-      <id>prod</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.heroku.sdk</groupId>
-            <artifactId>heroku-maven-plugin</artifactId>
-            <configuration>
-              <appName>myapp-prod</appName>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
+  <profile>
+    <id>prod</id>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>com.heroku.sdk</groupId>
+          <artifactId>heroku-maven-plugin</artifactId>
+          <configuration>
+            <appName>myapp-prod</appName>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
 </profiles>
 ```
 

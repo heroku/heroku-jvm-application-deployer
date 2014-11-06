@@ -155,8 +155,6 @@ public class App {
     logInfo("     - file: ./" + relativize(slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
 
-    // config var stuff...
-
     Map slugResponse = slug.create();
     logDebug("Heroku Slug response: " + slugResponse);
     logDebug("Heroku Blob URL: " + slug.getBlobUrl());

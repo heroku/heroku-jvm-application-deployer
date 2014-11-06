@@ -81,6 +81,102 @@ $ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy
 
 And replace "xxx-xxx-xxxx" with the value of your Heroku API token.
 
+## Configuration
+
+In the `<configuration>` element of the plugin, you can set the JDK version like so:
+
+```
+<jdkVersion>1.8</jdkVersion>
+```
+
+The default is 1.8, but 1.6 and 1.7 are valid values. The plugin will also pick up the `java.runtime.version` set in
+your `system.properties` file, but the plugin configuration will take precedence. 
+
+You can set configuration variables like this:
+
+```
+<configVars>
+  <MY_VAR>SomeValue</MY_VAR>
+  <JAVA_OPTS>-Xss512k -XX:+UseCompressedOops</JAVA_OPTS>
+</configVars>
+```
+
+Any variable defined in `configVars` will override defaults and previous defined config variables.
+
+You may set process types (similar to a `Procfile`):
+
+```
+<processTypes>
+  <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
+  <worker>java $JAVA_OPTS -cp target/classes:target/dependency/* Worker</worker>
+</processTypes>
+```
+
+The plugin will also pick up any process types defined in your `Procfile`, but this configuration will override it
+if there is a conflict.
+
+Finally, you can include additional directories in the slug as long as they are relative to the project root:
+
+```
+<includes>
+  <include>etc/readme.txt</include>
+</includes>
+```
+
+See the integrations tests under `maven-plugin/src/it` for more examples.
+
+## Deploying to Multiple Apps
+
+In most real-world scenarios, you will need to deploy your application dev, test and prod environments. This is best 
+handled with Maven profiles. For example:
+
+```
+<build>
+  <plugins>
+    <plugin>
+      <groupId>com.heroku.sdk</groupId>
+      <artifactId>heroku-maven-plugin</artifactId>
+      <version>0.1.0</version>
+      <configuration>
+        <processTypes>
+          <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
+        </processTypes>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
+<profiles>
+  <profile>
+    <id>test</id>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>com.heroku.sdk</groupId>
+          <artifactId>heroku-maven-plugin</artifactId>
+          <configuration>
+            <appName>myapp-test</appName>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+    <profile>
+      <id>prod</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.heroku.sdk</groupId>
+            <artifactId>heroku-maven-plugin</artifactId>
+            <configuration>
+              <appName>myapp-prod</appName>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+</profiles>
+```
 
 ## Hacking
 

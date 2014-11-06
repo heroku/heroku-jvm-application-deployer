@@ -65,7 +65,8 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
 ```
 
 This assumes your project will generate a WAR file in the `target` directory. If the WAR file is located somewhere else,
-you can specify this with the `<warFile>` configuration element.
+you can specify this with the `<warFile>` configuration element. The plugin will determine the appropriate process type
+for you, but you can override this with the `<processTypes>` configuration element.
 
 Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, run:
 
@@ -175,6 +176,12 @@ handled with Maven profiles. For example:
     </build>
   </profile>
 </profiles>
+```
+
+Alternatively, you can provide the application name as a system property like this:
+
+```
+$ mvn heroku:deploy -Dheroku.appName=myapp
 ```
 
 ## Hacking

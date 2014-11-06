@@ -113,8 +113,8 @@ You may set process types (similar to a `Procfile`):
 </processTypes>
 ```
 
-The plugin will also pick up any process types defined in your `Procfile`, but this configuration will override it
-if there is a conflict.
+The plugin will also pick up any process types defined in your `Procfile`, but the plugin configuration 
+will take precedence.
 
 Finally, you can include additional directories in the slug as long as they are relative to the project root:
 

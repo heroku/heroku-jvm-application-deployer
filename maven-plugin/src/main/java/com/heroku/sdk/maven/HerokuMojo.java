@@ -60,7 +60,6 @@ public abstract class HerokuMojo extends AbstractMojo {
    * Command line -Dheroku.jdkVersion=...
    *
    * @parameter property="heroku.jdkVersion"
-   *            default-value="1.7"
    */
   protected String jdkVersion = null;
 

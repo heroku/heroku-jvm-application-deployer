@@ -11,21 +11,15 @@ try {
     def log = FileUtils.fileRead(new File(basedir, "build.log"));
     assert log.contains("BUILD SUCCESS"), "the build was not successful"
 
-    def process = "heroku run cat test.txt -a${appName}".execute()
-    process.waitFor()
-    output = process.text
-    assert output.contains("It worked!"), "slug did not contain test file: ${output}"
-
-    process = "heroku config -a${appName}".execute()
-    process.waitFor()
-    output = process.text
-    assert output.contains("MY_VAR"), "config var MY_VAR was not present"
-    assert output.contains("SomeValue"), "config var MY_VAR has the wrong value"
-
-    process = "heroku run java -version -a${appName}".execute()
+    def process = "heroku run java -version -a${appName}".execute()
     process.waitFor()
     output = process.text
     assert output.contains("1.7"), "Wrong version of JDK packages into slug"
+
+    process = "heroku ps -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("=== web (1X): `java \$JAVA_OPTS -Dmy.var=foobar -cp target/classes:target/dependency/* Main`"), "web process type not detected"
 
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()

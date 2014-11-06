@@ -4,15 +4,13 @@ import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import sun.misc.BASE64Encoder;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class App {
 
@@ -69,7 +67,7 @@ public class App {
     deploySlug(processTypes);
   }
 
-  public void prepare(List<File> includedFiles, String jdkVersion, String jdkUrl) throws Exception {
+  public void prepare(List<File> includedFiles, String providedJdkVersion, String jdkUrl) throws Exception {
     logInfo("---> Packaging application...");
     logInfo("     - app: " + name);
 
@@ -90,6 +88,7 @@ public class App {
 
     try {
       if (jdkUrl == null) {
+        String jdkVersion = providedJdkVersion == null ? getJdkVersion() : providedJdkVersion;
         logInfo("     - installing: OpenJDK " + jdkVersion);
         vendorJdk(new URL(jdkUrlStrings.get(jdkVersion)));
       } else {
@@ -144,10 +143,11 @@ public class App {
   }
 
   public Slug deploySlug(Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+    Map<String,String> allProcessTypes = getProcfile();
+    allProcessTypes.putAll(processTypes);
+    if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
 
-    if (processTypes.isEmpty()) logWarn("No processTypes specified!");
-
-    Slug slug = new Slug(name, getEncodedApiKey(), processTypes);
+    Slug slug = new Slug(name, getEncodedApiKey(), allProcessTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
 
     logInfo("---> Creating slug...");
@@ -173,6 +173,45 @@ public class App {
     logInfo("     - version: " + releaseResponse.get("version"));
 
     return slug;
+  }
+
+  protected String getJdkVersion() {
+    String defaultJdkVersion = "1.8";
+    File sysPropsFile = new File(rootDir, "system.properties");
+    if (sysPropsFile.exists()) {
+      Properties props = new Properties();
+      try {
+        props.load(new FileInputStream(sysPropsFile));
+        return props.getProperty("java.runtime.version", defaultJdkVersion);
+      } catch (IOException e) {
+        logDebug(e.getMessage());
+      }
+    }
+    return defaultJdkVersion;
+  }
+
+  protected Map<String,String> getProcfile() {
+    Map<String,String> procTypes = new HashMap<String, String>();
+
+    File procfile = new File(rootDir, "Procfile");
+    if (procfile.exists()) {
+      try {
+        BufferedReader reader = new BufferedReader(new FileReader(procfile));
+        String line = reader.readLine();
+        while (line != null) {
+          Integer colon = line.indexOf(":");
+          String key = line.substring(0, colon);
+          String value = line.substring(colon + 1);
+          procTypes.put(key.trim(), value.trim());
+
+          line = reader.readLine();
+        }
+      } catch (Exception e) {
+        logDebug(e.getMessage());
+      }
+    }
+
+    return procTypes;
   }
 
   private void vendorJdk(URL jdkUrl) throws IOException, InterruptedException, ArchiveException {

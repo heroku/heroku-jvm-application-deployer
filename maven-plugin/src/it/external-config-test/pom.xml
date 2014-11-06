@@ -26,16 +26,6 @@
         <version>@project.version@</version>
         <configuration>
           <appName>${heroku.appName}</appName>
-          <processTypes>
-            <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
-          </processTypes>
-          <includes>
-            <include>test.txt</include>
-          </includes>
-          <jdkVersion>1.7</jdkVersion>
-          <configVars>
-            <MY_VAR>SomeValue</MY_VAR>
-          </configVars>
         </configuration>
       </plugin>
     </plugins>

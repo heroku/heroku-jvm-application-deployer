@@ -13,9 +13,12 @@ try {
         throw new RuntimeException("the build was not successful")
     }
 
-    Thread.sleep(5000);
+    def process = "heroku run java -version -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("1.8"), "Wrong version of JDK packages into slug"
 
-    def process = "curl https://${appName}.herokuapp.com".execute()
+    process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text
     if (!output.contains("Hello from Java!")) {

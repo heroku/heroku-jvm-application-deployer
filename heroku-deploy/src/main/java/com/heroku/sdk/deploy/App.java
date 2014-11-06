@@ -7,14 +7,13 @@ import sun.misc.BASE64Encoder;
 import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 public class App {
-
-  private static final Integer TEMP_DIR_ATTEMPTS = 10000;
 
   private static Map<String,String> jdkUrlStrings = new HashMap<String,String>();
 
@@ -38,7 +37,7 @@ public class App {
 
   public void logWarn(String message) { /* nothing by default */ }
 
-  public App(String name) {
+  public App(String name) throws IOException {
     this(name, new File(System.getProperty("user.dir")), createTempDir());
   }
 
@@ -273,18 +272,7 @@ public class App {
     return json.replace("\\", "\\\\").replace("\"", "\\\"");
   }
 
-  private static File createTempDir() {
-    File baseDir = new File(System.getProperty("java.io.tmpdir"));
-    String baseName = System.currentTimeMillis() + "-";
-
-    for (int counter = 0; counter < TEMP_DIR_ATTEMPTS; counter++) {
-      File tempDir = new File(baseDir, baseName + counter);
-      if (tempDir.mkdir()) {
-        return tempDir;
-      }
-    }
-    throw new IllegalStateException("Failed to create directory within "
-        + TEMP_DIR_ATTEMPTS + " attempts (tried "
-        + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
+  private static File createTempDir() throws IOException {
+    return Files.createTempDirectory("heroku-deploy").toFile();
   }
 }

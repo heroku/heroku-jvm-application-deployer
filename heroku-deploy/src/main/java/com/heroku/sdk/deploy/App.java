@@ -83,8 +83,6 @@ public class App {
       throw new Exception("There was an error packaging the application for deployment.", ioe);
     }
 
-    // configVars
-
     try {
       if (jdkUrl == null) {
         String jdkVersion = providedJdkVersion == null ? getJdkVersion() : providedJdkVersion;

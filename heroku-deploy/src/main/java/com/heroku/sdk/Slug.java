@@ -1,10 +1,6 @@
-package com.heroku.api;
+package com.heroku.sdk;
 
-import org.apache.commons.io.FileUtils;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;

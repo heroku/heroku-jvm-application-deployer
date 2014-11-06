@@ -1,6 +1,5 @@
-package com.heroku.api;
+package com.heroku.sdk;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.net.ssl.HttpsURLConnection;

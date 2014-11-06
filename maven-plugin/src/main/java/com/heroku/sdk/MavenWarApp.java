@@ -1,6 +1,5 @@
-package com.heroku.maven;
+package com.heroku.sdk;
 
-import com.heroku.api.WarApp;
 import org.apache.maven.plugin.logging.Log;
 
 import java.io.File;

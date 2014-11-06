@@ -1,4 +1,4 @@
-package com.heroku.api;
+package com.heroku.sdk;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;

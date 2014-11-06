@@ -1,8 +1,7 @@
-package com.heroku.api;
+package com.heroku.sdk;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import sun.misc.BASE64Encoder;
 
 import java.io.BufferedReader;

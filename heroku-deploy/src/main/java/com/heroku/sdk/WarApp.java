@@ -1,4 +1,4 @@
-package com.heroku.api;
+package com.heroku.sdk;
 
 import java.io.File;
 import java.util.HashMap;

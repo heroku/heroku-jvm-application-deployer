@@ -9,22 +9,25 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Tar {
   public static File create(String filename, String directory, File outputDir) throws IOException, ArchiveException, InterruptedException {
 
-//    if (useNativeTar()) {
+    if (useNativeTar()) {
       String gzipFilename = filename + ".tgz";
       ProcessBuilder pb = new ProcessBuilder().command("tar", "pczf", gzipFilename, directory).directory(outputDir);
       pb.start().waitFor();
       return new File(outputDir, gzipFilename);
-//    } else {
-//      return new Pack(filename, outputDir, directory, outputDir).apply();
-//    }
+    } else {
+      return new Pack(outputDir, directory).apply(filename, outputDir);
+    }
   }
 
   public static void extract(File tarFile, File outputDir) throws IOException, InterruptedException {
@@ -37,16 +40,12 @@ public class Tar {
   }
 
   public static class Pack {
-    private String archiveBasename;
     private File workingDir;
     private String directory;
-    private File outputDir;
 
-    public Pack(String archiveBasename, File workingDir, String directory, File outputDir) {
-      this.archiveBasename = archiveBasename;
+    public Pack(File workingDir, String directory) {
       this.workingDir = workingDir;
       this.directory = directory;
-      this.outputDir = outputDir;
     }
 
     private List<File> recursiveListFiles(File f) {
@@ -64,7 +63,7 @@ public class Tar {
     private void addFilesToTar(ArchiveOutputStream tarBall, File dir) throws IOException {
       for (File file : recursiveListFiles(dir)) {
         if (!file.isDirectory()) {
-          TarArchiveEntry tarFile = new TarArchiveEntry(file, relativize(workingDir, file));
+          TarArchiveEntry tarFile = new TarArchiveEntry(file, relativize(file));
           tarFile.setSize(file.length());
           if (java.nio.file.Files.isExecutable(java.nio.file.FileSystems.getDefault().getPath(file.getAbsolutePath()))) {
             tarFile.setMode(493);
@@ -76,11 +75,22 @@ public class Tar {
       }
     }
 
-    private File apply() throws ArchiveException, IOException {
+    private void compress(File sourceFile, File targetFile) throws IOException {
+      FileOutputStream fos = new FileOutputStream(targetFile);
+      GZIPOutputStream gzs = new GZIPOutputStream(fos);
+      FileInputStream fis = new FileInputStream(sourceFile);
+
+      try {
+        IOUtils.copy(fis, gzs);
+      } finally {
+        gzs.close();
+        fis.close();
+      }
+    }
+
+    private File apply(String archiveBasename, File outputDir) throws ArchiveException, IOException {
       File archive = new File(outputDir, (archiveBasename + ".tar"));
       FileOutputStream tarOutput = new FileOutputStream(archive);
-
-
 
       TarArchiveOutputStream tarBall = (TarArchiveOutputStream)new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, tarOutput);
       tarBall.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
@@ -91,13 +101,14 @@ public class Tar {
       }
 
       File outputFile = new File(outputDir, (archiveBasename + ".tgz"));
-//      sbt.IO.gzip(archive, outputFile);
-//      sbt.IO.delete(archive);
+      compress(archive, outputFile);
+      FileUtils.deleteQuietly(archive);
       return outputFile;
     }
 
-    private String relativize(File base, File path) {
-      return base.toURI().relativize(path.toURI()).getPath();
+    private String relativize(File path) {
+      String relativePath = new File(this.workingDir, this.directory).toURI().relativize(path.toURI()).getPath();
+      return this.directory + File.separator + relativePath;
     }
   }
 
@@ -124,6 +135,24 @@ public class Tar {
 //      case null => Stream.empty
 //      case entry => entry #:: stream
 //    }
+
+    private void decompress(File sourceFile, File targetFile) throws IOException {
+      FileInputStream fis = new FileInputStream(sourceFile);
+      GZIPInputStream gzs = new GZIPInputStream(fis);
+      FileOutputStream fos = new FileOutputStream(targetFile);
+
+      try {
+//        byte[] buffer = new byte[1024];
+//        int length;
+//        while ((length = gzis.read(buffer)) > 0) {
+//          fos.write(buffer, 0, length);
+//        }
+        IOUtils.copy(gzs, fos);
+      } finally {
+        fos.close();
+        gzs.close();
+      }
+    }
 
     public File apply() {
       return null;

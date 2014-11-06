@@ -13,6 +13,8 @@ try {
         throw new RuntimeException("the build was not successful")
     }
 
+    Thread.sleep(5000);
+
     def process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text

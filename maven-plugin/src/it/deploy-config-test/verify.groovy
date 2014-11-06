@@ -22,6 +22,11 @@ try {
     assert output.contains("MY_VAR"), "config var MY_VAR was not present"
     assert output.contains("SomeValue"), "config var MY_VAR has the wrong value"
 
+    process = "heroku run java -version -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("1.8"), "Wrong version of JDK packages into slug"
+
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text

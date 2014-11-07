@@ -26,19 +26,29 @@ public class WarApp extends App {
     FileUtils.copyURLToFile(webappRunnerUrl, webappRunnerJar);
   }
 
-  public WarApp(String name, File warFile, File webappRunnerJar, File rootDir, File targetDir) {
-    super(name, rootDir, targetDir);
+  public WarApp(String buildPackDesc, String name, File warFile, File webappRunnerJar, File rootDir, File targetDir) {
+    super(buildPackDesc, name, rootDir, targetDir);
     this.warFile = warFile;
     this.webappRunnerJar = webappRunnerJar;
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String jdkUrl) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion) throws Exception {
+    includedFiles.add(webappRunnerJar);
+    includedFiles.add(warFile);
+    super.deploy(includedFiles, configVars, jdkVersion, defaultProcTypes());
+  }
+
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl) throws Exception {
+    includedFiles.add(webappRunnerJar);
+    includedFiles.add(warFile);
+    super.deploy(includedFiles, configVars, jdkUrl, defaultProcTypes());
+  }
+
+  private Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = new HashMap<String, String>();
     processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(webappRunnerJar) + " --port $PORT " + relativize(warFile));
 
-    includedFiles.add(webappRunnerJar);
-    includedFiles.add(warFile);
-    super.deploy(includedFiles, configVars, jdkVersion, jdkUrl, processTypes);
+    return processTypes;
   }
 
   public static void main(String[] args) throws Exception {
@@ -56,6 +66,6 @@ public class WarApp extends App {
     }
 
     (new WarApp(appName, new File(warFile), new URL(webappRunnerUrl))).
-        deploy(new ArrayList<File>(), new HashMap<String, String>(), jdkVersion, jdkUrl);
+        deploy(new ArrayList<File>(), new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl);
   }
 }

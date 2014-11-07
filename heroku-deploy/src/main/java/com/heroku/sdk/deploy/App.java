@@ -23,6 +23,8 @@ public class App {
     jdkUrlStrings.put("1.8", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.8-latest.tar.gz");
   }
 
+  private String buildPackDesc;
+
   private String name;
 
   private File rootDir;
@@ -38,10 +40,11 @@ public class App {
   public void logWarn(String message) { /* nothing by default */ }
 
   public App(String name) throws IOException {
-    this(name, new File(System.getProperty("user.dir")), createTempDir());
+    this("heroku-deploy", name, new File(System.getProperty("user.dir")), createTempDir());
   }
 
-  public App(String name, File rootDir, File targetDir) {
+  public App(String buildPackDesc, String name, File rootDir, File targetDir) {
+    this.buildPackDesc = buildPackDesc;
     this.name = name;
     this.rootDir = rootDir;
     this.targetDir = targetDir;
@@ -50,7 +53,7 @@ public class App {
     getAppDir().mkdir();
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String jdkUrl, Map<String,String> processTypes) throws Exception {
+  protected void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, URL jdkUrl, Map<String,String> processTypes) throws Exception {
     prepare(includedFiles, jdkVersion, jdkUrl);
 
     Map<String,String> existingConfigVars = getConfigVars();
@@ -66,7 +69,18 @@ public class App {
     deploySlug(processTypes);
   }
 
-  public void prepare(List<File> includedFiles, String providedJdkVersion, String jdkUrl) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, Map<String,String> processTypes) throws Exception {
+    String realJdkVersion = jdkVersion == null ? getJdkVersion() : jdkVersion;
+    if (!jdkUrlStrings.containsKey(realJdkVersion)) throw new IllegalArgumentException("Invalid JDK version: " + realJdkVersion);
+    URL jdkUrl = new URL(jdkUrlStrings.get(realJdkVersion));
+    deploy(includedFiles, configVars, realJdkVersion, jdkUrl, processTypes);
+  }
+
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, Map<String,String> processTypes) throws Exception {
+    deploy(includedFiles, configVars, jdkUrl.toString(), jdkUrl, processTypes);
+  }
+
+  protected void prepare(List<File> includedFiles, String jdkVersion, URL jdkUrl) throws Exception {
     logInfo("---> Packaging application...");
     logInfo("     - app: " + name);
 
@@ -84,14 +98,8 @@ public class App {
     }
 
     try {
-      if (jdkUrl == null) {
-        String jdkVersion = providedJdkVersion == null ? getJdkVersion() : providedJdkVersion;
-        logInfo("     - installing: OpenJDK " + jdkVersion);
-        vendorJdk(new URL(jdkUrlStrings.get(jdkVersion)));
-      } else {
-        logInfo("     - installing: " + jdkUrl);
-        vendorJdk(new URL(jdkUrl));
-      }
+      logInfo("     - installing: " + jdkVersion);
+      vendorJdk(jdkUrl);
     } catch (Exception e) {
       throw new Exception("There was an error downloading the JDK.", e);
     }
@@ -117,7 +125,7 @@ public class App {
     return configVars;
   }
 
-  public void setConfigVars(Map<String,String> configVars) throws IOException, Curl.CurlException {
+  protected void setConfigVars(Map<String,String> configVars) throws IOException, Curl.CurlException {
     if (!configVars.isEmpty()) {
       String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(name, "UTF-8") + "/config_vars";
 
@@ -139,12 +147,12 @@ public class App {
     }
   }
 
-  public Slug deploySlug(Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+  protected Slug deploySlug(Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
     Map<String,String> allProcessTypes = getProcfile();
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
 
-    Slug slug = new Slug(name, getEncodedApiKey(), allProcessTypes);
+    Slug slug = new Slug(buildPackDesc, name, getEncodedApiKey(), allProcessTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
 
     logInfo("---> Creating slug...");

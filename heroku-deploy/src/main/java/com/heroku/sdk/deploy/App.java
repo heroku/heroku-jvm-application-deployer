@@ -74,7 +74,7 @@ public class App {
     String realJdkVersion = jdkVersion == null ? getJdkVersion() : jdkVersion;
     if (!jdkUrlStrings.containsKey(realJdkVersion)) throw new IllegalArgumentException("Invalid JDK version: " + realJdkVersion);
     URL jdkUrl = new URL(jdkUrlStrings.get(realJdkVersion));
-    deploy(includedFiles, configVars, realJdkVersion, jdkUrl, processTypes);
+    deploy(includedFiles, configVars, "OpenJDK " + realJdkVersion, jdkUrl, processTypes);
   }
 
   public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, Map<String,String> processTypes) throws Exception {
@@ -88,22 +88,7 @@ public class App {
     try {
       for (File file : includedFiles) {
         logInfo("     - including: ./" + relativize(file));
-        if (SystemSettings.hasNio()) {
-          File copyTarget = new File(getAppDir(), relativize(file));
-          if (file.isDirectory()) {
-            Files.walkFileTree(file.toPath(), new CopyFileVisitor(copyTarget.toPath()));
-          } else {
-            Files.createDirectories(copyTarget.getParentFile().toPath());
-            Files.copy(file.toPath(), copyTarget.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
-          }
-        } else {
-          if (file.isDirectory()) {
-            FileUtils.copyDirectory(file, new File(getAppDir(), relativize(file)));
-          } else {
-            FileUtils.copyFile(file, new File(getAppDir(), relativize(file)));
-          }
-        }
-
+        copy(file, new File(getAppDir(), relativize(file)));
       }
     } catch (IOException ioe) {
       throw new Exception("There was an error packaging the application for deployment.", ioe);
@@ -114,6 +99,23 @@ public class App {
       vendorJdk(jdkUrl);
     } catch (Exception e) {
       throw new Exception("There was an error downloading the JDK.", e);
+    }
+  }
+
+  protected void copy(File file, File copyTarget) throws IOException {
+    if (SystemSettings.hasNio()) {
+      if (file.isDirectory()) {
+        Files.walkFileTree(file.toPath(), new CopyFileVisitor(copyTarget.toPath()));
+      } else {
+        Files.createDirectories(copyTarget.getParentFile().toPath());
+        Files.copy(file.toPath(), copyTarget.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+      }
+    } else {
+      if (file.isDirectory()) {
+        FileUtils.copyDirectory(file, new File(getAppDir(), relativize(file)));
+      } else {
+        FileUtils.copyFile(file, new File(getAppDir(), relativize(file)));
+      }
     }
   }
 

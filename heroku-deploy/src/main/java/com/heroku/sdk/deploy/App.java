@@ -7,7 +7,8 @@ import sun.misc.BASE64Encoder;
 import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.file.Files;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,11 +88,22 @@ public class App {
     try {
       for (File file : includedFiles) {
         logInfo("     - including: ./" + relativize(file));
-        if (file.isDirectory()) {
-          FileUtils.copyDirectory(file, new File(getAppDir(), relativize(file)));
+        if (SystemSettings.hasNio()) {
+          File copyTarget = new File(getAppDir(), relativize(file));
+          if (file.isDirectory()) {
+            Files.walkFileTree(file.toPath(), new CopyFileVisitor(copyTarget.toPath()));
+          } else {
+            Files.createDirectories(copyTarget.getParentFile().toPath());
+            Files.copy(file.toPath(), copyTarget.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+          }
         } else {
-          FileUtils.copyFile(file, new File(getAppDir(), relativize(file)));
+          if (file.isDirectory()) {
+            FileUtils.copyDirectory(file, new File(getAppDir(), relativize(file)));
+          } else {
+            FileUtils.copyFile(file, new File(getAppDir(), relativize(file)));
+          }
         }
+
       }
     } catch (IOException ioe) {
       throw new Exception("There was an error packaging the application for deployment.", ioe);
@@ -280,5 +292,32 @@ public class App {
 
   private static File createTempDir() throws IOException {
     return Files.createTempDirectory("heroku-deploy").toFile();
+  }
+
+  public static class CopyFileVisitor extends SimpleFileVisitor<Path> {
+    private final Path targetPath;
+    private Path sourcePath = null;
+
+    public CopyFileVisitor(Path targetPath) {
+      this.targetPath = targetPath;
+    }
+
+    @Override
+    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+      if (sourcePath == null) {
+        sourcePath = dir;
+      } else if (dir.equals(targetPath)) {
+        return FileVisitResult.SKIP_SUBTREE;
+      } else {
+        Files.createDirectories(targetPath.resolve(sourcePath.relativize(dir)));
+      }
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+      Files.copy(file, targetPath.resolve(sourcePath.relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
+      return FileVisitResult.CONTINUE;
+    }
   }
 }

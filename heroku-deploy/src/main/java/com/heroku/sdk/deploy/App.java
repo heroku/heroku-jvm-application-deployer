@@ -306,13 +306,12 @@ public class App {
 
     @Override
     public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-      if (sourcePath == null) {
-        sourcePath = dir;
-      } else if (dir.equals(targetPath)) {
+      if (dir.equals(targetPath)) {
         return FileVisitResult.SKIP_SUBTREE;
-      } else {
-        Files.createDirectories(targetPath.resolve(sourcePath.relativize(dir)));
+      } else if (sourcePath == null) {
+        sourcePath = dir;
       }
+      Files.createDirectories(targetPath.resolve(sourcePath.relativize(dir)));
       return FileVisitResult.CONTINUE;
     }
 

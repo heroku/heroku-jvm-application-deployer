@@ -16,6 +16,11 @@ try {
     output = process.text
     assert output.contains("It worked!"), "slug did not contain test file: ${output}"
 
+    process = "heroku run cat public/javascripts/hello.js -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("Welcome to your Play application's JavaScript!"), "slug did not contain js file: ${output}"
+
     process = "heroku config -a${appName}".execute()
     process.waitFor()
     output = process.text

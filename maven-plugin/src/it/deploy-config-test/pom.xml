@@ -31,6 +31,7 @@
           </processTypes>
           <includes>
             <include>test.txt</include>
+            <include>public/javascripts</include>
           </includes>
           <jdkVersion>1.7</jdkVersion>
           <configVars>

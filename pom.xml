@@ -12,9 +12,7 @@
 
   <packaging>pom</packaging>
 
-  <description>
-    Maven plugin for deploying applications to Heroku
-  </description>
+  <name>Heroku SDK Parent</name>
 
   <url>http://github.com/heroku/heroku-maven-plugin</url>
 

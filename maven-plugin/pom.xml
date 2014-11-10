@@ -11,6 +11,10 @@
 
   <packaging>maven-plugin</packaging>
 
+  <name>Heroku Maven Plugin</name>
+  <description>
+    Maven plugin for deploying applications to Heroku
+  </description>
 
   <dependencies>
     <dependency>

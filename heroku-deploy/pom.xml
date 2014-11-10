@@ -7,6 +7,11 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <name>Heroku Deployer</name>
+  <description>
+    Standalone tool and library for deploying to Heroku
+  </description>
+
   <artifactId>heroku-deploy</artifactId>
 
   <dependencies>

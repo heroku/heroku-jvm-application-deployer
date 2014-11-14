@@ -96,6 +96,8 @@ public class App {
       for (File file : includedFiles) {
         logInfo("     - including: ./" + relativize(file));
         copy(file, new File(getAppDir(), relativize(file)));
+
+        addProfileScript();
       }
     } catch (IOException ioe) {
       throw new Exception("There was an error packaging the application for deployment.", ioe);
@@ -264,6 +266,33 @@ public class App {
     FileUtils.copyURLToFile(realJdkUrl, jdkTgz);
 
     Tar.extract(jdkTgz, jdkHome);
+  }
+
+  private void addProfileScript() throws IOException {
+    File profiledDir = new File(getAppDir(), ".profile.d");
+    profiledDir.mkdir();
+
+    Files.write(
+        Paths.get(new File(profiledDir, "jvmcommon.sh").getPath()),
+        ("" +
+            "limit=$(ulimit -u)\n" +
+            "case $limit in\n" +
+            "256)   # 1X Dyno\n" +
+            "  heap=384\n" +
+            ";;\n" +
+            "512)   # 2X Dyno\n" +
+            "  heap=768\n" +
+            ";;\n" +
+            "32768) # PX Dyno\n" +
+            "  heap=6144\n" +
+            ";;\n" +
+            "*)\n" +
+            "  heap=384\n" +
+            ";;\n" +
+            "esac\n" +
+            "export JAVA_TOOL_OPTIONS=\"-Xmx${heap}m $JAVA_TOOL_OPTIONS -Djava.rmi.server.useCodebaseOnly=true\"\n" +
+        "").getBytes(StandardCharsets.UTF_8)
+    );
   }
 
   protected String relativize(File path) {

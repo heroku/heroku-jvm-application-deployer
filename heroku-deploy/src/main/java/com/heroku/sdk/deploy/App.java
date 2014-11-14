@@ -7,6 +7,7 @@ import sun.misc.BASE64Encoder;
 import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
@@ -247,6 +248,11 @@ public class App {
         throw new IllegalArgumentException("Unsupported Stack: " + stackName);
       }
       logInfo("     - installing: OpenJDK " + realJdkVersion);
+
+      Files.write(
+          Paths.get(new File(getAppDir(), "system.properties").getPath()),
+          ("java.runtime.version=" + realJdkVersion).getBytes(StandardCharsets.UTF_8)
+      );
     } else {
       logInfo("     - installing: Custom JDK");
     }
@@ -264,7 +270,7 @@ public class App {
     return rootDir.toURI().relativize(path.toURI()).getPath();
   }
 
-  private String getEncodedApiKey() throws IOException {
+  protected String getEncodedApiKey() throws IOException {
     if (encodedApiKey == null) {
       String apiKey = System.getenv("HEROKU_API_KEY");
       if (null == apiKey || apiKey.equals("")) {

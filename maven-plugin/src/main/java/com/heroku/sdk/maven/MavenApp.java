@@ -18,8 +18,8 @@ public class MavenApp extends App {
   }
 
   @Override
-  protected void prepare(List<File> includedFiles, String jdkVersion, URL jdkUrl) throws Exception {
-    super.prepare(includedFiles, jdkVersion, jdkUrl);
+  protected void prepare(List<File> includedFiles) throws Exception {
+    super.prepare(includedFiles);
 
     FileUtils.copyFile(new File(getRootDir(), "pom.xml"), new File(getAppDir(), "pom.xml"));
   }

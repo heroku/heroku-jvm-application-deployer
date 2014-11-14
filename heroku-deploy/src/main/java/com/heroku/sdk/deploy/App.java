@@ -16,12 +16,21 @@ import java.util.Properties;
 
 public class App {
 
-  private static Map<String,String> jdkUrlStrings = new HashMap<String,String>();
+  private static Map<String,Map<String,String>> jdkUrlsByStack = new HashMap<String,Map<String,String>>();
 
   static {
-    jdkUrlStrings.put("1.6", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.6-latest.tar.gz");
-    jdkUrlStrings.put("1.7", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.7-latest.tar.gz");
-    jdkUrlStrings.put("1.8", "https://lang-jvm.s3.amazonaws.com/jdk/openjdk1.8-latest.tar.gz");
+    Map<String,String> cedarJdkUrlStrings = new HashMap<String,String>();
+    cedarJdkUrlStrings.put("1.6", "https://lang-jvm.s3.amazonaws.com/jdk/cedar/openjdk1.6-latest.tar.gz");
+    cedarJdkUrlStrings.put("1.7", "https://lang-jvm.s3.amazonaws.com/jdk/cedar/openjdk1.7-latest.tar.gz");
+    cedarJdkUrlStrings.put("1.8", "https://lang-jvm.s3.amazonaws.com/jdk/cedar/openjdk1.8-latest.tar.gz");
+
+    Map<String,String> cedar14JdkUrlStrings = new HashMap<String,String>();
+    cedar14JdkUrlStrings.put("1.6", "https://lang-jvm.s3.amazonaws.com/jdk/cedar-14/openjdk1.6-latest.tar.gz");
+    cedar14JdkUrlStrings.put("1.7", "https://lang-jvm.s3.amazonaws.com/jdk/cedar-14/openjdk1.7-latest.tar.gz");
+    cedar14JdkUrlStrings.put("1.8", "https://lang-jvm.s3.amazonaws.com/jdk/cedar-14/openjdk1.8-latest.tar.gz");
+
+    jdkUrlsByStack.put("cedar", cedarJdkUrlStrings);
+    jdkUrlsByStack.put("cedar-14", cedar14JdkUrlStrings);
   }
 
   private String buildPackDesc;
@@ -55,7 +64,7 @@ public class App {
   }
 
   protected void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, URL jdkUrl, Map<String,String> processTypes) throws Exception {
-    prepare(includedFiles, jdkVersion, jdkUrl);
+    prepare(includedFiles);
 
     Map<String,String> existingConfigVars = getConfigVars();
     logDebug("Heroku existing config variables: " + existingConfigVars.keySet());
@@ -67,21 +76,18 @@ public class App {
     }
     setConfigVars(newConfigVars);
 
-    deploySlug(processTypes);
+    deploySlug(jdkVersion, jdkUrl, processTypes);
   }
 
   public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, Map<String,String> processTypes) throws Exception {
-    String realJdkVersion = jdkVersion == null ? getJdkVersion() : jdkVersion;
-    if (!jdkUrlStrings.containsKey(realJdkVersion)) throw new IllegalArgumentException("Invalid JDK version: " + realJdkVersion);
-    URL jdkUrl = new URL(jdkUrlStrings.get(realJdkVersion));
-    deploy(includedFiles, configVars, "OpenJDK " + realJdkVersion, jdkUrl, processTypes);
+    deploy(includedFiles, configVars, jdkVersion, null, processTypes);
   }
 
   public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, Map<String,String> processTypes) throws Exception {
     deploy(includedFiles, configVars, jdkUrl.toString(), jdkUrl, processTypes);
   }
 
-  protected void prepare(List<File> includedFiles, String jdkVersion, URL jdkUrl) throws Exception {
+  protected void prepare(List<File> includedFiles) throws Exception {
     logInfo("---> Packaging application...");
     logInfo("     - app: " + name);
 
@@ -92,13 +98,6 @@ public class App {
       }
     } catch (IOException ioe) {
       throw new Exception("There was an error packaging the application for deployment.", ioe);
-    }
-
-    try {
-      logInfo("     - installing: " + jdkVersion);
-      vendorJdk(jdkUrl);
-    } catch (Exception e) {
-      throw new Exception("There was an error downloading the JDK.", e);
     }
   }
 
@@ -161,7 +160,7 @@ public class App {
     }
   }
 
-  protected Slug deploySlug(Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+  protected Slug deploySlug(String jdkVersion, URL jdkUrl, Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
     Map<String,String> allProcessTypes = getProcfile();
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
@@ -169,15 +168,17 @@ public class App {
     Slug slug = new Slug(buildPackDesc, name, getEncodedApiKey(), allProcessTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
 
-    logInfo("---> Creating slug...");
-    File slugFile = Tar.create("slug", "./app", getHerokuDir());
-    logInfo("     - file: ./" + relativize(slugFile));
-    logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
-
     Map slugResponse = slug.create();
     logDebug("Heroku Slug response: " + slugResponse);
     logDebug("Heroku Blob URL: " + slug.getBlobUrl());
     logDebug("Heroku Slug Id: " + slug.getSlugId());
+
+    vendorJdk(jdkVersion, jdkUrl, slug.getStackName());
+
+    logInfo("---> Creating slug...");
+    File slugFile = Tar.create("slug", "./app", getHerokuDir());
+    logInfo("     - file: ./" + relativize(slugFile));
+    logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
 
     logInfo("---> Uploading slug...");
     slug.upload(slugFile);
@@ -231,12 +232,30 @@ public class App {
     return procTypes;
   }
 
-  private void vendorJdk(URL jdkUrl) throws IOException, InterruptedException, ArchiveException {
+  private void vendorJdk(String jdkVersion, URL jdkUrl, String stackName) throws IOException, InterruptedException, ArchiveException {
+    URL realJdkUrl = jdkUrl;
+    if (realJdkUrl == null) {
+      String realJdkVersion = jdkVersion == null ? getJdkVersion() : jdkVersion;
+      if (jdkUrlsByStack.containsKey(stackName)) {
+        Map<String, String> jdkUrlStrings = jdkUrlsByStack.get(stackName);
+        if (jdkUrlStrings.containsKey(realJdkVersion)) {
+          realJdkUrl = new URL(jdkUrlStrings.get(realJdkVersion));
+        } else {
+          throw new IllegalArgumentException("Invalid JDK version: " + realJdkVersion);
+        }
+      } else {
+        throw new IllegalArgumentException("Unsupported Stack: " + stackName);
+      }
+      logInfo("     - installing: OpenJDK " + realJdkVersion);
+    } else {
+      logInfo("     - installing: Custom JDK");
+    }
+
     File jdkHome = new File(getAppDir(), ".jdk");
     jdkHome.mkdir();
 
     File jdkTgz = new File(getHerokuDir(), "jdk-pkg.tar.gz");
-    FileUtils.copyURLToFile(jdkUrl, jdkTgz);
+    FileUtils.copyURLToFile(realJdkUrl, jdkTgz);
 
     Tar.extract(jdkTgz, jdkHome);
   }

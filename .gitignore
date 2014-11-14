@@ -1,3 +1,4 @@
 .idea
-heroku-maven-plugin.iml
 target/
+setup.md
+*.iml

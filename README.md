@@ -82,6 +82,10 @@ $ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy-war
 
 And replace "xxx-xxx-xxxx" with the value of your Heroku API token.
 
+## Requirements
+
++  Maven 3.2.x
+
 ## Configuration
 
 In the `<configuration>` element of the plugin, you can set the JDK version like so:

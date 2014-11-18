@@ -1,4 +1,6 @@
 .idea
 target/
 setup.md
-*.iml
+heroku-maven-plugin.iml
+maven-plugin/maven-plugin.iml
+heroku-deploy/heroku-deploy.iml

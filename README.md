@@ -74,7 +74,9 @@ Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, 
 $ mvn heroku:deploy-war
 ```
 
-If you do not have the toolbelt installed, then run:
+If you have not logged in with the toolbelt (by running `heroku auth:login`) then the process will hang.
+
+If you do not have the toolbelt installed or have not logged in, then run:
 
 ```
 $ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy-war

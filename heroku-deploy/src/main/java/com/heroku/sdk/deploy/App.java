@@ -105,6 +105,10 @@ public class App {
   }
 
   protected void copy(File file, File copyTarget) throws IOException {
+    if (copyTarget.exists()) {
+      FileUtils.forceDelete(copyTarget);
+    }
+
     if (SystemSettings.hasNio()) {
       if (file.isDirectory()) {
         Files.walkFileTree(file.toPath(), new CopyFileVisitor(copyTarget.toPath()));
@@ -303,9 +307,11 @@ public class App {
     if (encodedApiKey == null) {
       String apiKey = System.getenv("HEROKU_API_KEY");
       if (null == apiKey || apiKey.equals("")) {
-        ProcessBuilder pb = new ProcessBuilder().command("heroku", "auth:token");
+        String herokuCmd = SystemSettings.isWindows() ? "heroku.bat" : "heroku";
+        ProcessBuilder pb = new ProcessBuilder().command(herokuCmd, "auth:token");
         Process p = pb.start();
 
+        // This will hang if the `heroku` command asks for input. Haven't figure out how to get around that yet.
         BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line;
         apiKey = "";

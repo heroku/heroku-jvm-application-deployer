@@ -4,4 +4,4 @@ env:
 language: java
 install: "./etc/travis-setup.sh"
 script: mvn clean install -Pintegration-test
-after_script: heroku keys:remove ~/.ssh/id_rsa
+after_script: heroku keys:remove ~/.ssh/id_rsa.pub

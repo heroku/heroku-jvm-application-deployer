@@ -1,0 +1,5 @@
+env:
+  global:
+    secure: FQJv96e+SkKq+dqyVOB67xIKEgrzoPxJuogIj26rkwjdz6h6GZxzfAGJ0fUH4jjCF1t7PFB4KGTN8NgwNgM1/tcRiYyR4OOs62fZVKjXzut53ZDtD76QTs9fdxDWexm26U0An827bmqfnlBFbjaqMUaa12f0Qg/TzXXaaZcu7JA=
+language: java
+script: mvn clean install -Pintegration-test

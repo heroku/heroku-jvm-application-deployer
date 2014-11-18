@@ -60,6 +60,12 @@ public class App {
     this.rootDir = rootDir;
     this.targetDir = targetDir;
 
+    try {
+      FileUtils.forceDelete(getHerokuDir());
+    } catch (IOException e) {
+      // do nothing
+    }
+
     getHerokuDir().mkdir();
     getAppDir().mkdir();
   }
@@ -105,10 +111,6 @@ public class App {
   }
 
   protected void copy(File file, File copyTarget) throws IOException {
-    if (copyTarget.exists()) {
-      FileUtils.forceDelete(copyTarget);
-    }
-
     if (SystemSettings.hasNio()) {
       if (file.isDirectory()) {
         Files.walkFileTree(file.toPath(), new CopyFileVisitor(copyTarget.toPath()));

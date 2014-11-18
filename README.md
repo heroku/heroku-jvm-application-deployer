@@ -1,4 +1,4 @@
-# heroku-maven-plugin
+# heroku-maven-plugin [![Build Status](https://travis-ci.org/heroku/heroku-maven-plugin.svg)](https://travis-ci.org/heroku/heroku-maven-plugin)
 
 This plugin is used to deploy Java applications directly to Heroku without pushing to a Git repository.
 This is can be useful when deploying from a CI server.
@@ -95,7 +95,7 @@ In the `<configuration>` element of the plugin, you can set the JDK version like
 ```
 
 The default is 1.8, but 1.6 and 1.7 are valid values. The plugin will also pick up the `java.runtime.version` set in
-your `system.properties` file, but the plugin configuration will take precedence. 
+your `system.properties` file, but the plugin configuration will take precedence.
 
 You can set configuration variables like this:
 
@@ -117,7 +117,7 @@ You may set process types (similar to a `Procfile`):
 </processTypes>
 ```
 
-The plugin will also pick up any process types defined in your `Procfile`, but the plugin configuration 
+The plugin will also pick up any process types defined in your `Procfile`, but the plugin configuration
 will take precedence.
 
 Finally, you can include additional directories in the slug as long as they are relative to the project root:
@@ -132,7 +132,7 @@ See the integration tests under `maven-plugin/src/it` for more examples.
 
 ## Deploying to Multiple Apps
 
-In most real-world scenarios, you will need to deploy your application to dev, test and prod environments. This is best 
+In most real-world scenarios, you will need to deploy your application to dev, test and prod environments. This is best
 handled with Maven profiles. For example:
 
 ```
@@ -201,4 +201,3 @@ To run an individual integration test, use a command like this:
 ```
 $ mvn clean install -Pintegration-test -Dinvoker.test=simple-deploy-test
 ```
-

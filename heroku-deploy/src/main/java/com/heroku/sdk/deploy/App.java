@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.*;
 
 public class App {
 
@@ -309,16 +310,30 @@ public class App {
     if (encodedApiKey == null) {
       String apiKey = System.getenv("HEROKU_API_KEY");
       if (null == apiKey || apiKey.equals("")) {
-        String herokuCmd = SystemSettings.isWindows() ? "heroku.bat" : "heroku";
-        ProcessBuilder pb = new ProcessBuilder().command(herokuCmd, "auth:token");
-        Process p = pb.start();
 
-        // This will hang if the `heroku` command asks for input. Haven't figure out how to get around that yet.
-        BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        apiKey = "";
-        while ((line = bri.readLine()) != null) {
-          apiKey += line;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        FutureTask<String> future =
+            new FutureTask<String>(new Callable<String>() {
+              public String call() throws IOException {
+                String herokuCmd = SystemSettings.isWindows() ? "heroku.bat" : "heroku";
+                ProcessBuilder pb = new ProcessBuilder().command(herokuCmd, "auth:token");
+                Process p = pb.start();
+
+                BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                String output = "";
+                while ((line = bri.readLine()) != null) {
+                  output += line;
+                }
+                return output;
+              }});
+
+        executor.execute(future);
+
+        try {
+          apiKey = future.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
+          throw new RuntimeException("Could not get API key! Please login with `heroku auth:login` or set the HEROKU_API_KEY environment variable.");
         }
       }
       encodedApiKey = new BASE64Encoder().encode((":" + apiKey).getBytes());

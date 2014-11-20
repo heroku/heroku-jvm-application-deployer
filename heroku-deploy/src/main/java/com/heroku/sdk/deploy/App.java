@@ -105,9 +105,8 @@ public class App {
       for (File file : includedFiles) {
         logInfo("     - including: ./" + relativize(file));
         copy(file, new File(getAppDir(), relativize(file)));
-
-        addProfileScript();
       }
+      addProfileScript();
     } catch (IOException ioe) {
       throw new Exception("There was an error packaging the application for deployment.", ioe);
     }

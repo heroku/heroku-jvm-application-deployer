@@ -21,7 +21,7 @@ public class Slug {
 
   public static final String BASE_URL = "https://api.heroku.com";
 
-  public Slug(String buildPackDesc, String appName, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
+  public Slug(String buildPackDesc, String appName, String stack, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
     this.appName = appName;
 
     headers = new HashMap<String,String>();
@@ -31,6 +31,7 @@ public class Slug {
 
     createJson = "{" +
         "\"buildpack_provided_description\":\"" + buildPackDesc +"\"," +
+        "\"stack\":\"" + (stack == null ? "cedar-14" : stack) +"\"," +
         "\"process_types\":{";
 
     boolean first = true;

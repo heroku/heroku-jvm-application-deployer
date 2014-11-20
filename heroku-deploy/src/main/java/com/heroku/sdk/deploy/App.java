@@ -71,7 +71,7 @@ public class App {
     getAppDir().mkdir();
   }
 
-  protected void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, URL jdkUrl, Map<String,String> processTypes) throws Exception {
+  protected void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String,String> processTypes) throws Exception {
     prepare(includedFiles);
 
     Map<String,String> existingConfigVars = getConfigVars();
@@ -84,15 +84,17 @@ public class App {
     }
     setConfigVars(newConfigVars);
 
-    deploySlug(jdkVersion, jdkUrl, processTypes);
+    vendorJdk(jdkVersion, jdkUrl, stack);
+
+    deploySlug(stack, processTypes);
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, Map<String,String> processTypes) throws Exception {
-    deploy(includedFiles, configVars, jdkVersion, null, processTypes);
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, Map<String,String> processTypes) throws Exception {
+    deploy(includedFiles, configVars, jdkVersion, null, stack, processTypes);
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, Map<String,String> processTypes) throws Exception {
-    deploy(includedFiles, configVars, jdkUrl.toString(), jdkUrl, processTypes);
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack, Map<String,String> processTypes) throws Exception {
+    deploy(includedFiles, configVars, jdkUrl.toString(), jdkUrl, stack, processTypes);
   }
 
   protected void prepare(List<File> includedFiles) throws Exception {
@@ -170,22 +172,21 @@ public class App {
     }
   }
 
-  protected Slug deploySlug(String jdkVersion, URL jdkUrl, Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+  protected Slug deploySlug(String stack, Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
     Map<String,String> allProcessTypes = getProcfile();
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
 
-    Slug slug = new Slug(buildPackDesc, name, getEncodedApiKey(), allProcessTypes);
+    Slug slug = new Slug(buildPackDesc, name, stack, getEncodedApiKey(), allProcessTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
+
+    logInfo("---> Creating slug...");
 
     Map slugResponse = slug.create();
     logDebug("Heroku Slug response: " + slugResponse);
     logDebug("Heroku Blob URL: " + slug.getBlobUrl());
     logDebug("Heroku Slug Id: " + slug.getSlugId());
 
-    vendorJdk(jdkVersion, jdkUrl, slug.getStackName());
-
-    logInfo("---> Creating slug...");
     File slugFile = Tar.create("slug", "./app", getHerokuDir());
     logInfo("     - file: ./" + relativize(slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");

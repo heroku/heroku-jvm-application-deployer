@@ -32,6 +32,11 @@ try {
     output = process.text
     assert output.contains("1.7"), "Wrong version of JDK packages into slug"
 
+    process = "heroku stack -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("* cedar-14"), "Wrong stack used: ${output}"
+
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text

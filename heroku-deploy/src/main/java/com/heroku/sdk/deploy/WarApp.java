@@ -32,16 +32,16 @@ public class WarApp extends App {
     this.webappRunnerJar = webappRunnerJar;
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack) throws Exception {
     includedFiles.add(webappRunnerJar);
     includedFiles.add(warFile);
-    super.deploy(includedFiles, configVars, jdkVersion, defaultProcTypes());
+    super.deploy(includedFiles, configVars, jdkVersion, stack, defaultProcTypes());
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack) throws Exception {
     includedFiles.add(webappRunnerJar);
     includedFiles.add(warFile);
-    super.deploy(includedFiles, configVars, jdkUrl, defaultProcTypes());
+    super.deploy(includedFiles, configVars, jdkUrl, stack, defaultProcTypes());
   }
 
   private Map<String,String> defaultProcTypes() {
@@ -56,6 +56,7 @@ public class WarApp extends App {
     String appName = System.getProperty("heroku.appName", null);
     String jdkVersion = System.getProperty("heroku.jdkVersion", null);
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
+    String stack = System.getProperty("heroku.stack", "cedar-14");
     String webappRunnerUrl = System.getProperty("heroku.webappRunnerUrl", WEBAPP_RUNNER_URL);
 
     if (warFile == null) {
@@ -66,6 +67,6 @@ public class WarApp extends App {
     }
 
     (new WarApp(appName, new File(warFile), new URL(webappRunnerUrl))).
-        deploy(new ArrayList<File>(), new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl);
+        deploy(new ArrayList<File>(), new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack);
   }
 }

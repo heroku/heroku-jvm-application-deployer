@@ -73,6 +73,15 @@ public abstract class HerokuMojo extends AbstractMojo {
   protected String jdkUrl = null;
 
   /**
+   * The Heorku runtime stack.
+   * <br/>
+   * Command line -Dheroku.stack=...
+   *
+   * @parameter property="heroku.stack"
+   */
+  protected String stack = "cedar-14";
+
+  /**
    * Configuration variables that will be set on the Heroku app.
    *
    * @parameter property="heroku.configVars"

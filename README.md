@@ -120,12 +120,18 @@ You may set process types (similar to a `Procfile`):
 The plugin will also pick up any process types defined in your `Procfile`, but the plugin configuration
 will take precedence.
 
-Finally, you can include additional directories in the slug as long as they are relative to the project root:
+You can include additional directories in the slug as long as they are relative to the project root:
 
 ```
 <includes>
   <include>etc/readme.txt</include>
 </includes>
+```
+
+You can set the Heroku runtime stack like this:
+
+```
+<stack>cedar-14</stack>
 ```
 
 See the integration tests under `maven-plugin/src/it` for more examples.

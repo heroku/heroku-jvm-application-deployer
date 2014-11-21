@@ -103,7 +103,9 @@ public class Tar {
 
     private String relativize(File path) {
       String relativePath = new File(this.workingDir, this.directory).toURI().relativize(path.toURI()).getPath();
-      return this.directory + File.separator + relativePath;
+
+      // don't use File.separator because it will be wrong on Windows
+      return this.directory + "/" + relativePath;
     }
   }
 

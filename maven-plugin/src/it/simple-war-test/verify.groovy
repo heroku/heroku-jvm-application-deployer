@@ -18,6 +18,11 @@ try {
     output = process.text
     assert output.contains("1.8"), "Wrong version of JDK packages into slug"
 
+    process = "heroku logs -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("--expand-war"), "Did not pick up WEBAPP_RUNNER_OPTS: ${output}"
+
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text

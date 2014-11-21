@@ -28,6 +28,9 @@
         <version>@project.version@</version>
         <configuration>
           <appName>${heroku.appName}</appName>
+          <configVars>
+            <WEBAPP_RUNNER_OPTS>--expand-war</WEBAPP_RUNNER_OPTS>
+          </configVars>
         </configuration>
       </plugin>
     </plugins>

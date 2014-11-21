@@ -19,7 +19,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>0.1.5</version>
+      <version>0.1.8</version>
       <configuration>
         <appName>${heroku.appName}</appName>
         <processTypes>
@@ -55,7 +55,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>0.1.5</version>
+      <version>0.1.8</version>
       <configuration>
         <appName>${heroku.appName}</appName>
       </configuration>
@@ -65,8 +65,8 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
 ```
 
 This assumes your project will generate a WAR file in the `target` directory. If the WAR file is located somewhere else,
-you can specify this with the `<warFile>` configuration element. The plugin will determine the appropriate process type
-for you, but you can override this with the `<processTypes>` configuration element.
+you can specify this with the `<warFile>` configuration element. The `<processTypes>` element is not needed because
+the plugin will determine the appropriate process type for you.
 
 Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, run:
 
@@ -147,7 +147,7 @@ handled with Maven profiles. For example:
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.8</version>
       <configuration>
         <processTypes>
           <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>

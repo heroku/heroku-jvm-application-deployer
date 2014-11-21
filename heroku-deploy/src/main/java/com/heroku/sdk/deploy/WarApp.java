@@ -46,7 +46,7 @@ public class WarApp extends App {
 
   private Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = new HashMap<String, String>();
-    processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(webappRunnerJar) + " --port $PORT " + relativize(warFile));
+    processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(webappRunnerJar) + " $WEBAPP_RUNNER_OPTS --port $PORT " + relativize(warFile));
 
     return processTypes;
   }

@@ -57,7 +57,7 @@ public class App {
 
   public App(String buildPackDesc, String name, File rootDir, File targetDir) {
     this.buildPackDesc = buildPackDesc;
-    this.name = name;
+    this.name = getHerokuProperties().getProperty("heroku.appName", name);
     this.rootDir = rootDir;
     this.targetDir = targetDir;
 
@@ -216,6 +216,20 @@ public class App {
       }
     }
     return defaultJdkVersion;
+  }
+
+  protected Properties getHerokuProperties() {
+    Properties props = new Properties();
+    String defaultJdkVersion = "1.8";
+    File sysPropsFile = new File(rootDir, "heroku.properties");
+    if (sysPropsFile.exists()) {
+      try {
+        props.load(new FileInputStream(sysPropsFile));
+      } catch (IOException e) {
+        logDebug(e.getMessage());
+      }
+    }
+    return props;
   }
 
   protected Map<String,String> getProcfile() {

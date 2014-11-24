@@ -18,6 +18,8 @@ try {
     output = process.text
     assert output.contains("1.8"), "Wrong version of JDK packages into slug"
 
+    Thread.sleep(5000)
+
     process = "heroku logs -a${appName}".execute()
     process.waitFor()
     output = process.text

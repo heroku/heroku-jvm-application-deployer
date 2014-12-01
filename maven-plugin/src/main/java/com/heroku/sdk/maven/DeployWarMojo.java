@@ -23,9 +23,16 @@ public class DeployWarMojo extends HerokuMojo {
    */
   protected File warFile = null;
 
+  /**
+   * The version of webapp-runner to use.
+   *
+   * @parameter property="heroku.webappRunnerVersion"
+   */
+  protected String webappRunnerVersion = CopyWebappRunner.DEFAULT_WEBAPP_RUNNER_VERSION;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    CopyWebappRunner.execute(this.mavenProject, this.mavenSession, this.pluginManager);
+    CopyWebappRunner.execute(this.mavenProject, this.mavenSession, this.pluginManager, webappRunnerVersion);
 
     File webappRunnerJar = new File(getTargetDir(), "dependency/webapp-runner.jar");
 

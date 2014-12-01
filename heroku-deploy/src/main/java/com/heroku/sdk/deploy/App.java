@@ -332,7 +332,7 @@ public class App {
       }
 
       if (apiKey == null || apiKey.isEmpty()) {
-        throw new RuntimeException("Could not get API key! Please install the toolbelt and login with `heroku auth:login` or set the HEROKU_API_KEY environment variable.");
+        throw new RuntimeException("Could not get API key! Please install the toolbelt and login with `heroku login` or set the HEROKU_API_KEY environment variable.");
       }
       encodedApiKey = new BASE64Encoder().encode((":" + apiKey).getBytes());
     }

@@ -37,7 +37,7 @@ public class Toolbelt {
 
     executor.execute(future);
 
-    return future.get(15, TimeUnit.SECONDS);
+    return future.get(10, TimeUnit.SECONDS);
   }
 
   private static Map<String,Map<String,String>> readNetrcFile() throws IOException {

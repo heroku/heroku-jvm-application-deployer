@@ -21,6 +21,8 @@ try {
     output = process.text
     assert output.contains("=== web (1X): `java \$JAVA_OPTS -Dmy.var=foobar -cp target/classes:target/dependency/* Main`"), "web process type not detected"
 
+    Thread.sleep(5000)
+
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text

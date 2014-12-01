@@ -323,32 +323,16 @@ public class App {
   protected String getEncodedApiKey() throws IOException {
     if (encodedApiKey == null) {
       String apiKey = System.getenv("HEROKU_API_KEY");
-      if (null == apiKey || apiKey.equals("")) {
-
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        FutureTask<String> future =
-            new FutureTask<String>(new Callable<String>() {
-              public String call() throws IOException {
-                String herokuCmd = SystemSettings.isWindows() ? "heroku.bat" : "heroku";
-                ProcessBuilder pb = new ProcessBuilder().command(herokuCmd, "auth:token");
-                Process p = pb.start();
-
-                BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line;
-                String output = "";
-                while ((line = bri.readLine()) != null) {
-                  output += line;
-                }
-                return output;
-              }});
-
-        executor.execute(future);
-
+      if (null == apiKey || apiKey.isEmpty()) {
         try {
-          apiKey = future.get(10, TimeUnit.SECONDS);
+          apiKey = Toolbelt.getApiToken();
         } catch (Exception e) {
-          throw new RuntimeException("Could not get API key! Please login with `heroku auth:login` or set the HEROKU_API_KEY environment variable.");
+          // do nothing
         }
+      }
+
+      if (apiKey == null || apiKey.isEmpty()) {
+        throw new RuntimeException("Could not get API key! Please install the toolbelt and login with `heroku auth:login` or set the HEROKU_API_KEY environment variable.");
       }
       encodedApiKey = new BASE64Encoder().encode((":" + apiKey).getBytes());
     }

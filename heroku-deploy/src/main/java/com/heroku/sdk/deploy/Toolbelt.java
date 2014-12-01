@@ -2,10 +2,7 @@ package com.heroku.sdk.deploy;
 
 import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -47,6 +44,10 @@ public class Toolbelt {
     String homeDir = System.getProperty("user.home");
     String netrcFilename = SystemSettings.isWindows() ? "_netrc" : ".netrc";
     File netrcFile = new File(new File(homeDir), netrcFilename);
+
+    if (!netrcFile.exists()) {
+      throw new FileNotFoundException(netrcFile.toString());
+    }
 
     Map<String,Map<String,String>> netrcMap = new HashMap<String, Map<String, String>>();
 

@@ -85,6 +85,7 @@ And replace "xxx-xxx-xxxx" with the value of your Heroku API token.
 ## Requirements
 
 +  Maven 3.2.x
++  Java 1.7 or higher
 
 ## Configuration
 

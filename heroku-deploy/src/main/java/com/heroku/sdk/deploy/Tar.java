@@ -16,7 +16,7 @@ public class Tar {
   public static File create(String filename, String directory, File outputDir) throws IOException, ArchiveException, InterruptedException {
 
     if (useNativeTar()) {
-      String gzipFilename = filename + ".tgz";
+      String gzipFilename = filename;
       ProcessBuilder pb = new ProcessBuilder().command("tar", "pczf", gzipFilename, directory).directory(outputDir);
       pb.start().waitFor();
       return new File(outputDir, gzipFilename);

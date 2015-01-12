@@ -94,6 +94,12 @@ public abstract class HerokuMojo extends AbstractMojo {
    */
   protected String[] mIncludes = new String[0];
 
+  /**
+   * A filename where the slug is stored at, inside the heroku-target directory
+   * @parameter property="heroku.slugFileName"
+   */
+  protected String slugFileName;
+
   protected File getTargetDir() {
     return outputPath;
   }
@@ -114,5 +120,9 @@ public abstract class HerokuMojo extends AbstractMojo {
 
   public void setIncludes(String[] includes) {
     mIncludes = includes;
+  }
+
+  public String getSlugFileName() {
+    return slugFileName;
   }
 }

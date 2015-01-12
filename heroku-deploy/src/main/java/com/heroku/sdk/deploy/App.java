@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.*;
 
 public class App {
 
@@ -61,40 +60,43 @@ public class App {
     this.rootDir = rootDir;
     this.targetDir = targetDir;
 
-    try {
-      FileUtils.forceDelete(getHerokuDir());
-    } catch (IOException e) {
-      // do nothing
-    }
-
     getHerokuDir().mkdir();
     getAppDir().mkdir();
   }
 
-  protected void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String,String> processTypes) throws Exception {
-    prepare(includedFiles);
+  protected void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String,String> processTypes, String slugFileName) throws Exception {
 
-    Map<String,String> existingConfigVars = getConfigVars();
+    Map<String, String> existingConfigVars = getConfigVars();
     logDebug("Heroku existing config variables: " + existingConfigVars.keySet());
 
-    Map<String,String> newConfigVars = new HashMap<String, String>();
+    Map<String, String> newConfigVars = new HashMap<String, String>();
     newConfigVars.putAll(addConfigVar("PATH", ".jdk/bin:/usr/local/bin:/usr/bin:/bin", existingConfigVars, true));
     for (String key : configVars.keySet()) {
       newConfigVars.putAll(addConfigVar(key, configVars.get(key), existingConfigVars));
     }
     setConfigVars(newConfigVars);
 
-    vendorJdk(jdkVersion, jdkUrl, stack);
+    File slugFile = null;
 
-    deploySlug(stack, processTypes);
+    if (slugFileExists(slugFileName)) {
+      slugFile = new File(getHerokuDir(), slugFileName);
+      logInfo("Slug-file '" + relativize(slugFile) + "' already exists in target-folder.");
+    } else {
+      logInfo("Creating a new slug-file as '" + relativize(slugFile) + "' exists in target-folder.");
+      slugFile = createSlugFile(slugFileName, includedFiles, jdkVersion, jdkUrl, stack);
+    }
+
+    logInfo("Using slug-file: " + relativize(slugFile));
+
+    deploySlug(stack, processTypes, slugFile);
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, Map<String,String> processTypes) throws Exception {
-    deploy(includedFiles, configVars, jdkVersion, null, stack, processTypes);
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, Map<String,String> processTypes, String slugFileName) throws Exception {
+    deploy(includedFiles, configVars, jdkVersion, null, stack, processTypes, slugFileName);
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack, Map<String,String> processTypes) throws Exception {
-    deploy(includedFiles, configVars, jdkUrl.toString(), jdkUrl, stack, processTypes);
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack, Map<String,String> processTypes, String slugFileName) throws Exception {
+    deploy(includedFiles, configVars, jdkUrl.toString(), jdkUrl, stack, processTypes, slugFileName);
   }
 
   protected void prepare(List<File> includedFiles) throws Exception {
@@ -171,7 +173,37 @@ public class App {
     }
   }
 
-  protected Slug deploySlug(String stack, Map<String,String> processTypes) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+  private Boolean slugFileExists(String slugFileName) {
+    final File slugFile = new File(getHerokuDir(), slugFileName);
+    logInfo("Checking File: " + slugFile.getPath());
+    return slugFile.isFile();
+  }
+
+  public File createSlugFile(String slugFileName, List<File> includedFiles,Map<String,String> configVars, String jdkVersion, String stack) throws Exception {
+    return createSlugFile(slugFileName, includedFiles, jdkVersion, null, stack);
+  }
+
+  public File createSlugFile(String slugFileName, List<File> includedFiles,Map<String,String> configVars, URL jdkUrl, String stack) throws Exception {
+    return createSlugFile(slugFileName, includedFiles,  jdkUrl.toString(), jdkUrl, stack);
+  }
+
+  protected File createSlugFile(String slugFileName, List<File> includedFiles, String jdkVersion, URL jdkUrl, String stack) throws Exception {
+
+    if(slugFileName == null || slugFileName.isEmpty()) {
+      slugFileName = "slug.tgz";
+    }
+
+    prepare(includedFiles);
+    vendorJdk(jdkVersion, jdkUrl, stack);
+
+    File slugFile = Tar.create(slugFileName, "./app", getHerokuDir());
+    logInfo("     - file: ./" + relativize(slugFile));
+    logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
+
+    return slugFile;
+  }
+
+  protected Slug deploySlug(String stack, Map<String,String> processTypes, File slugFile) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
     Map<String,String> allProcessTypes = getProcfile();
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
@@ -185,10 +217,6 @@ public class App {
     logDebug("Heroku Slug response: " + slugResponse);
     logDebug("Heroku Blob URL: " + slug.getBlobUrl());
     logDebug("Heroku Slug Id: " + slug.getSlugId());
-
-    File slugFile = Tar.create("slug", "./app", getHerokuDir());
-    logInfo("     - file: ./" + relativize(slugFile));
-    logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
 
     logInfo("---> Uploading slug...");
     slug.upload(slugFile);

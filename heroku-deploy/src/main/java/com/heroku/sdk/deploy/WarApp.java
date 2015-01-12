@@ -32,16 +32,16 @@ public class WarApp extends App {
     this.webappRunnerJar = webappRunnerJar;
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, String slugFileName) throws Exception {
     includedFiles.add(webappRunnerJar);
     includedFiles.add(warFile);
-    super.deploy(includedFiles, configVars, jdkVersion, stack, defaultProcTypes());
+    super.deploy(includedFiles, configVars, jdkVersion, stack, defaultProcTypes(), slugFileName);
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack, String slugFileName) throws Exception {
     includedFiles.add(webappRunnerJar);
     includedFiles.add(warFile);
-    super.deploy(includedFiles, configVars, jdkUrl, stack, defaultProcTypes());
+    super.deploy(includedFiles, configVars, jdkUrl, stack, defaultProcTypes(), slugFileName);
   }
 
   private Map<String,String> defaultProcTypes() {
@@ -58,6 +58,7 @@ public class WarApp extends App {
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
     String stack = System.getProperty("heroku.stack", "cedar-14");
     String webappRunnerUrl = System.getProperty("heroku.webappRunnerUrl", WEBAPP_RUNNER_URL);
+    String slugFileName = System.getProperty("heroku.slugFileName");
 
     if (warFile == null) {
       throw new IllegalArgumentException("Path to WAR file must be provided with heroku.warFile system property!");
@@ -67,6 +68,6 @@ public class WarApp extends App {
     }
 
     (new WarApp(appName, new File(warFile), new URL(webappRunnerUrl))).
-        deploy(new ArrayList<File>(), new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack);
+        deploy(new ArrayList<File>(), new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName);
   }
 }

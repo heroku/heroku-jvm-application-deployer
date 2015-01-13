@@ -2,5 +2,5 @@
 target/
 setup.md
 heroku-maven-plugin.iml
-maven-plugin/maven-plugin.iml
+maven-plugin/*maven-plugin*.iml
 heroku-deploy/heroku-deploy.iml

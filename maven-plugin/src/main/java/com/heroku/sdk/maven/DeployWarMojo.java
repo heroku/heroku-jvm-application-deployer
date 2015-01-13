@@ -30,11 +30,10 @@ public class DeployWarMojo extends HerokuMojo {
    */
   protected String webappRunnerVersion = CopyWebappRunner.DEFAULT_WEBAPP_RUNNER_VERSION;
 
-  @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
-    CopyWebappRunner.execute(this.mavenProject, this.mavenSession, this.pluginManager, webappRunnerVersion);
+  protected void prepareWarFile() throws MojoExecutionException, MojoFailureException {
 
-    File webappRunnerJar = new File(getTargetDir(), "dependency/webapp-runner.jar");
+
+    CopyWebappRunner.execute(this.mavenProject, this.mavenSession, this.pluginManager, webappRunnerVersion);
 
     if (null == warFile) {
       File [] files = getTargetDir().listFiles(new FilenameFilter() {
@@ -49,9 +48,20 @@ public class DeployWarMojo extends HerokuMojo {
         warFile = files[0];
       }
     }
+  }
 
+  protected MavenWarApp createWarFile() throws MojoExecutionException, MojoFailureException {
+    prepareWarFile();
+
+    File webappRunnerJar = new File(getTargetDir(), "dependency/webapp-runner.jar");
+
+    return new MavenWarApp(appName, warFile, webappRunnerJar, getTargetDir().getParentFile(), getTargetDir(), getLog());
+  }
+
+  @Override
+  public void execute() throws MojoExecutionException, MojoFailureException {
     try {
-      (new MavenWarApp(appName, warFile, webappRunnerJar, getTargetDir().getParentFile(), getTargetDir(), getLog())).deploy(
+      (createWarFile()).deploy(
           new ArrayList<File>(getIncludes()), getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack
       );
     } catch (Exception e) {

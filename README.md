@@ -13,7 +13,7 @@ The plugin has two targets:
 
 Add the following to your `pom.xml`, but replace the `<web>` element with the command used to run your application.
 
-```
+```xml
 <build>
   <plugins>
     <plugin>
@@ -33,13 +33,13 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
 
 Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, run:
 
-```
+```sh-session
 $ mvn heroku:deploy
 ```
 
 If you do not have the toolbelt installed, then run:
 
-```
+```sh-session
 $ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy
 ```
 
@@ -47,9 +47,11 @@ And replace "xxx-xxx-xxxx" with the value of your Heroku API token.
 
 ## Deploying WAR Files
 
+NOTE: This requires that you use `<packaging>war</packaging>` in your `pom.xml`.
+
 Add the following to your `pom.xml`, but replace the `<web>` element with the command used to run your application.
 
-```
+```xml
 <build>
   <plugins>
     <plugin>
@@ -70,17 +72,27 @@ the plugin will determine the appropriate process type for you.
 
 Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, run:
 
-```
+```sh-session
 $ mvn heroku:deploy-war
 ```
 
 If you do not have the toolbelt installed or have not logged in, then run:
 
-```
+```sh-session
 $ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy-war
 ```
 
 And replace "xxx-xxx-xxxx" with the value of your Heroku API token.
+
+### Running a WAR File Locally
+
+You can execute your WAR file locally by running the following command:
+
+```sh-session
+$ mvn heroku:run-war
+```
+
+This will start the web application in way that is very similar to how it is run on Heroku.
 
 ## Requirements
 
@@ -91,7 +103,7 @@ And replace "xxx-xxx-xxxx" with the value of your Heroku API token.
 
 In the `<configuration>` element of the plugin, you can set the JDK version like so:
 
-```
+```xml
 <jdkVersion>1.8</jdkVersion>
 ```
 
@@ -100,7 +112,7 @@ your `system.properties` file, but the plugin configuration will take precedence
 
 You can set configuration variables like this:
 
-```
+```xml
 <configVars>
   <MY_VAR>SomeValue</MY_VAR>
   <JAVA_OPTS>-Xss512k -XX:+UseCompressedOops</JAVA_OPTS>
@@ -111,7 +123,7 @@ Any variable defined in `configVars` will override defaults and previous defined
 
 You may set process types (similar to a `Procfile`):
 
-```
+```xml
 <processTypes>
   <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
   <worker>java $JAVA_OPTS -cp target/classes:target/dependency/* Worker</worker>
@@ -123,7 +135,7 @@ will take precedence.
 
 You can include additional directories in the slug as long as they are relative to the project root:
 
-```
+```xml
 <includes>
   <include>etc/readme.txt</include>
 </includes>
@@ -131,7 +143,7 @@ You can include additional directories in the slug as long as they are relative 
 
 You can set the Heroku runtime stack like this:
 
-```
+```xml
 <stack>cedar-14</stack>
 ```
 
@@ -146,7 +158,7 @@ There are several ways of handling this.
 
 Use a profile for each app, and configure the plugin accordingly. For example:
 
-```
+```xml
 <build>
   <plugins>
     <plugin>
@@ -197,7 +209,7 @@ Use a profile for each app, and configure the plugin accordingly. For example:
 
 You can provide the application name as a system property like this:
 
-```
+```sh-session
 $ mvn heroku:deploy -Dheroku.appName=myapp
 ```
 
@@ -214,16 +226,20 @@ heroku.appName=myapp
 Then add the file to your `.gitignore` so that each developer can have their own local versions of the file. 
 The value in `heroku.properties` will take precedence over anything configured in your  `pom.xml`.
 
+## Other Useful Commands
+
++  `mvn heroku:dashboard` will open the Dashboard for the app on Heroku.com
+
 ## Hacking
 
 To run the entire suite of integration tests, use the following command:
 
-```
+```sh-session
 $ mvn clean install -Pintegration-test
 ```
 
 To run an individual integration test, use a command like this:
 
-```
+```sh-session
 $ mvn clean install -Pintegration-test -Dinvoker.test=simple-deploy-test
 ```

@@ -14,12 +14,12 @@ import java.util.List;
  * @execute phase="package"
  * @requiresDependencyResolution
  */
-public class RunWarMojo extends DeployWarMojo {
+public class RunWarMojo extends HerokuWarMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     try {
-      createWarFile();
+      prepareWarFile();
 
       String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 

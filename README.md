@@ -92,7 +92,7 @@ You can execute your WAR file locally by running the following command:
 $ mvn heroku:run-war
 ```
 
-This will start the web application in way that is very similar to how it is run on Heroku.
+This will start the web application in a way that is very similar to how it is run on Heroku.
 
 ## Requirements
 
@@ -229,6 +229,7 @@ The value in `heroku.properties` will take precedence over anything configured i
 ## Other Useful Commands
 
 +  `mvn heroku:dashboard` will open the Dashboard for the app on Heroku.com
++  `mvn heroku:eclipse-launch-config` will 
 
 ## Hacking
 

@@ -151,10 +151,10 @@ See the integration tests under `maven-plugin/src/it` for more examples.
 
 ## Deploying to Multiple Apps
 
-In most real-world scenarios, you will need to deploy your application to dev, test and prod environments. 
+In most real-world scenarios, you will need to deploy your application to dev, test and prod environments.
 There are several ways of handling this.
 
-### Using Maven Profiles 
+### Using Maven Profiles
 
 Use a profile for each app, and configure the plugin accordingly. For example:
 
@@ -215,15 +215,15 @@ $ mvn heroku:deploy -Dheroku.appName=myapp
 
 ### Using a Heroku Properties File
 
-This solution is best when multiple developers each need their own apps. 
-Create a `heroku.properties` file in the root directory of your application and put the following code in it 
+This solution is best when multiple developers each need their own apps.
+Create a `heroku.properties` file in the root directory of your application and put the following code in it
 (but replace "myapp" with the name of your Heroku application):
 
 ```
 heroku.appName=myapp
 ```
 
-Then add the file to your `.gitignore` so that each developer can have their own local versions of the file. 
+Then add the file to your `.gitignore` so that each developer can have their own local versions of the file.
 The value in `heroku.properties` will take precedence over anything configured in your  `pom.xml`.
 
 ## Other Useful Commands

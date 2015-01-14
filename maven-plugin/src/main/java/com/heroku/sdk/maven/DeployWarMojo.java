@@ -20,7 +20,7 @@ public class DeployWarMojo extends HerokuWarMojo {
   public void execute() throws MojoExecutionException, MojoFailureException {
     try {
       (prepareWarFile()).deploy(
-          new ArrayList<File>(getIncludes()), getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack
+          new ArrayList<File>(getIncludes()), getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName
       );
     } catch (Exception e) {
       throw new MojoFailureException("Failed to deploy application", e);

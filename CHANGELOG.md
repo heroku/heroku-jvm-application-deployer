@@ -8,6 +8,8 @@
 
 *  Added `heroku:eclipse-launch-config` goal to generate Eclipse launch configuration files
 
+*  Switched from custom MojoExecutor to org.twdata.maven:mojo-executor
+
 ## 0.3.0
 
 *  Jumping to 0.3.x version to align with sbt-heroku

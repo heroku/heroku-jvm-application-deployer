@@ -95,7 +95,7 @@ public class Tar {
         tarBall.close();
       }
 
-      File outputFile = new File(outputDir, (archiveBasename + ".tgz"));
+      File outputFile = new File(outputDir, (archiveBasename));
       compress(archive, outputFile);
       FileUtils.deleteQuietly(archive);
       return outputFile;

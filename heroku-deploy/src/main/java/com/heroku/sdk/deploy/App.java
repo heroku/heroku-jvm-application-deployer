@@ -4,17 +4,16 @@ import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import sun.misc.BASE64Encoder;
 
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 public class App {
 
@@ -62,7 +61,7 @@ public class App {
     this.targetDir = targetDir;
 
     try {
-      FileUtils.forceDelete(getHerokuDir());
+      FileUtils.forceDelete(getAppDir());
     } catch (IOException e) {
       // do nothing
     }
@@ -186,7 +185,8 @@ public class App {
     logDebug("Heroku Blob URL: " + slug.getBlobUrl());
     logDebug("Heroku Slug Id: " + slug.getSlugId());
 
-    File slugFile = Tar.create("slug", "./app", getHerokuDir());
+    try { FileUtils.forceDelete(new File(getHerokuDir(), "slug.tgz")); } catch (IOException e) { /* no-op */ }
+    File slugFile = Tar.create("slug.tgz", "./app", getHerokuDir());
     logInfo("     - file: ./" + relativize(slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
 
@@ -258,8 +258,9 @@ public class App {
 
   private void vendorJdk(String jdkVersion, URL jdkUrl, String stackName) throws IOException, InterruptedException, ArchiveException {
     URL realJdkUrl = jdkUrl;
+    String realJdkVersion = "default";
     if (realJdkUrl == null) {
-      String realJdkVersion = jdkVersion == null ? getJdkVersion() : jdkVersion;
+      realJdkVersion = jdkVersion == null ? getJdkVersion() : jdkVersion;
       if (jdkUrlsByStack.containsKey(stackName)) {
         Map<String, String> jdkUrlStrings = jdkUrlsByStack.get(stackName);
         if (jdkUrlStrings.containsKey(realJdkVersion)) {
@@ -283,8 +284,18 @@ public class App {
     File jdkHome = new File(getAppDir(), ".jdk");
     jdkHome.mkdir();
 
-    File jdkTgz = new File(getHerokuDir(), "jdk-pkg.tar.gz");
-    FileUtils.copyURLToFile(realJdkUrl, jdkTgz);
+    String hashedString = "default";
+    try {
+      MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+      messageDigest.update(realJdkUrl.toString().getBytes());
+      hashedString = (new HexBinaryAdapter()).marshal((messageDigest.digest()));
+    } catch (NoSuchAlgorithmException e) { /* no-op */ }
+
+    File jdkTgz = new File(getHerokuDir(), "jdk-" + realJdkVersion + "-" + hashedString + ".tar.gz");
+    if (!jdkTgz.exists()) {
+      // TODO also check md5
+      FileUtils.copyURLToFile(realJdkUrl, jdkTgz);
+    }
 
     Tar.extract(jdkTgz, jdkHome);
   }

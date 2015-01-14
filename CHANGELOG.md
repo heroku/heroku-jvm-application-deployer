@@ -10,6 +10,8 @@
 
 *  Switched from custom MojoExecutor to org.twdata.maven:mojo-executor
 
+*  Added caching of the JDK so it won't be downloaded on every deploy
+
 ## 0.3.0
 
 *  Jumping to 0.3.x version to align with sbt-heroku

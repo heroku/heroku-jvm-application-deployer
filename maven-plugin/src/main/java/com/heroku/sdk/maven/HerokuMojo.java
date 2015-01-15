@@ -97,9 +97,9 @@ public abstract class HerokuMojo extends AbstractMojo {
   /**
    * A filename where the slug is stored at, inside the heroku-target directory
    *
-   * @parameter property="heroku.slugFileName"
+   * @parameter property="heroku.slugFilename"
    */
-  protected String slugFileName = "slug.tgz";
+  protected String slugFilename = "slug.tgz";
 
   protected File getTargetDir() {
     return outputPath;
@@ -123,7 +123,7 @@ public abstract class HerokuMojo extends AbstractMojo {
     mIncludes = includes;
   }
 
-  public String getSlugFileName() {
-    return slugFileName;
+  public String getSlugFilename() {
+    return slugFilename;
   }
 }

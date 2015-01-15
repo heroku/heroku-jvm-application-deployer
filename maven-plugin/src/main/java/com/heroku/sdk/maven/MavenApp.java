@@ -5,7 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
 
 import java.io.File;
-import java.net.URL;
+import java.io.IOException;
 import java.util.List;
 
 public class MavenApp extends App {
@@ -18,7 +18,7 @@ public class MavenApp extends App {
   }
 
   @Override
-  protected void prepare(List<File> includedFiles) throws Exception {
+  protected void prepare(List<File> includedFiles) throws IOException {
     super.prepare(includedFiles);
 
     FileUtils.copyFile(new File(getRootDir(), "pom.xml"), new File(getAppDir(), "pom.xml"));

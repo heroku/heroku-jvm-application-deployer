@@ -14,22 +14,18 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 public class App {
 
-  private static Map<String,Map<String,String>> jdkUrlsByStack = new HashMap<String,Map<String,String>>();
+  private static Map<String, Map<String, String>> jdkUrlsByStack = new HashMap<String, Map<String, String>>();
 
   static {
-    Map<String,String> cedarJdkUrlStrings = new HashMap<String,String>();
+    Map<String, String> cedarJdkUrlStrings = new HashMap<String, String>();
     cedarJdkUrlStrings.put("1.6", "https://lang-jvm.s3.amazonaws.com/jdk/cedar/openjdk1.6-latest.tar.gz");
     cedarJdkUrlStrings.put("1.7", "https://lang-jvm.s3.amazonaws.com/jdk/cedar/openjdk1.7-latest.tar.gz");
     cedarJdkUrlStrings.put("1.8", "https://lang-jvm.s3.amazonaws.com/jdk/cedar/openjdk1.8-latest.tar.gz");
 
-    Map<String,String> cedar14JdkUrlStrings = new HashMap<String,String>();
+    Map<String, String> cedar14JdkUrlStrings = new HashMap<String, String>();
     cedar14JdkUrlStrings.put("1.6", "https://lang-jvm.s3.amazonaws.com/jdk/cedar-14/openjdk1.6-latest.tar.gz");
     cedar14JdkUrlStrings.put("1.7", "https://lang-jvm.s3.amazonaws.com/jdk/cedar-14/openjdk1.7-latest.tar.gz");
     cedar14JdkUrlStrings.put("1.8", "https://lang-jvm.s3.amazonaws.com/jdk/cedar-14/openjdk1.8-latest.tar.gz");
@@ -66,50 +62,56 @@ public class App {
 
     try {
       FileUtils.forceDelete(getAppDir());
-    } catch (IOException e) {
-      // do nothing
-    }
+    } catch (IOException e) { /* do nothing */ }
 
     getHerokuDir().mkdir();
     getAppDir().mkdir();
   }
 
-  protected void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String,String> processTypes, String slugFileName) throws Exception {
-
-    Map<String, String> existingConfigVars = getConfigVars();
-    logDebug("Heroku existing config variables: " + existingConfigVars.keySet());
-
-    Map<String, String> newConfigVars = new HashMap<String, String>();
-    newConfigVars.putAll(addConfigVar("PATH", ".jdk/bin:/usr/local/bin:/usr/bin:/bin", existingConfigVars, true));
-    for (String key : configVars.keySet()) {
-      newConfigVars.putAll(addConfigVar(key, configVars.get(key), existingConfigVars));
-    }
-    setConfigVars(newConfigVars);
-
-    File slugFile = null;
-
-    if (slugFileExists(slugFileName)) {
-      slugFile = new File(getHerokuDir(), slugFileName);
-      logInfo("Slug-file '" + relativize(slugFile) + "' already exists in target-folder.");
-    } else {
-      logInfo("Creating a new slug-file as '" + relativize(slugFile) + "' exists in target-folder.");
-      slugFile = createSlugFile(slugFileName, includedFiles, jdkVersion, jdkUrl, stack);
-    }
-
-    logInfo("Using slug-file: " + relativize(slugFile));
-
-    deploySlug(stack, processTypes, slugFile);
+  protected void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String, String> processTypes, String slugFilename) throws Exception {
+    prepare(includedFiles);
+    mergeConfigVars(configVars);
+    vendorJdk(jdkVersion, jdkUrl, stack);
+    createAndReleaseSlug(stack, processTypes, slugFilename);
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, Map<String,String> processTypes, String slugFileName) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, String stack, Map<String, String> processTypes, String slugFileName) throws Exception {
     deploy(includedFiles, configVars, jdkVersion, null, stack, processTypes, slugFileName);
   }
 
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack, Map<String,String> processTypes, String slugFileName) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String, String> configVars, URL jdkUrl, String stack, Map<String, String> processTypes, String slugFileName) throws Exception {
     deploy(includedFiles, configVars, jdkUrl.toString(), jdkUrl, stack, processTypes, slugFileName);
   }
 
-  protected void prepare(List<File> includedFiles) throws Exception {
+  protected void createSlug(String slugFilename, List<File> includedFiles, String jdkVersion, URL jdkUrl, String stack) throws Exception {
+    prepare(includedFiles);
+    vendorJdk(jdkVersion, jdkUrl, stack);
+    buildSlugFile(slugFilename);
+  }
+
+  public void createSlug(String slugFilename, List<File> includedFiles, String jdkVersion, String stack) throws Exception {
+    createSlug(slugFilename, includedFiles, jdkVersion, null, stack);
+  }
+
+  public void createSlug(String slugFilename, List<File> includedFiles, URL jdkUrl, String stack) throws Exception {
+    createSlug(slugFilename, includedFiles, jdkUrl.toString(), jdkUrl, stack);
+  }
+
+  public void deploySlug(String slugFilename, Map<String, String> processTypes, Map<String, String> configVars, String stack) throws Exception {
+    mergeConfigVars(configVars);
+
+    File slugFile = new File(getHerokuDir(), slugFilename);
+    if (slugFile.exists()) {
+      logInfo("---> Using existing slug...");
+      logInfo("     - file: ./" + relativize(slugFile));
+      logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
+      deploySlug(stack, processTypes, slugFile);
+    } else {
+      throw new FileNotFoundException("Slug file not found!");
+    }
+  }
+
+  protected void prepare(List<File> includedFiles) throws IOException {
     logInfo("---> Packaging application...");
     logInfo("     - app: " + name);
 
@@ -118,9 +120,13 @@ public class App {
         logInfo("     - including: ./" + relativize(file));
         copy(file, new File(getAppDir(), relativize(file)));
       }
+      try {
+        // this makes sure we don't put an old slug or a cached jdk inside the slug
+        FileUtils.forceDelete(new File(getAppDir(), relativize(getHerokuDir())));
+      } catch (IOException e) { /* do nothing */ }
       addProfileScript();
     } catch (IOException ioe) {
-      throw new Exception("There was an error packaging the application for deployment.", ioe);
+      throw new IOException("There was an error packaging the application for deployment.", ioe);
     }
   }
 
@@ -141,15 +147,26 @@ public class App {
     }
   }
 
-  public Map<String,String> getConfigVars() throws Exception {
+  public void mergeConfigVars(Map<String, String> configVars) throws Exception {
+    Map<String, String> existingConfigVars = getConfigVars();
+    logDebug("Heroku existing config variables: " + existingConfigVars.keySet());
+
+    Map<String, String> newConfigVars = new HashMap<String, String>();
+    for (String key : configVars.keySet()) {
+      newConfigVars.putAll(addConfigVar(key, configVars.get(key), existingConfigVars));
+    }
+    setConfigVars(newConfigVars);
+  }
+
+  public Map<String, String> getConfigVars() throws Exception {
     String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(name, "UTF-8") + "/config-vars";
 
-    Map<String,String> headers = new HashMap<String,String>();
+    Map<String, String> headers = new HashMap<String, String>();
     headers.put("Authorization", getEncodedApiKey());
     headers.put("Accept", "application/vnd.heroku+json; version=3");
 
     Map m = Curl.get(urlStr, headers);
-    Map<String,String> configVars = new HashMap<String,String>();
+    Map<String, String> configVars = new HashMap<String, String>();
     for (Object key : m.keySet()) {
       Object value = m.get(key);
       if ((key instanceof String) && (value instanceof String)) {
@@ -161,7 +178,7 @@ public class App {
     return configVars;
   }
 
-  protected void setConfigVars(Map<String,String> configVars) throws IOException, Curl.CurlException {
+  protected void setConfigVars(Map<String, String> configVars) throws IOException, Curl.CurlException {
     if (!configVars.isEmpty()) {
       String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(name, "UTF-8") + "/config_vars";
 
@@ -173,9 +190,9 @@ public class App {
         first = false;
         data += "\"" + key + "\"" + ":" + "\"" + sanitizeJson(value) + "\"";
       }
-      data +=  "}";
+      data += "}";
 
-      Map<String,String> headers = new HashMap<String,String>();
+      Map<String, String> headers = new HashMap<String, String>();
       headers.put("Authorization", getEncodedApiKey());
       headers.put("Accept", "application/json");
 
@@ -183,67 +200,57 @@ public class App {
     }
   }
 
-  private Boolean slugFileExists(String slugFileName) {
-    final File slugFile = new File(getHerokuDir(), slugFileName);
-    logInfo("Checking File: " + slugFile.getPath());
-    return slugFile.isFile();
-  }
-
-  public File createSlugFile(String slugFileName, List<File> includedFiles,Map<String,String> configVars, String jdkVersion, String stack) throws Exception {
-    return createSlugFile(slugFileName, includedFiles, jdkVersion, null, stack);
-  }
-
-  public File createSlugFile(String slugFileName, List<File> includedFiles,Map<String,String> configVars, URL jdkUrl, String stack) throws Exception {
-    return createSlugFile(slugFileName, includedFiles,  jdkUrl.toString(), jdkUrl, stack);
-  }
-
-  protected File createSlugFile(String slugFileName, List<File> includedFiles, String jdkVersion, URL jdkUrl, String stack) throws Exception {
-
-    if(slugFileName == null || slugFileName.isEmpty()) {
-      slugFileName = "slug.tgz";
-    }
-
-    prepare(includedFiles);
-    vendorJdk(jdkVersion, jdkUrl, stack);
-
-    File slugFile = Tar.create(slugFileName, "./app", getHerokuDir());
+  protected File buildSlugFile(String slugFilename)
+      throws InterruptedException, ArchiveException, IOException {
+    logInfo("---> Creating slug...");
+    try {
+      FileUtils.forceDelete(new File(getHerokuDir(), slugFilename));
+    } catch (IOException e) { /* no-op */ }
+    File slugFile = Tar.create(slugFilename, "./app", getHerokuDir());
     logInfo("     - file: ./" + relativize(slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
-
     return slugFile;
   }
 
-  protected Slug deploySlug(String stack, Map<String,String> processTypes, File slugFile) throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
-    Map<String,String> allProcessTypes = getProcfile();
+  protected Slug createAndReleaseSlug(String stack, Map<String, String> processTypes, String slugFilename)
+      throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+    return deploySlug(stack, processTypes, buildSlugFile(slugFilename));
+  }
+
+  protected Slug deploySlug(String stack, Map<String, String> processTypes, File slugFile)
+      throws IOException, ArchiveException, InterruptedException, Curl.CurlException {
+    Map<String, String> allProcessTypes = getProcfile();
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
 
     Slug slug = new Slug(buildPackDesc, name, stack, getEncodedApiKey(), allProcessTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
 
-    logInfo("---> Creating slug...");
-
     Map slugResponse = slug.create();
     logDebug("Heroku Slug response: " + slugResponse);
     logDebug("Heroku Blob URL: " + slug.getBlobUrl());
     logDebug("Heroku Slug Id: " + slug.getSlugId());
 
-    try { FileUtils.forceDelete(new File(getHerokuDir(), "slug.tgz")); } catch (IOException e) { /* no-op */ }
-    File slugFile = Tar.create("slug.tgz", "./app", getHerokuDir());
-    logInfo("     - file: ./" + relativize(slugFile));
-    logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
+    uploadSlug(slug, slugFile, ((Map) slugResponse.get("process_types")).keySet());
 
+    releaseSlug(slug);
+
+    return slug;
+  }
+
+  protected void uploadSlug(Slug slug, File slugFile, Set processTypes)
+      throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
     logInfo("---> Uploading slug...");
     slug.upload(slugFile);
     logInfo("     - stack: " + slug.getStackName());
-    logInfo("     - process types: " + ((Map) slugResponse.get("process_types")).keySet());
+    logInfo("     - process types: " + processTypes);
+  }
 
+  protected void releaseSlug(Slug slug) throws IOException, Curl.CurlException {
     logInfo("---> Releasing...");
     Map releaseResponse = slug.release();
     logDebug("Heroku Release response: " + releaseResponse);
     logInfo("     - version: " + releaseResponse.get("version"));
-
-    return slug;
   }
 
   protected String getJdkVersion() {
@@ -275,8 +282,8 @@ public class App {
     return props;
   }
 
-  protected Map<String,String> getProcfile() {
-    Map<String,String> procTypes = new HashMap<String, String>();
+  protected Map<String, String> getProcfile() {
+    Map<String, String> procTypes = new HashMap<String, String>();
 
     File procfile = new File(rootDir, "Procfile");
     if (procfile.exists()) {
@@ -366,7 +373,8 @@ public class App {
             ";;\n" +
             "esac\n" +
             "export JAVA_TOOL_OPTIONS=\"-Xmx${heap}m $JAVA_TOOL_OPTIONS -Djava.rmi.server.useCodebaseOnly=true\"\n" +
-        "").getBytes(StandardCharsets.UTF_8)
+            "export PATH=\"$HOME/.jdk/bin:$PATH\"" +
+            "").getBytes(StandardCharsets.UTF_8)
     );
   }
 
@@ -393,12 +401,12 @@ public class App {
     return encodedApiKey;
   }
 
-  private Map<String,String> addConfigVar(String key, String value, Map<String,String> existingConfigVars) {
+  private Map<String, String> addConfigVar(String key, String value, Map<String, String> existingConfigVars) {
     return addConfigVar(key, value, existingConfigVars, false);
   }
 
-  private Map<String,String> addConfigVar(String key, String value, Map<String,String> existingConfigVars, Boolean force) {
-    Map<String,String> m = new HashMap<String,String>();
+  private Map<String, String> addConfigVar(String key, String value, Map<String, String> existingConfigVars, Boolean force) {
+    Map<String, String> m = new HashMap<String, String>();
     if (!existingConfigVars.containsKey(key) || (!value.equals(existingConfigVars.get(key)) && force)) {
       m.put(key, value);
     }

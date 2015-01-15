@@ -16,10 +16,9 @@ public class Tar {
   public static File create(String filename, String directory, File outputDir) throws IOException, ArchiveException, InterruptedException {
 
     if (useNativeTar()) {
-      String gzipFilename = filename;
-      ProcessBuilder pb = new ProcessBuilder().command("tar", "pczf", gzipFilename, directory).directory(outputDir);
+      ProcessBuilder pb = new ProcessBuilder().command("tar", "pczf", filename, directory).directory(outputDir);
       pb.start().waitFor();
-      return new File(outputDir, gzipFilename);
+      return new File(outputDir, filename);
     } else {
       return new Pack(outputDir, directory).apply(filename, outputDir);
     }
@@ -83,8 +82,8 @@ public class Tar {
       }
     }
 
-    private File apply(String archiveBasename, File outputDir) throws ArchiveException, IOException {
-      File archive = new File(outputDir, (archiveBasename + ".tar"));
+    private File apply(String archiveFilename, File outputDir) throws ArchiveException, IOException {
+      File archive = new File(outputDir, (archiveFilename + ".tar"));
       FileOutputStream tarOutput = new FileOutputStream(archive);
 
       TarArchiveOutputStream tarBall = (TarArchiveOutputStream)new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, tarOutput);
@@ -95,7 +94,7 @@ public class Tar {
         tarBall.close();
       }
 
-      File outputFile = new File(outputDir, (archiveBasename));
+      File outputFile = new File(outputDir, (archiveFilename));
       compress(archive, outputFile);
       FileUtils.deleteQuietly(archive);
       return outputFile;

@@ -68,6 +68,10 @@ public class App {
     getAppDir().mkdir();
   }
 
+  public String getName() {
+    return this.name;
+  }
+
   protected void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String, String> processTypes, String slugFilename) throws Exception {
     prepare(includedFiles);
     mergeConfigVars(configVars);
@@ -147,57 +151,8 @@ public class App {
     }
   }
 
-  public void mergeConfigVars(Map<String, String> configVars) throws Exception {
-    Map<String, String> existingConfigVars = getConfigVars();
-    logDebug("Heroku existing config variables: " + existingConfigVars.keySet());
-
-    Map<String, String> newConfigVars = new HashMap<String, String>();
-    for (String key : configVars.keySet()) {
-      newConfigVars.putAll(addConfigVar(key, configVars.get(key), existingConfigVars));
-    }
-    setConfigVars(newConfigVars);
-  }
-
-  public Map<String, String> getConfigVars() throws Exception {
-    String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(name, "UTF-8") + "/config-vars";
-
-    Map<String, String> headers = new HashMap<String, String>();
-    headers.put("Authorization", getEncodedApiKey());
-    headers.put("Accept", "application/vnd.heroku+json; version=3");
-
-    Map m = Curl.get(urlStr, headers);
-    Map<String, String> configVars = new HashMap<String, String>();
-    for (Object key : m.keySet()) {
-      Object value = m.get(key);
-      if ((key instanceof String) && (value instanceof String)) {
-        configVars.put(key.toString(), value.toString());
-      } else {
-        throw new Exception("Unexpected return type: " + m);
-      }
-    }
-    return configVars;
-  }
-
-  protected void setConfigVars(Map<String, String> configVars) throws IOException, Curl.CurlException {
-    if (!configVars.isEmpty()) {
-      String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(name, "UTF-8") + "/config_vars";
-
-      String data = "{";
-      boolean first = true;
-      for (String key : configVars.keySet()) {
-        String value = configVars.get(key);
-        if (!first) data += ", ";
-        first = false;
-        data += "\"" + key + "\"" + ":" + "\"" + sanitizeJson(value) + "\"";
-      }
-      data += "}";
-
-      Map<String, String> headers = new HashMap<String, String>();
-      headers.put("Authorization", getEncodedApiKey());
-      headers.put("Accept", "application/json");
-
-      Curl.put(urlStr, data, headers);
-    }
+  protected void mergeConfigVars(Map<String, String> configVars) throws Exception {
+    (new ConfigVars(this, getEncodedApiKey())).merge(configVars);
   }
 
   protected File buildSlugFile(String slugFilename)
@@ -401,18 +356,6 @@ public class App {
     return encodedApiKey;
   }
 
-  private Map<String, String> addConfigVar(String key, String value, Map<String, String> existingConfigVars) {
-    return addConfigVar(key, value, existingConfigVars, false);
-  }
-
-  private Map<String, String> addConfigVar(String key, String value, Map<String, String> existingConfigVars, Boolean force) {
-    Map<String, String> m = new HashMap<String, String>();
-    if (!existingConfigVars.containsKey(key) || (!value.equals(existingConfigVars.get(key)) && force)) {
-      m.put(key, value);
-    }
-    return m;
-  }
-
   protected File getAppDir() {
     return new File(getHerokuDir(), "app");
   }
@@ -423,10 +366,6 @@ public class App {
 
   protected File getRootDir() {
     return rootDir;
-  }
-
-  protected String sanitizeJson(String json) {
-    return json.replace("\\", "\\\\").replace("\"", "\\\"");
   }
 
   private static File createTempDir() throws IOException {

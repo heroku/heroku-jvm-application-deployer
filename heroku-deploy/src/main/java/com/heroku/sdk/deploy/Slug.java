@@ -1,5 +1,8 @@
 package com.heroku.sdk.deploy;
 
+
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -30,8 +33,8 @@ public class Slug {
     headers.put("Accept", "application/vnd.heroku+json; version=3");
 
     createJson = "{" +
-        "\"buildpack_provided_description\":\"" + buildPackDesc +"\"," +
-        "\"stack\":\"" + (stack == null ? "cedar-14" : stack) +"\"," +
+        "\"buildpack_provided_description\":\"" + StringEscapeUtils.escapeJson(buildPackDesc) +"\"," +
+        "\"stack\":\"" + (stack == null ? "cedar-14" : StringEscapeUtils.escapeJson(stack)) +"\"," +
         "\"process_types\":{";
 
     boolean first = true;
@@ -39,7 +42,7 @@ public class Slug {
       String value = processTypes.get(key);
       if (!first) createJson += ", ";
       first = false;
-      createJson += "\"" + key + "\"" + ":" + "\"" + sanitizeJson(value) + "\"";
+      createJson += "\"" + key + "\"" + ":" + "\"" + StringEscapeUtils.escapeJson(value) + "\"";
     }
     createJson +=  "}}";
   }
@@ -82,9 +85,5 @@ public class Slug {
     String data = "{\"slug\":\"" + slugId + "\"}";
 
     return Curl.post(urlStr, data, headers);
-  }
-
-  private String sanitizeJson(String json) {
-    return json.replace("\\", "\\\\").replace("\"", "\\\"");
   }
 }

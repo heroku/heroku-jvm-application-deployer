@@ -135,19 +135,11 @@ public class App {
   }
 
   protected void copy(File file, File copyTarget) throws IOException {
-    if (SystemSettings.hasNio()) {
-      if (file.isDirectory()) {
-        Files.walkFileTree(file.toPath(), new CopyFileVisitor(copyTarget.toPath()));
-      } else {
-        Files.createDirectories(copyTarget.getParentFile().toPath());
-        Files.copy(file.toPath(), copyTarget.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
-      }
+    if (file.isDirectory()) {
+      Files.walkFileTree(file.toPath(), new CopyFileVisitor(copyTarget.toPath()));
     } else {
-      if (file.isDirectory()) {
-        FileUtils.copyDirectory(file, new File(getAppDir(), relativize(file)));
-      } else {
-        FileUtils.copyFile(file, new File(getAppDir(), relativize(file)));
-      }
+      Files.createDirectories(copyTarget.getParentFile().toPath());
+      Files.copy(file.toPath(), copyTarget.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
     }
   }
 

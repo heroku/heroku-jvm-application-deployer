@@ -14,23 +14,11 @@ import java.util.zip.GZIPOutputStream;
 
 public class Tar {
   public static File create(String filename, String directory, File outputDir) throws IOException, ArchiveException, InterruptedException {
-
-    if (useNativeTar()) {
-      ProcessBuilder pb = new ProcessBuilder().command("tar", "pczf", filename, directory).directory(outputDir);
-      pb.start().waitFor();
-      return new File(outputDir, filename);
-    } else {
-      return new Pack(outputDir, directory).apply(filename, outputDir);
-    }
+    return new Pack(outputDir, directory).apply(filename, outputDir);
   }
 
   public static void extract(File tarFile, File outputDir) throws IOException, InterruptedException, ArchiveException {
-    if (useNativeTar()) {
-      ProcessBuilder pb = new ProcessBuilder().command("tar", "pxf", tarFile.getAbsolutePath(), "-C", outputDir.getAbsolutePath());
-      pb.start().waitFor();
-    } else {
-      new Unpack(tarFile, outputDir).apply();
-    }
+    new Unpack(tarFile, outputDir).apply();
   }
 
   public static class Pack {
@@ -148,9 +136,5 @@ public class Tar {
       }
 
     }
-  }
-
-  private static Boolean useNativeTar() {
-    return !SystemSettings.hasNio();
   }
 }

@@ -16,12 +16,18 @@ try {
     process = "heroku run cat .startup/with_jmap -a${appName}".execute()
     process.waitFor()
     output = process.text
-    assert output.contains("JMAP_INTERVAL"), "with_jmap script not copied properly: ${output}"
+    process = "curl -L https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/master/opt/with_jmap".execute()
+    process.waitFor()
+    jvmCommonScript = process.text
+    assert output.contains(jvmCommonScript), "with_jmap script not copied properly: ${output}"
 
     process = "heroku run cat .startup/with_jstack -a${appName}".execute()
     process.waitFor()
     output = process.text
-    assert output.contains("JSTACK_INTERVAL"), "with_jstack script not copied properly: ${output}"
+    process = "curl -L https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/master/opt/with_jstack".execute()
+    process.waitFor()
+    jvmCommonScript = process.text
+    assert output.contains(jvmCommonScript), "with_jstack script not copied properly: ${output}"
 
     process = "heroku run with_jstack java -version -a${appName}".execute()
     process.waitFor()
@@ -32,8 +38,6 @@ try {
     process.waitFor()
     output = process.text
     assert output.contains("1.8"), "with_jmap failed: ${output}"
-
-//    Thread.sleep(7000)
 
     process = "heroku logs -a${appName}".execute()
     process.waitFor()

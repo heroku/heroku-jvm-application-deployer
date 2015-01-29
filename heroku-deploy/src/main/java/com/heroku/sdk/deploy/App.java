@@ -129,6 +129,7 @@ public class App {
         FileUtils.forceDelete(new File(getAppDir(), relativize(getHerokuDir())));
       } catch (IOException e) { /* do nothing */ }
       addProfileScript();
+      addStartupFiles();
     } catch (IOException ioe) {
       throw new IOException("There was an error packaging the application for deployment.", ioe);
     }
@@ -320,9 +321,22 @@ public class App {
             ";;\n" +
             "esac\n" +
             "export JAVA_TOOL_OPTIONS=\"-Xmx${heap}m $JAVA_TOOL_OPTIONS -Djava.rmi.server.useCodebaseOnly=true\"\n" +
-            "export PATH=\"$HOME/.jdk/bin:$PATH\"" +
+            "export PATH=\"$HOME/.jdk/bin:$HOME/.startup:$PATH\"" +
             "").getBytes(StandardCharsets.UTF_8)
     );
+  }
+
+  protected void addStartupFiles() throws IOException {
+    File startupDir = new File(getAppDir(), ".startup");
+    startupDir.mkdir();
+
+    File withJmap = new File(startupDir, "with_jmap");
+    copyResourceFile("heroku_with_jmap.sh", withJmap);
+    withJmap.setExecutable(true);
+
+    File withJstack = new File(startupDir, "with_jstack");
+    copyResourceFile("heroku_with_jstack.sh", withJstack);
+    withJstack.setExecutable(true);
   }
 
   protected String relativize(File path) {
@@ -387,6 +401,25 @@ public class App {
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
       Files.copy(file, targetPath.resolve(sourcePath.relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
       return FileVisitResult.CONTINUE;
+    }
+  }
+
+  private void copyResourceFile(String srcFilename, File targetFile) throws IOException {
+    BufferedWriter out = null;
+    try {
+      InputStream is = getClass().getResourceAsStream( "/" + srcFilename);
+      BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+      FileWriter fw = new FileWriter(targetFile);
+      out = new BufferedWriter(fw);
+
+      String line;
+      while ((line = br.readLine()) != null) {
+        out.write(line);
+        out.write("\n");
+      }
+    } finally {
+      if (null != out) out.close();
     }
   }
 }

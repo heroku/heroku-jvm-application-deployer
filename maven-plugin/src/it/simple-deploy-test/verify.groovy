@@ -8,17 +8,32 @@ new File(basedir, "test.properties").withInputStream {
 String appName = props["heroku.appName"]
 
 try {
-    def log = FileUtils.fileRead(new File(basedir, "build.log"));
-    if (!log.contains("BUILD SUCCESS")) {
-        throw new RuntimeException("the build was not successful")
-    }
-
     def process = "heroku run java -version -a${appName}".execute()
     process.waitFor()
     output = process.text
     assert output.contains("1.8"), "Wrong version of JDK packaged into slug: ${output}"
 
-    Thread.sleep(7000)
+    process = "heroku run cat .startup/with_jmap -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("JMAP_INTERVAL"), "with_jmap script not copied properly: ${output}"
+
+    process = "heroku run cat .startup/with_jstack -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("JSTACK_INTERVAL"), "with_jstack script not copied properly: ${output}"
+
+    process = "heroku run with_jstack java -version -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("1.8"), "with_jstack failed: ${output}"
+
+    process = "heroku run with_jmap java -version -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("1.8"), "with_jmap failed: ${output}"
+
+//    Thread.sleep(7000)
 
     process = "heroku logs -a${appName}".execute()
     process.waitFor()

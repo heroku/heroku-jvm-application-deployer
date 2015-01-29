@@ -1,5 +1,11 @@
 ## Master
 
+*  Included with_jmap and with_jstack scripts.
+
+*  Added `heroku:create-slug` and `heroku:deploy-slug` goals
+
+## 0.3.1
+
 *  Added `heroku:run-war` goal to run a WAR file locally with a command similar on Heroku
 
 *  Added `heroku:dashboard` goal to open the Heroku dashboard for the configured application

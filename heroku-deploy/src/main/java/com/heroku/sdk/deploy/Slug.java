@@ -20,11 +20,13 @@ public class Slug {
 
   private String appName;
 
+  private String commit;
+
   private Map<String,String> headers;
 
   public static final String BASE_URL = "https://api.heroku.com";
 
-  public Slug(String buildPackDesc, String appName, String stack, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
+  public Slug(String buildPackDesc, String appName, String stack, String commit, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
     this.appName = appName;
 
     headers = new HashMap<String,String>();
@@ -35,6 +37,7 @@ public class Slug {
     createJson = "{" +
         "\"buildpack_provided_description\":\"" + StringEscapeUtils.escapeJson(buildPackDesc) +"\"," +
         "\"stack\":\"" + (stack == null ? "cedar-14" : StringEscapeUtils.escapeJson(stack)) +"\"," +
+        "\"commit\":\"" + (commit == null ? "" : StringEscapeUtils.escapeJson(commit)) +"\"," +
         "\"process_types\":{";
 
     boolean first = true;
@@ -51,6 +54,7 @@ public class Slug {
   public String getSlugId() { return slugId; }
   public String getStackName() { return stackName; }
   public String getSlugRequest() { return createJson; }
+  public String getCommit() { return commit; }
 
   public Map create() throws IOException, Curl.CurlException {
     String urlStr = BASE_URL + "/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";
@@ -60,6 +64,8 @@ public class Slug {
     blobUrl = (String)blobJson.get("url");
 
     slugId = (String)slugResponse.get("id");
+
+    commit = (String)slugResponse.get("commit");
 
     Map stackJson = (Map)slugResponse.get("stack");
     stackName = (String)stackJson.get("name");

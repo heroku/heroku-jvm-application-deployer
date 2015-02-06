@@ -40,5 +40,10 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.3.2</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit</artifactId>
+      <version>3.6.2.201501210735-r</version>
+    </dependency>
   </dependencies>
 </project>

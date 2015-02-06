@@ -1,5 +1,9 @@
 ## Master
 
+*  Added commit string to slug meta-data
+
+## 0.3.2
+
 *  Included with_jmap and with_jstack scripts.
 
 *  Added `heroku:create-slug` and `heroku:deploy-slug` goals

@@ -2,12 +2,14 @@ package com.heroku.sdk.deploy;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import sun.misc.BASE64Encoder;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -171,7 +173,7 @@ public class App {
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
 
-    Slug slug = new Slug(buildPackDesc, name, stack, getEncodedApiKey(), allProcessTypes);
+    Slug slug = new Slug(buildPackDesc, name, stack, parseCommit(), getEncodedApiKey(), allProcessTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
 
     Map slugResponse = slug.create();
@@ -421,5 +423,16 @@ public class App {
     } finally {
       if (null != out) out.close();
     }
+  }
+
+  private String parseCommit() throws IOException {
+    FileRepositoryBuilder builder = new FileRepositoryBuilder();
+    Repository repository = builder.setWorkTree(getRootDir())
+        .readEnvironment() // scan environment GIT_* variables
+        .findGitDir() // scan up the file system tree
+        .build();
+
+    ObjectId head = repository.resolve("HEAD");
+    return head == null ? null : head.name();
   }
 }

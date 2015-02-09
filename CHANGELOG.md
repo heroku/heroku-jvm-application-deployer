@@ -1,5 +1,7 @@
 ## Master
 
+## 0.3.3
+
 *  Added commit string to slug meta-data
 
 ## 0.3.2

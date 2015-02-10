@@ -6,3 +6,12 @@ maven-heroku-plugin.iml
 heroku-maven-plugin.iml
 maven-plugin/*maven-plugin*.iml
 heroku-deploy/heroku-deploy.iml
+.classpath
+.project
+.settings
+heroku-deploy/.classpath
+heroku-deploy/.project
+heroku-deploy/.settings
+maven-plugin/.classpath
+maven-plugin/.project
+maven-plugin/.settings

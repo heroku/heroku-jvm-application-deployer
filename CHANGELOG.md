@@ -1,5 +1,7 @@
 ## Master
 
+* Added `<includeTarget>` option to toggle the inclusion of the `target/` directory by default
+
 ## 0.3.3
 
 *  Added commit string to slug meta-data

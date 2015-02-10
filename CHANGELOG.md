@@ -1,5 +1,8 @@
 ## Master
 
+## 0.3.4
+
+* Upgraded webapp-runner to 7.0.57.2
 * Added `<includeTarget>` option to toggle the inclusion of the `target/` directory by default
 
 ## 0.3.3

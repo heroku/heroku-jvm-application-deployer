@@ -30,7 +30,9 @@ public class DeployMojo extends HerokuMojo {
     CopyDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
 
     List<File> includedDirs = getIncludes();
-    includedDirs.add(getTargetDir());
+    if(isIncludeTarget()) {
+      includedDirs.add(getTargetDir());
+    }
 
     try {
       (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog())).deploy(

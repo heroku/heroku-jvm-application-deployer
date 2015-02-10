@@ -149,6 +149,17 @@ You can set the Heroku runtime stack like this:
 
 See the integration tests under `maven-plugin/src/it` for more examples.
 
+## Include only an executable JAR file
+
+Many apps, such as those built with Spring Boot, will only need a single executable JAR file in production. You can configure the plugin to deploy only this file like so:
+
+```xml
+<includeTarget>false</includeTarget>
+<includes>
+  <include>target/my-app-1.0.jar</include>
+</includes>
+```
+
 ## Deploying to Multiple Apps
 
 In most real-world scenarios, you will need to deploy your application to dev, test and prod environments.

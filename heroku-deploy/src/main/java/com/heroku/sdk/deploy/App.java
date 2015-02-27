@@ -309,23 +309,24 @@ public class App {
     Files.write(
         Paths.get(new File(profiledDir, "jvmcommon.sh").getPath()),
         ("" +
+            "export PATH=\"$HOME/.jdk/bin:$HOME/.startup:$PATH\"\n" +
+            "export JAVA_HOME=\"\\$HOME/.jdk\"\n" +
             "limit=$(ulimit -u)\n" +
             "case $limit in\n" +
             "256)   # 1X Dyno\n" +
-            "  heap=384\n" +
+            "  default_java_opts=\"-Xmx384m -Xss512k\"\n" +
             ";;\n" +
             "512)   # 2X Dyno\n" +
-            "  heap=768\n" +
+            "  default_java_opts=\"-Xmx768m\"\n" +
             ";;\n" +
             "32768) # PX Dyno\n" +
-            "  heap=6144\n" +
+            "  default_java_opts=\"-Xmx4g\"\n" +
             ";;\n" +
             "*)\n" +
-            "  heap=384\n" +
+            "  default_java_opts=\"-Xmx384m -Xss512k\"\n" +
             ";;\n" +
             "esac\n" +
-            "export JAVA_TOOL_OPTIONS=\"-Xmx${heap}m $JAVA_TOOL_OPTIONS -Djava.rmi.server.useCodebaseOnly=true\"\n" +
-            "export PATH=\"$HOME/.jdk/bin:$HOME/.startup:$PATH\"" +
+            "export JAVA_TOOL_OPTIONS=\"${JAVA_TOOL_OPTIONS:-\"${default_java_opts} -Dfile.encoding=UTF-8 -Djava.rmi.server.useCodebaseOnly=true\"}\"\n" +
             "").getBytes(StandardCharsets.UTF_8)
     );
   }

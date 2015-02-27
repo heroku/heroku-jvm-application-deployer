@@ -1,5 +1,7 @@
 ## Master
 
+* Improved default JAVA_TOOL_OPTIONS
+
 ## 0.3.4
 
 * Upgraded webapp-runner to 7.0.57.2

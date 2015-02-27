@@ -1,7 +1,7 @@
 env:
   global:
-  - secure: Qwozf/LSZx8UGY4N7alJhOzf+zgHPNYZD/wxBPoCb8kt2BwTJHDngo3g1u4AELSLOgwWfVtIViC5gVZN4270Iyf00OWNmPFIy2p1uKXbbOLZ4wc5svm6pJmyHtKCe5nHoVf2zATakWp54iIKPoqtxKx5dOiDPo41AYeIDNR8gGw=
+  - secure: jm/PZectIYmd+zxOfHKCerF2vd+oF7xov74mXcBcwBk9o7vpTEVStH9V1L/VE3Y7+a3tKQftD7dTC7spjtebvA1ZvBL0CuuHPHdhcsmFa6o3AvRPcxS16uEKYPjDPa8DwPRkS5PeS2/155MyC/DUNq8QZCIpoJOcXWtDlUnK4Xc=
 language: java
-install: ./etc/travis-setup.sh
+install: "./etc/travis-setup.sh"
 script: mvn clean install -Pintegration-test
 after_script: heroku keys:remove $USER@`hostname`

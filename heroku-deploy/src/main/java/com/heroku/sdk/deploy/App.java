@@ -54,6 +54,8 @@ public class App {
 
   public App(String name) throws IOException {
     this("heroku-deploy", name, new File(System.getProperty("user.dir")), createTempDir());
+    Files.createDirectories(getAppDir().toPath());
+    Files.createDirectories(getHerokuDir().toPath());
   }
 
   public App(String buildPackDesc, String name, File rootDir, File targetDir) {
@@ -109,7 +111,7 @@ public class App {
     File slugFile = new File(getHerokuDir(), slugFilename);
     if (slugFile.exists()) {
       logInfo("---> Using existing slug...");
-      logInfo("     - file: ./" + relativize(slugFile));
+      logInfo("     - file: " + relativize(slugFile));
       logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
       deploySlug(stack, processTypes, slugFile);
     } else {
@@ -123,7 +125,7 @@ public class App {
 
     try {
       for (File file : includedFiles) {
-        logInfo("     - including: ./" + relativize(file));
+        logInfo("     - including: " + relativize(file));
         copy(file, new File(getAppDir(), relativize(file)));
       }
       try {
@@ -157,7 +159,7 @@ public class App {
       FileUtils.forceDelete(new File(getHerokuDir(), slugFilename));
     } catch (IOException e) { /* no-op */ }
     File slugFile = Tar.create(slugFilename, "./app", getHerokuDir());
-    logInfo("     - file: ./" + relativize(slugFile));
+    logInfo("     - file: " + relativize(slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
     return slugFile;
   }
@@ -342,7 +344,11 @@ public class App {
   }
 
   protected String relativize(File path) {
-    return rootDir.toURI().relativize(path.toURI()).getPath();
+    if (path.isAbsolute()) {
+      return path.getName();
+    } else {
+      return rootDir.toURI().relativize(path.toURI()).getPath();
+    }
   }
 
   protected String getEncodedApiKey() throws IOException {

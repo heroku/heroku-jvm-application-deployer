@@ -165,12 +165,12 @@ public class App {
   }
 
   protected Slug createAndReleaseSlug(String stack, Map<String, String> processTypes, String slugFilename)
-      throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+      throws IOException, ArchiveException, InterruptedException {
     return deploySlug(stack, processTypes, buildSlugFile(slugFilename));
   }
 
   protected Slug deploySlug(String stack, Map<String, String> processTypes, File slugFile)
-      throws IOException, ArchiveException, InterruptedException, Curl.CurlException {
+      throws IOException, ArchiveException, InterruptedException {
     Map<String, String> allProcessTypes = getProcfile();
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
@@ -191,14 +191,14 @@ public class App {
   }
 
   protected void uploadSlug(Slug slug, File slugFile, Set processTypes)
-      throws IOException, Curl.CurlException, ArchiveException, InterruptedException {
+      throws IOException, ArchiveException, InterruptedException {
     logInfo("---> Uploading slug...");
     slug.upload(slugFile);
     logInfo("     - stack: " + slug.getStackName());
     logInfo("     - process types: " + processTypes);
   }
 
-  protected void releaseSlug(Slug slug) throws IOException, Curl.CurlException {
+  protected void releaseSlug(Slug slug) throws IOException {
     logInfo("---> Releasing...");
     Map releaseResponse = slug.release();
     logDebug("Heroku Release response: " + releaseResponse);

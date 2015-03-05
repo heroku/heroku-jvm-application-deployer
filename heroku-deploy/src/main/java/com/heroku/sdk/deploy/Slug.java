@@ -56,7 +56,7 @@ public class Slug {
   public String getSlugRequest() { return createJson; }
   public String getCommit() { return commit; }
 
-  public Map create() throws IOException, Curl.CurlException {
+  public Map create() throws IOException {
     String urlStr = BASE_URL + "/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";
     Map slugResponse = Curl.post(urlStr, createJson, headers);
 
@@ -73,7 +73,7 @@ public class Slug {
     return slugResponse;
   }
 
-  public void upload(File slugFile) throws IOException, Curl.CurlException {
+  public void upload(File slugFile) throws IOException {
     if (blobUrl == null) {
       throw new IllegalStateException("Slug must be created before uploading!");
     }
@@ -81,7 +81,7 @@ public class Slug {
     Curl.put(blobUrl, slugFile);
   }
 
-  public Map release() throws IOException, Curl.CurlException {
+  public Map release() throws IOException {
     if (slugId == null) {
       throw new IllegalStateException("Slug must be created before releasing!");
     }

@@ -15,7 +15,7 @@ import java.io.*;
 import java.util.Map;
 
 public class Curl {
-  public static Map get(String urlStr, Map<String,String> headers) throws IOException, CurlException {
+  public static Map get(String urlStr, Map<String,String> headers) throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpGet request = new HttpGet(urlStr);
     for (String key : headers.keySet()) {
@@ -27,7 +27,7 @@ public class Curl {
     }
   }
 
-  public static Map post(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
+  public static Map post(String urlStr, String data, Map<String,String> headers) throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpPost request = new HttpPost(urlStr);
     for (String key : headers.keySet()) {
@@ -45,7 +45,7 @@ public class Curl {
     }
   }
 
-  public static Map patch(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
+  public static Map patch(String urlStr, String data, Map<String,String> headers) throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpPatch request = new HttpPatch(urlStr);
     for (String key : headers.keySet()) {
@@ -63,7 +63,7 @@ public class Curl {
     }
   }
 
-  public static void put(String urlStr, File file) throws IOException, CurlException {
+  public static void put(String urlStr, File file) throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpPut request = new HttpPut(urlStr);
 
@@ -80,7 +80,7 @@ public class Curl {
     }
   }
 
-  private static Map handleResponse(CloseableHttpResponse response) throws IOException, CurlException {
+  private static Map handleResponse(CloseableHttpResponse response) throws IOException {
     StatusLine statusLine = response.getStatusLine();
     HttpEntity entity = response.getEntity();
     if (statusLine.getStatusCode() >= 300) {
@@ -104,32 +104,5 @@ public class Curl {
       tmp = reader.readLine();
     }
     return output;
-  }
-
-  public static class CurlException extends Exception {
-
-    private Integer code;
-
-    private String response;
-
-    public CurlException(Integer code, String response, Exception cause) {
-      super("There was an exception invoking the remote service: HTTP(" + code + ")", cause);
-      this.code = code;
-      this.response = response;
-    }
-
-    public CurlException(Integer code, String response) {
-      super("There was an exception invoking the remote service: HTTP(" + code + ")");
-      this.code = code;
-      this.response = response;
-    }
-
-    public Integer getCode() {
-      return code;
-    }
-
-    public String getReponse() {
-      return response;
-    }
   }
 }

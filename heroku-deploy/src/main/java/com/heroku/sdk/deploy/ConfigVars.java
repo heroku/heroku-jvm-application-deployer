@@ -49,7 +49,7 @@ public class ConfigVars {
     return configVars;
   }
 
-  protected void setConfigVars(Map<String, String> configVars) throws IOException, Curl.CurlException {
+  protected void setConfigVars(Map<String, String> configVars) throws IOException {
     if (!configVars.isEmpty()) {
       String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(app.getName(), "UTF-8") + "/config-vars";
 

@@ -51,7 +51,7 @@ public class ConfigVars {
 
   protected void setConfigVars(Map<String, String> configVars) throws IOException, Curl.CurlException {
     if (!configVars.isEmpty()) {
-      String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(app.getName(), "UTF-8") + "/config_vars";
+      String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(app.getName(), "UTF-8") + "/config-vars";
 
       String data = "{";
       boolean first = true;
@@ -65,9 +65,9 @@ public class ConfigVars {
 
       Map<String, String> headers = new HashMap<String, String>();
       headers.put("Authorization", encodedApiKey);
-      headers.put("Accept", "application/json");
+      headers.put("Accept", "application/vnd.heroku+json; version=3");
 
-      Curl.put(urlStr, data, headers);
+      Curl.patch(urlStr, data, headers);
     }
   }
 

@@ -1,98 +1,98 @@
 package com.heroku.sdk.deploy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.methods.*;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.URL;
 import java.util.Map;
 
 public class Curl {
   public static Map get(String urlStr, Map<String,String> headers) throws IOException, CurlException {
-    URL url = new URL(urlStr);
-    HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
-    con.setDoInput(true);
-    con.setRequestMethod("GET");
-
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpGet request = new HttpGet(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
-      con.setRequestProperty(key, value);
+      request.setHeader(key, value);
     }
-
-    return handleResponse(con);
+    try (CloseableHttpResponse response = httpClient.execute(request)) {
+      return handleResponse(response);
+    }
   }
 
   public static Map post(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
-    URL url = new URL(urlStr);
-    HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
-    con.setDoInput(true);
-    con.setDoOutput(true);
-    con.setRequestMethod("POST");
-
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpPost request = new HttpPost(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
-      con.setRequestProperty(key, value);
+      request.setHeader(key, value);
     }
 
-    con.getOutputStream().write(data.getBytes("UTF-8"));
+    StringEntity body = new StringEntity(data);
+    body.setContentType("application/json");
+    body.setContentEncoding("UTF-8");
+    request.setEntity(body);
 
-    return handleResponse(con);
+    try (CloseableHttpResponse response = httpClient.execute(request)) {
+      return handleResponse(response);
+    }
   }
 
-  public static Map put(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
-    URL url = new URL(urlStr);
-    HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
-    con.setDoInput(true);
-    con.setDoOutput(true);
-    con.setRequestMethod("PUT");
-
+  public static Map patch(String urlStr, String data, Map<String,String> headers) throws IOException, CurlException {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpPatch request = new HttpPatch(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
-      con.setRequestProperty(key, value);
+      request.setHeader(key, value);
     }
 
-    con.getOutputStream().write(data.getBytes("UTF-8"));
+    StringEntity body = new StringEntity(data);
+    body.setContentType("application/json");
+    body.setContentEncoding("UTF-8");
+    request.setEntity(body);
 
-    return handleResponse(con);
+    try (CloseableHttpResponse response = httpClient.execute(request)) {
+      return handleResponse(response);
+    }
   }
 
   public static void put(String urlStr, File file) throws IOException, CurlException {
-    URL url = new URL(urlStr);
-    HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpPut request = new HttpPut(urlStr);
 
-    connection.setDoOutput(true);
-    connection.setRequestMethod("PUT");
-    connection.setConnectTimeout(0);
-    connection.setRequestProperty("Content-Type", "");
+    FileEntity body = new FileEntity(file);
+    request.setEntity(body);
 
-    connection.connect();
-    OutputStream out = connection.getOutputStream();
-    BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
-
-    byte[] buffer = new byte[1024];
-    int length = in.read(buffer);
-    while (length != -1) {
-      out.write(buffer, 0, length);
-      out.flush();
-      length = in.read(buffer);
-    }
-    out.close();
-    in.close();
-    int responseCode = connection.getResponseCode();
-
-    if (responseCode != 200) {
-      throw new CurlException(responseCode, "Failed to upload slug!");
+    try (CloseableHttpResponse response = httpClient.execute(request)) {
+      StatusLine statusLine = response.getStatusLine();
+      if (statusLine.getStatusCode() >= 300) {
+        throw new HttpResponseException(
+            statusLine.getStatusCode(),
+            statusLine.getReasonPhrase());
+      }
     }
   }
 
-  private static Map handleResponse(HttpsURLConnection con) throws IOException, CurlException {
-    try {
-      String output = readStream(con.getInputStream());
-      return (new ObjectMapper()).readValue(output, Map.class);
-    } catch (Exception e) {
-      String output = readStream(con.getErrorStream());
-      throw new CurlException(con.getResponseCode(), output, e);
+  private static Map handleResponse(CloseableHttpResponse response) throws IOException, CurlException {
+    StatusLine statusLine = response.getStatusLine();
+    HttpEntity entity = response.getEntity();
+    if (statusLine.getStatusCode() >= 300) {
+      throw new HttpResponseException(
+          statusLine.getStatusCode(),
+          statusLine.getReasonPhrase());
     }
+    if (entity == null) {
+      throw new ClientProtocolException("Response contains no content");
+    }
+    String output = readStream(entity.getContent());
+    return (new ObjectMapper()).readValue(output, Map.class);
   }
 
   private static String readStream(InputStream is) throws IOException {

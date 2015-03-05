@@ -345,7 +345,7 @@ public class App {
   }
 
   protected String relativize(File path) {
-    if (path.isAbsolute()) {
+    if (path.isAbsolute() && !path.getPath().startsWith(rootDir.getPath())) {
       return path.getName();
     } else {
       return rootDir.toURI().relativize(path.toURI()).getPath();

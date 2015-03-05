@@ -36,7 +36,7 @@ public class ConfigVars {
     headers.put("Authorization", encodedApiKey);
     headers.put("Accept", "application/vnd.heroku+json; version=3");
 
-    Map m = Curl.get(urlStr, headers);
+    Map m = RestClient.get(urlStr, headers);
     Map<String, String> configVars = new HashMap<String, String>();
     for (Object key : m.keySet()) {
       Object value = m.get(key);
@@ -67,7 +67,7 @@ public class ConfigVars {
       headers.put("Authorization", encodedApiKey);
       headers.put("Accept", "application/vnd.heroku+json; version=3");
 
-      Curl.patch(urlStr, data, headers);
+      RestClient.patch(urlStr, data, headers);
     }
   }
 

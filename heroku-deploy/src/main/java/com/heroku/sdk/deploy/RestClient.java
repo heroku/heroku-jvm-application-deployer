@@ -14,7 +14,7 @@ import org.apache.http.impl.client.HttpClients;
 import java.io.*;
 import java.util.Map;
 
-public class Curl {
+public class RestClient {
   public static Map get(String urlStr, Map<String,String> headers) throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpGet request = new HttpGet(urlStr);

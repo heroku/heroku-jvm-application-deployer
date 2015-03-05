@@ -58,7 +58,7 @@ public class Slug {
 
   public Map create() throws IOException {
     String urlStr = BASE_URL + "/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";
-    Map slugResponse = Curl.post(urlStr, createJson, headers);
+    Map slugResponse = RestClient.post(urlStr, createJson, headers);
 
     Map blobJson = (Map)slugResponse.get("blob");
     blobUrl = (String)blobJson.get("url");
@@ -78,7 +78,7 @@ public class Slug {
       throw new IllegalStateException("Slug must be created before uploading!");
     }
 
-    Curl.put(blobUrl, slugFile);
+    RestClient.put(blobUrl, slugFile);
   }
 
   public Map release() throws IOException {
@@ -90,6 +90,6 @@ public class Slug {
 
     String data = "{\"slug\":\"" + slugId + "\"}";
 
-    return Curl.post(urlStr, data, headers);
+    return RestClient.post(urlStr, data, headers);
   }
 }

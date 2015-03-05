@@ -1,5 +1,6 @@
 ## Master
 
+* Replaced javax.net with Apache HttpClient
 * Improved default JAVA_TOOL_OPTIONS
 
 ## 0.3.4

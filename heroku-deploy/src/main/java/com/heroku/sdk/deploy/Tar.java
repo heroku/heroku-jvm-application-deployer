@@ -58,15 +58,10 @@ public class Tar {
     }
 
     private void compress(File sourceFile, File targetFile) throws IOException {
-      FileOutputStream fos = new FileOutputStream(targetFile);
-      GZIPOutputStream gzs = new GZIPOutputStream(fos);
-      FileInputStream fis = new FileInputStream(sourceFile);
-
-      try {
+      try (FileOutputStream fos = new FileOutputStream(targetFile);
+           GZIPOutputStream gzs = new GZIPOutputStream(fos);
+           FileInputStream fis = new FileInputStream(sourceFile)) {
         IOUtils.copy(fis, gzs);
-      } finally {
-        gzs.close();
-        fis.close();
       }
     }
 
@@ -111,9 +106,8 @@ public class Tar {
     }
 
     public void apply() throws IOException, ArchiveException {
-      FileInputStream fis = new FileInputStream(tarFile);
-      GZIPInputStream gzs = new GZIPInputStream(fis);
-      try {
+      try (FileInputStream fis = new FileInputStream(tarFile);
+           GZIPInputStream gzs = new GZIPInputStream(fis)) {
         ArchiveInputStream archiveInputStream = extract(new BufferedInputStream(gzs));
 
         ArchiveEntry entry = archiveInputStream.getNextEntry();
@@ -131,10 +125,7 @@ public class Tar {
           }
           entry = archiveInputStream.getNextEntry();
         }
-      } finally {
-        gzs.close();
       }
-
     }
   }
 }

@@ -72,7 +72,7 @@ public class ConfigVars {
   }
 
   private Map<String, String> addConfigVar(String key, String value, Map<String, String> existingConfigVars) {
-    return addConfigVar(key, value, existingConfigVars, false);
+    return addConfigVar(key, value, existingConfigVars, true);
   }
 
   private Map<String, String> addConfigVar(String key, String value, Map<String, String> existingConfigVars, Boolean force) {

@@ -1,5 +1,9 @@
 ## Master
 
+* Change config vars to overwrite existing values by default
+
+## 0.3.5
+
 * Replaced javax.net with Apache HttpClient
 * Improved default JAVA_TOOL_OPTIONS
 

@@ -1,6 +1,6 @@
 env:
   global:
-  - secure: jm/PZectIYmd+zxOfHKCerF2vd+oF7xov74mXcBcwBk9o7vpTEVStH9V1L/VE3Y7+a3tKQftD7dTC7spjtebvA1ZvBL0CuuHPHdhcsmFa6o3AvRPcxS16uEKYPjDPa8DwPRkS5PeS2/155MyC/DUNq8QZCIpoJOcXWtDlUnK4Xc=
+  - secure: eTya5cZDDp13iXpTzcKih70YVfcxx2at3f4DVTMNzV2muU6KfoVKhxGUX/F8fLUzNjtLyqzHmtqkF2SHz3PpKDrD3vh23cTBNmm+RCEZh6+dQUEjiWeIWbEFI7XEVamYUiFnkdLZrbJBlpQF966+ME9/hbw/llng/aios/q1NEc=
 language: java
 install: "./etc/travis-setup.sh"
 script: mvn clean install -Pintegration-test

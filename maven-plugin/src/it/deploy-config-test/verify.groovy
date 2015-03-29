@@ -32,6 +32,11 @@ try {
     output = process.text
     assert output.contains("1.7"), "Wrong version of JDK packages into slug"
 
+    process = "heroku run cat .jdk/jre/lib/security/test.txt -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("hello from security"), "JDK Overlay not copied"
+
     process = "heroku stack -a${appName}".execute()
     process.waitFor()
     output = process.text

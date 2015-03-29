@@ -222,7 +222,6 @@ public class App {
 
   protected Properties getHerokuProperties() {
     Properties props = new Properties();
-    String defaultJdkVersion = "1.8";
     File sysPropsFile = new File(rootDir, "heroku.properties");
     if (sysPropsFile.exists()) {
       try {
@@ -300,6 +299,8 @@ public class App {
     }
 
     Tar.extract(jdkTgz, jdkHome);
+
+    addJdkOverlay();
   }
 
   private void addProfileScript() throws IOException {
@@ -342,6 +343,16 @@ public class App {
     File withJstack = new File(startupDir, "with_jstack");
     copyResourceFile("heroku_with_jstack.sh", withJstack);
     withJstack.setExecutable(true);
+  }
+
+  protected void addJdkOverlay() throws IOException {
+    File jdkDir = new File(getAppDir(), ".jdk");
+    File jdkOverlayDir = new File(getRootDir(), ".jdk-overlay");
+
+    if (jdkOverlayDir.exists() && jdkDir.exists()) {
+      logInfo("     - applying JDK overlay");
+      FileUtils.copyDirectory(jdkOverlayDir, jdkDir);
+    }
   }
 
   protected String relativize(File path) {

@@ -237,6 +237,10 @@ heroku.appName=myapp
 Then add the file to your `.gitignore` so that each developer can have their own local versions of the file.
 The value in `heroku.properties` will take precedence over anything configured in your  `pom.xml`.
 
+## Customizing the JDK
+
+You can customize the JDK by creating a `.jdk-overlay` directory as described in [this Dev Center article](https://devcenter.heroku.com/articles/customizing-the-jdk). 
+
 ## Other Useful Commands
 
 +  `mvn heroku:dashboard` opens the Dashboard for the application on Heroku.com

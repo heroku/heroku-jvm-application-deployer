@@ -29,7 +29,7 @@ public class ConfigVars {
     setConfigVars(newConfigVars);
   }
 
-  public Map<String, String> getConfigVars() throws Exception {
+  protected Map<String, String> getConfigVars() throws Exception {
     String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(app.getName(), "UTF-8") + "/config-vars";
 
     Map<String, String> headers = new HashMap<String, String>();

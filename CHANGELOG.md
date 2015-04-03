@@ -1,6 +1,7 @@
 ## Master
 
 * Change config vars to overwrite existing values by default
+* Ignore POM packaging if `warFile` config is set
 
 ## 0.3.5
 

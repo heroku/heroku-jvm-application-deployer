@@ -5,9 +5,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DeployWar extends WarApp {
 
@@ -29,6 +27,17 @@ public class DeployWar extends WarApp {
     return processTypes;
   }
 
+  private static List<File> includesToList(String includes) {
+    List<String> includeStrings = Arrays.asList(includes.split(File.pathSeparator));
+
+    List<File> includeFiles = new ArrayList<>(includeStrings.size());
+    for (String includeString : includeStrings) {
+      includeFiles.add(new File(includeString));
+    }
+
+    return includeFiles;
+  }
+
   @Override
   public void logInfo(String message) { System.out.println(message); }
 
@@ -38,6 +47,8 @@ public class DeployWar extends WarApp {
     String jdkVersion = System.getProperty("heroku.jdkVersion", null);
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
     String stack = System.getProperty("heroku.stack", "cedar-14");
+    List<File> includes = includesToList(System.getProperty("heroku.includes", ""));
+
     String webappRunnerUrl = System.getProperty("heroku.webappRunnerUrl", WEBAPP_RUNNER_URL);
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
 
@@ -49,6 +60,6 @@ public class DeployWar extends WarApp {
     }
 
     (new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl))).
-        deploy(new ArrayList<File>(), new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName);
+        deploy(includes, new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName);
   }
 }

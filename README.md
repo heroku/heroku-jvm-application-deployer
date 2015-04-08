@@ -1,4 +1,4 @@
-# heroku-maven-plugin [![Build Status](https://travis-ci.org/heroku/heroku-maven-plugin.svg)](https://travis-ci.org/heroku/heroku-maven-plugin)
+# heroku-maven-plugin [![Build Status](https://travis-ci.org/heroku/heroku-maven-plugin.svg)](https://travis-ci.org/heroku/heroku-maven-plugin) [![Download](https://api.bintray.com/packages/heroku/maven/sdk/images/download.svg) ](https://bintray.com/heroku/maven/sdk/_latestVersion)
 
 This plugin is used to deploy Java applications directly to Heroku without pushing to a Git repository.
 This is can be useful when deploying from a CI server.
@@ -57,7 +57,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>0.3.5</version>
+      <version>0.3.6</version>
       <configuration>
         <appName>${heroku.appName}</appName>
       </configuration>

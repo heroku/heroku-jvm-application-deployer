@@ -34,6 +34,7 @@
           <includes>
             <include>test.txt</include>
             <include>public/javascripts</include>
+            <include>public/*.html</include>
           </includes>
           <jdkVersion>1.7</jdkVersion>
           <configVars>

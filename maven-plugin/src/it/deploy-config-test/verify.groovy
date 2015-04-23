@@ -16,6 +16,11 @@ try {
     output = process.text
     assert output.contains("It worked!"), "slug did not contain test file: ${output}"
 
+    process = "heroku run cat public/page.html -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("<html></html>"), "Include wildcards did not work: ${output}"
+
     process = "heroku run cat public/javascripts/hello.js -a${appName}".execute()
     process.waitFor()
     output = process.text

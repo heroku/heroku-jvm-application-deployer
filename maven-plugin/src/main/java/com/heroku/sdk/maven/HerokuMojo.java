@@ -1,14 +1,17 @@
 package com.heroku.sdk.maven;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.archiver.util.DefaultFileSet;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.FileFilter;
+import java.util.*;
 
 public abstract class HerokuMojo extends AbstractMojo {
 
@@ -119,7 +122,15 @@ public abstract class HerokuMojo extends AbstractMojo {
     List<File> files = new ArrayList<File>(mIncludes.length);
 
     for (String s : mIncludes) {
-      files.add(new File(s));
+      if (s.contains("*")) {
+        String[] dirs = s.split(File.separator);
+        String pattern = dirs[dirs.length-1];
+        File basedir = new File(mavenProject.getBasedir(), s.replace(pattern, ""));
+        Collection<File> listFiles = FileUtils.listFiles(basedir, new WildcardFileFilter(pattern), null);
+        files.addAll(listFiles);
+      } else {
+        files.add(new File(s));
+      }
     }
 
     return files;

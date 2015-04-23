@@ -59,7 +59,7 @@ public class App implements UploadListener {
   }
 
   @Override
-  public Boolean isEnabled() {
+  public Boolean isUploadProgressEnabled() {
     return false;
   }
 

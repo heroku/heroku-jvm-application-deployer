@@ -130,7 +130,7 @@ public class RestClient {
 
     public void updateProgress(final long writtenLength) {
       final long contentLength = getContentLength();
-      if (uploadListener.isEnabled() && contentLength > 0) {
+      if (uploadListener.isUploadProgressEnabled() && contentLength > 0) {
         executor.execute(new Runnable() {
           @Override
           public void run() {

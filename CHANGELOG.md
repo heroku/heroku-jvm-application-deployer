@@ -1,5 +1,7 @@
 ## Master
 
+* Added ability to log incremental progress of slug upload.
+
 ## 0.3.6
 
 * Change config vars to overwrite existing values by default

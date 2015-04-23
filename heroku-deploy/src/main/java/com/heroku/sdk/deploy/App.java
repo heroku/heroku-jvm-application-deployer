@@ -1,5 +1,6 @@
 package com.heroku.sdk.deploy;
 
+import com.heroku.sdk.deploy.utils.UploadListener;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.ObjectId;
@@ -17,7 +18,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class App {
+public class App implements UploadListener {
 
   private static Map<String, Map<String, String>> jdkUrlsByStack = new HashMap<String, Map<String, String>>();
 
@@ -51,6 +52,16 @@ public class App {
   public void logDebug(String message) { /* nothing by default */ }
 
   public void logWarn(String message) { /* nothing by default */ }
+
+  @Override
+  public void logUploadProgress(Long uploaded, Long contentLength) {
+    logDebug("Uploaded " + uploaded + "/" + contentLength);
+  }
+
+  @Override
+  public Boolean isEnabled() {
+    return false;
+  }
 
   public App(String name) throws IOException {
     this("heroku-deploy", name, new File(System.getProperty("user.dir")), createTempDir());
@@ -193,7 +204,7 @@ public class App {
   protected void uploadSlug(Slug slug, File slugFile, Set processTypes)
       throws IOException, ArchiveException, InterruptedException {
     logInfo("---> Uploading slug...");
-    slug.upload(slugFile);
+    slug.upload(slugFile, this);
     logInfo("     - stack: " + slug.getStackName());
     logInfo("     - process types: " + processTypes);
   }

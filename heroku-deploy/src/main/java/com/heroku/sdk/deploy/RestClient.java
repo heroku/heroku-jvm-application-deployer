@@ -1,6 +1,7 @@
 package com.heroku.sdk.deploy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.heroku.sdk.deploy.utils.UploadListener;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -13,6 +14,8 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.*;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class RestClient {
   public static Map get(String urlStr, Map<String,String> headers) throws IOException {
@@ -63,11 +66,11 @@ public class RestClient {
     }
   }
 
-  public static void put(String urlStr, File file) throws IOException {
+  public static void put(String urlStr, File file, UploadListener uploadListener) throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpPut request = new HttpPut(urlStr);
 
-    FileEntity body = new FileEntity(file);
+    FileEntityWithProgress body = new FileEntityWithProgress(file, uploadListener);
     request.setEntity(body);
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {
@@ -104,5 +107,86 @@ public class RestClient {
       tmp = reader.readLine();
     }
     return output;
+  }
+
+  private static class FileEntityWithProgress extends FileEntity {
+
+    private OutputStreamProgress outStream;
+
+    private final UploadListener uploadListener;
+
+    private Executor executor = Executors.newSingleThreadExecutor();
+
+    public FileEntityWithProgress(File file, UploadListener uploadListener) {
+      super(file);
+      this.uploadListener = uploadListener;
+    }
+
+    @Override
+    public void writeTo(OutputStream outStream) throws IOException {
+      this.outStream = new OutputStreamProgress(outStream, this);
+      super.writeTo(this.outStream);
+    }
+
+    public void updateProgress(final long writtenLength) {
+      final long contentLength = getContentLength();
+      if (uploadListener.isEnabled() && contentLength > 0) {
+        executor.execute(new Runnable() {
+          @Override
+          public void run() {
+            uploadListener.logUploadProgress(writtenLength, contentLength);
+          }
+        });
+      }
+    }
+  }
+
+  private static class OutputStreamProgress extends OutputStream {
+
+    private OutputStream outStream;
+
+    private FileEntityWithProgress fileEntity;
+
+    private volatile long bytesWritten = 0;
+
+    public OutputStreamProgress(OutputStream outStream, FileEntityWithProgress fileEntity) {
+      this.outStream = outStream;
+      this.fileEntity = fileEntity;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+      outStream.write(b);
+      bytesWritten++;
+      fileEntity.updateProgress(getWrittenLength());
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+      outStream.write(b);
+      bytesWritten += b.length;
+      fileEntity.updateProgress(getWrittenLength());
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      outStream.write(b, off, len);
+      bytesWritten += len;
+      fileEntity.updateProgress(getWrittenLength());
+    }
+
+    @Override
+    public void flush() throws IOException {
+      outStream.flush();
+    }
+
+    @Override
+    public void close() throws IOException {
+      outStream.close();
+    }
+
+    public long getWrittenLength() {
+      return bytesWritten;
+    }
   }
 }

@@ -1,6 +1,7 @@
 package com.heroku.sdk.deploy;
 
 
+import com.heroku.sdk.deploy.utils.UploadListener;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.*;
@@ -33,6 +34,10 @@ public class Slug {
     headers.put("Authorization", encodedApiKey);
     headers.put("Content-Type", "application/json");
     headers.put("Accept", "application/vnd.heroku+json; version=3");
+
+    if (processTypes.isEmpty()) {
+      throw new MissingProcessTypesException();
+    }
 
     createJson = "{" +
         "\"buildpack_provided_description\":\"" + StringEscapeUtils.escapeJson(buildPackDesc) +"\"," +
@@ -73,12 +78,12 @@ public class Slug {
     return slugResponse;
   }
 
-  public void upload(File slugFile) throws IOException {
+  public void upload(File slugFile, UploadListener listener) throws IOException {
     if (blobUrl == null) {
       throw new IllegalStateException("Slug must be created before uploading!");
     }
 
-    RestClient.put(blobUrl, slugFile);
+    RestClient.put(blobUrl, slugFile, listener);
   }
 
   public Map release() throws IOException {
@@ -92,4 +97,6 @@ public class Slug {
 
     return RestClient.post(urlStr, data, headers);
   }
+
+  public static class MissingProcessTypesException extends IllegalArgumentException {}
 }

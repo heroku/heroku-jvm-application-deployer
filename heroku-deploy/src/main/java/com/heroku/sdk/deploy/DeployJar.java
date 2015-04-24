@@ -7,22 +7,31 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class DeployWar extends WarApp {
+/**
+ * An easy way to deploy an executable Jar file
+ */
+public class DeployJar extends App {
 
-  private static final String WEBAPP_RUNNER_URL="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/7.0.57.2/webapp-runner-7.0.57.2.jar";
+  protected File jarFile;
 
-  public DeployWar(String name, File warFile, URL webappRunnerUrl) throws IOException {
+  public DeployJar(String name, File jarFile) throws IOException {
     super(name);
-    this.warFile = warFile;
-
-    this.webappRunnerJar = new File(getAppDir(), "webapp-runner.jar");
-    FileUtils.copyURLToFile(webappRunnerUrl, webappRunnerJar);
+    this.jarFile = jarFile;
   }
 
-  @Override
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, String slugFileName) throws Exception {
+    includedFiles.add(jarFile);
+    super.deploy(includedFiles, configVars, jdkVersion, stack, defaultProcTypes(), slugFileName);
+  }
+
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack, String slugFileName) throws Exception {
+    includedFiles.add(jarFile);
+    super.deploy(includedFiles, configVars, jdkUrl, stack, defaultProcTypes(), slugFileName);
+  }
+
   protected Map<String,String> defaultProcTypes() {
-    Map<String,String> processTypes = new HashMap<String, String>();
-    processTypes.put("web", "java $JAVA_OPTS -jar webapp-runner.jar $WEBAPP_RUNNER_OPTS --port $PORT ./" + relativize(warFile));
+    Map<String,String> processTypes = new HashMap<>();
+    processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(jarFile));
 
     return processTypes;
   }
@@ -44,14 +53,13 @@ public class DeployWar extends WarApp {
   public void logInfo(String message) { System.out.println(message); }
 
   public static void main(String[] args) throws Exception {
-    String warFile = System.getProperty("heroku.warFile", null);
+    String warFile = System.getProperty("heroku.jarFile", null);
     String appName = System.getProperty("heroku.appName", null);
     String jdkVersion = System.getProperty("heroku.jdkVersion", null);
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
     String stack = System.getProperty("heroku.stack", "cedar-14");
     List<File> includes = includesToList(System.getProperty("heroku.includes", ""));
 
-    String webappRunnerUrl = System.getProperty("heroku.webappRunnerUrl", WEBAPP_RUNNER_URL);
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
 
     if (warFile == null) {
@@ -61,7 +69,7 @@ public class DeployWar extends WarApp {
       throw new IllegalArgumentException("Heroku app name must be provided with heroku.appName system property!");
     }
 
-    (new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl))).
+    (new DeployJar(appName, new File(warFile))).
         deploy(includes, new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName);
   }
 }

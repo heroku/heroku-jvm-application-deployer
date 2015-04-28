@@ -45,7 +45,7 @@ public class App implements Logger  {
   }
 
   public String getName() {
-    return this.name;
+    return deployer.getName();
   }
 
   protected void prepare(List<File> includedFiles, Map<String, String> processTypes) throws IOException {
@@ -66,12 +66,12 @@ public class App implements Logger  {
   }
 
   public void deploySlug(String slugFilename, Map<String, String> processTypes, Map<String, String> configVars, String stack) throws Exception {
-    SlugDeployer slugDeployer = new SlugDeployer(deployer.getBuildPackDesc(), name, getRootDir(), deployer.getTargetDir(), this);
+    SlugDeployer slugDeployer = new SlugDeployer(deployer.getBuildPackDesc(), getName(), getRootDir(), deployer.getTargetDir(), this);
     slugDeployer.deploySlug(slugFilename, processTypes, configVars, stack);
   }
 
   protected void createSlug(String slugFilename, List<File> includedFiles, String jdkVersion, URL jdkUrl, String stack) throws Exception {
-    SlugDeployer slugDeployer = new SlugDeployer(deployer.getBuildPackDesc(), name, getRootDir(), deployer.getTargetDir(), this);
+    SlugDeployer slugDeployer = new SlugDeployer(deployer.getBuildPackDesc(), getName(), getRootDir(), deployer.getTargetDir(), this);
     prepare(includedFiles, new HashMap<String, String>());
     slugDeployer.createSlug(slugFilename, jdkVersion, jdkUrl, stack);
   }

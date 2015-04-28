@@ -9,31 +9,16 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Slug {
-
-  private String blobUrl;
+public class Slug extends ApiEndpoint {
 
   private String slugId;
 
-  private String stackName;
-
   private String createJson;
-
-  private String appName;
-
-  private String commit;
-
-  private Map<String,String> headers;
 
   public static final String BASE_URL = "https://api.heroku.com";
 
   public Slug(String buildPackDesc, String appName, String stack, String commit, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
-    this.appName = appName;
-
-    headers = new HashMap<String,String>();
-    headers.put("Authorization", encodedApiKey);
-    headers.put("Content-Type", "application/json");
-    headers.put("Accept", "application/vnd.heroku+json; version=3");
+    super(appName, stack, commit, encodedApiKey);
 
     if (processTypes.isEmpty()) {
       throw new MissingProcessTypesException();
@@ -55,11 +40,8 @@ public class Slug {
     createJson +=  "}}";
   }
 
-  public String getBlobUrl() { return blobUrl; }
   public String getSlugId() { return slugId; }
-  public String getStackName() { return stackName; }
   public String getSlugRequest() { return createJson; }
-  public String getCommit() { return commit; }
 
   public Map create() throws IOException {
     String urlStr = BASE_URL + "/apps/" + URLEncoder.encode(appName, "UTF-8") + "/slugs";
@@ -76,14 +58,6 @@ public class Slug {
     stackName = (String)stackJson.get("name");
 
     return slugResponse;
-  }
-
-  public void upload(File slugFile, UploadListener listener) throws IOException {
-    if (blobUrl == null) {
-      throw new IllegalStateException("Slug must be created before uploading!");
-    }
-
-    RestClient.put(blobUrl, slugFile, listener);
   }
 
   public Map release() throws IOException {

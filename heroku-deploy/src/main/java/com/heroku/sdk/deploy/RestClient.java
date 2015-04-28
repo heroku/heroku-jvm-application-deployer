@@ -13,6 +13,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.*;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -26,7 +27,50 @@ public class RestClient {
       request.setHeader(key, value);
     }
     try (CloseableHttpResponse response = httpClient.execute(request)) {
-      return handleResponse(response);
+      return (Map)handleResponse(response, Map.class);
+    }
+  }
+
+  public static void get(String urlStr, Map<String,String> headers, OutputLogger logger) throws IOException {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpGet request = new HttpGet(urlStr);
+    for (String key : headers.keySet()) {
+      String value = headers.get(key);
+      request.setHeader(key, value);
+    }
+    try (CloseableHttpResponse response = httpClient.execute(request)) {
+      handleResponse(response, logger);
+    }
+  }
+
+  public static List put(String urlStr, String data, Map<String,String> headers) throws IOException {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpPut request = new HttpPut(urlStr);
+    for (String key : headers.keySet()) {
+      String value = headers.get(key);
+      request.setHeader(key, value);
+    }
+
+    StringEntity body = new StringEntity(data);
+    body.setContentType("application/json");
+    body.setContentEncoding("UTF-8");
+    request.setEntity(body);
+
+    try (CloseableHttpResponse response = httpClient.execute(request)) {
+      return (List)handleResponse(response, List.class);
+    }
+  }
+
+  public static Map post(String urlStr, Map<String,String> headers) throws IOException {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpPost request = new HttpPost(urlStr);
+    for (String key : headers.keySet()) {
+      String value = headers.get(key);
+      request.setHeader(key, value);
+    }
+
+    try (CloseableHttpResponse response = httpClient.execute(request)) {
+      return (Map)handleResponse(response, Map.class);
     }
   }
 
@@ -44,7 +88,7 @@ public class RestClient {
     request.setEntity(body);
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {
-      return handleResponse(response);
+      return (Map)handleResponse(response, Map.class);
     }
   }
 
@@ -62,7 +106,7 @@ public class RestClient {
     request.setEntity(body);
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {
-      return handleResponse(response);
+      return (Map)handleResponse(response, Map.class);
     }
   }
 
@@ -83,7 +127,7 @@ public class RestClient {
     }
   }
 
-  private static Map handleResponse(CloseableHttpResponse response) throws IOException {
+  private static Object handleResponse(CloseableHttpResponse response, Class returnType) throws IOException {
     StatusLine statusLine = response.getStatusLine();
     HttpEntity entity = response.getEntity();
     if (statusLine.getStatusCode() >= 300) {
@@ -95,7 +139,27 @@ public class RestClient {
       throw new ClientProtocolException("Response contains no content");
     }
     String output = readStream(entity.getContent());
-    return (new ObjectMapper()).readValue(output, Map.class);
+    return (new ObjectMapper()).readValue(output, returnType);
+  }
+
+  private static void handleResponse(CloseableHttpResponse response, OutputLogger logger) throws IOException {
+    StatusLine statusLine = response.getStatusLine();
+    HttpEntity entity = response.getEntity();
+    if (statusLine.getStatusCode() >= 300) {
+      throw new HttpResponseException(
+          statusLine.getStatusCode(),
+          statusLine.getReasonPhrase());
+    }
+    if (entity == null) {
+      throw new ClientProtocolException("Response contains no content");
+    }
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+    String tmp = reader.readLine();
+    while (tmp != null) {
+      logger.log(tmp);
+      tmp = reader.readLine();
+    }
   }
 
   private static String readStream(InputStream is) throws IOException {
@@ -107,6 +171,10 @@ public class RestClient {
       tmp = reader.readLine();
     }
     return output;
+  }
+
+  public static abstract class OutputLogger {
+    public abstract void log(String line);
   }
 
   private static class FileEntityWithProgress extends FileEntity {

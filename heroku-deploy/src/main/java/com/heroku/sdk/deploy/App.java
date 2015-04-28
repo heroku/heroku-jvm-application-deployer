@@ -37,15 +37,15 @@ public class App implements UploadListener {
     jdkUrlsByStack.put("cedar-14", cedar14JdkUrlStrings);
   }
 
-  private String buildPackDesc;
+  protected String buildPackDesc;
 
-  private String name;
+  protected String name;
 
-  private File rootDir;
+  protected File rootDir;
 
-  private File targetDir;
+  protected File targetDir;
 
-  private String encodedApiKey = null;
+  protected String encodedApiKey = null;
 
   public void logInfo(String message) { /* nothing by default */ }
 
@@ -143,11 +143,15 @@ public class App implements UploadListener {
         // this makes sure we don't put an old slug or a cached jdk inside the slug
         FileUtils.forceDelete(new File(getAppDir(), relativize(getHerokuDir())));
       } catch (IOException e) { /* do nothing */ }
-      addProfileScript();
-      addStartupFiles();
+      addExtras();
     } catch (IOException ioe) {
       throw new IOException("There was an error packaging the application for deployment.", ioe);
     }
+  }
+
+  protected void addExtras() throws IOException {
+    addProfileScript();
+    addStartupFiles();
   }
 
   protected void copy(File file, File copyTarget) throws IOException {
@@ -169,7 +173,7 @@ public class App implements UploadListener {
     try {
       FileUtils.forceDelete(new File(getHerokuDir(), slugFilename));
     } catch (IOException e) { /* no-op */ }
-    File slugFile = Tar.create(slugFilename, "./app", getHerokuDir());
+    File slugFile = Tar.create(slugFilename, "./app", getHerokuDir(), getHerokuDir());
     logInfo("     - file: " + relativize(slugFile));
     logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
     return slugFile;
@@ -405,7 +409,7 @@ public class App implements UploadListener {
     return rootDir;
   }
 
-  private static File createTempDir() throws IOException {
+  protected static File createTempDir() throws IOException {
     return Files.createTempDirectory("heroku-deploy").toFile();
   }
 
@@ -454,7 +458,7 @@ public class App implements UploadListener {
     }
   }
 
-  private String parseCommit() throws IOException {
+  protected String parseCommit() throws IOException {
     FileRepositoryBuilder builder = new FileRepositoryBuilder();
     Repository repository = builder.setWorkTree(getRootDir())
         .readEnvironment() // scan environment GIT_* variables

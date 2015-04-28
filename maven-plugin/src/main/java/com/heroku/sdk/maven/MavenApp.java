@@ -1,6 +1,7 @@
 package com.heroku.sdk.maven;
 
 import com.heroku.sdk.deploy.App;
+import com.heroku.sdk.deploy.BuildsApp;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
 
@@ -14,6 +15,7 @@ public class MavenApp extends App {
 
   public MavenApp(String name, File rootDir, File targetDir, Log log) {
     super("heroku-maven-plugin", name, rootDir, targetDir);
+//    super(name, rootDir, targetDir);
     this.log = log;
   }
 

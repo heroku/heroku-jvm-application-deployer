@@ -13,8 +13,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class Tar {
-  public static File create(String filename, String directory, File outputDir) throws IOException, ArchiveException, InterruptedException {
-    return new Pack(outputDir, directory).apply(filename, outputDir);
+  public static File create(String filename, String directory, File workingDir, File outputDir) throws IOException, ArchiveException, InterruptedException {
+    return new Pack(workingDir, directory).apply(filename, outputDir);
   }
 
   public static void extract(File tarFile, File outputDir) throws IOException, InterruptedException, ArchiveException {

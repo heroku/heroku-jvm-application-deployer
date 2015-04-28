@@ -10,34 +10,47 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 
 public class BuildsDeployer extends Deployer {
 
-  private static String JVM_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz";
+  private static final String JVM_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz";
 
-  public BuildsDeployer(String name, File rootDir, File targetDir, Logger logger) {
+  public BuildsDeployer(String notUsed, String name, File rootDir, File targetDir, Logger logger) {
     super("builds-api", name, rootDir, targetDir, logger);
   }
 
-  protected void deploy(Map<String, String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String, String> processTypes, String tarFilename) throws Exception {
-    mergeConfigVars(configVars);
-    deploySource(stack, processTypes, buildSourceTar(tarFilename));
-  }
+  @Override
+  protected void addExtras(Map<String, String> processTypes) throws IOException {
+    Map<String, String> allProcessTypes = getProcfile();
+    allProcessTypes.putAll(processTypes);
+    if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
 
-  protected void createSlug(String tarFilename, List<File> includedFiles, String jdkVersion, URL jdkUrl, String stack) throws Exception {
-    buildSourceTar(tarFilename);
-  }
+    String procfile = "";
 
-  protected void addExtras() throws IOException {
+    for (String key : allProcessTypes.keySet()) {
+      procfile += key + ": " + allProcessTypes.get(key) + "\n";
+    }
+
+    logDebug("Procfile:\n===================\n" + procfile + "\n===================");
+
     Files.write(
-        Paths.get(new File(getAppDir(), "Procfile").getPath()),
-        ("web: java $JAVA_OPTS -cp target/classes:target/dependency/* Main").getBytes(StandardCharsets.UTF_8)
+        Paths.get(new File(getAppDir(), "Procfile").getPath()), (procfile).getBytes(StandardCharsets.UTF_8)
     );
   }
 
-  protected File buildSourceTar(String tarFilename)
+  protected void vendorJdk(String jdkVersion, URL jdkUrl, String stackName) throws IOException, InterruptedException, ArchiveException {
+    if (jdkVersion != null) {
+      Files.write(
+          Paths.get(new File(getAppDir(), "system.properties").getPath()),
+          ("java.runtime.version=" + jdkVersion).getBytes(StandardCharsets.UTF_8)
+      );
+    } else if (jdkUrl != null) {
+      logWarn("JDK URL is not supported with partial slug deployment! Ignoring...");
+    }
+  }
+
+  protected File buildSlugFile(String tarFilename)
       throws InterruptedException, ArchiveException, IOException {
     logInfo("---> Creating build...");
     try {
@@ -54,7 +67,7 @@ public class BuildsDeployer extends Deployer {
     return tarFile;
   }
 
-  protected Builds deploySource(String stack, Map<String, String> processTypes, File tarFile)
+  protected void deploySlug(String stack, Map<String, String> processTypes, File tarFile)
       throws IOException, ArchiveException, InterruptedException {
     Builds builds = new Builds(name, stack, parseCommit(), getEncodedApiKey());
 
@@ -67,17 +80,14 @@ public class BuildsDeployer extends Deployer {
     logDebug("Heroku Blob URL: " + builds.getBlobUrl());
 
     logInfo("---> Uploading build...");
-    builds.upload(tarFile, this);
+    builds.upload(tarFile, logger);
 
+    logInfo("---> Running buildpack...");
     builds.build(new RestClient.OutputLogger() {
       @Override
       public void log(String line) {
         logInfo("remote: " + line);
       }
     });
-
-    logInfo("---> Done");
-
-    return builds;
   }
 }

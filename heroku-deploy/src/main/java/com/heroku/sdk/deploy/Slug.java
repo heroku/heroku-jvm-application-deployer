@@ -1,12 +1,11 @@
 package com.heroku.sdk.deploy;
 
 
-import com.heroku.sdk.deploy.utils.UploadListener;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Slug extends ApiEndpoint {

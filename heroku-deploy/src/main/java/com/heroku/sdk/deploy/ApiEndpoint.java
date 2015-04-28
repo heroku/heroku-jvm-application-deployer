@@ -1,6 +1,6 @@
 package com.heroku.sdk.deploy;
 
-import com.heroku.sdk.deploy.utils.UploadListener;
+import com.heroku.sdk.deploy.utils.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public abstract class ApiEndpoint {
     headers.put("Accept", "application/vnd.heroku+json; version=3");
   }
 
-  public void upload(File slugFile, UploadListener listener) throws IOException {
+  public void upload(File slugFile, Logger listener) throws IOException {
     if (blobUrl == null) {
       throw new IllegalStateException("Slug must be created before uploading!");
     }

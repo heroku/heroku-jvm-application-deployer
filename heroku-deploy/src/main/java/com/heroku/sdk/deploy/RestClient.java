@@ -1,7 +1,7 @@
 package com.heroku.sdk.deploy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heroku.sdk.deploy.utils.UploadListener;
+import com.heroku.sdk.deploy.utils.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -110,7 +110,7 @@ public class RestClient {
     }
   }
 
-  public static void put(String urlStr, File file, UploadListener uploadListener) throws IOException {
+  public static void put(String urlStr, File file, Logger uploadListener) throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpPut request = new HttpPut(urlStr);
 
@@ -181,11 +181,11 @@ public class RestClient {
 
     private OutputStreamProgress outStream;
 
-    private final UploadListener uploadListener;
+    private final Logger uploadListener;
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
-    public FileEntityWithProgress(File file, UploadListener uploadListener) {
+    public FileEntityWithProgress(File file, Logger uploadListener) {
       super(file);
       this.uploadListener = uploadListener;
     }

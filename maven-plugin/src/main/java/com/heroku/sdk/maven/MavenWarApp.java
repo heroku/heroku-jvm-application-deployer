@@ -7,6 +7,7 @@ import org.apache.maven.plugin.logging.Log;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class MavenWarApp extends WarApp {
   private Log log;
@@ -17,8 +18,8 @@ public class MavenWarApp extends WarApp {
   }
 
   @Override
-  protected void prepare(List<File> includedFiles) throws IOException {
-    super.prepare(includedFiles);
+  protected void prepare(List<File> includedFiles, Map<String, String> processTypes) throws IOException {
+    super.prepare(includedFiles, processTypes);
 
     FileUtils.copyFile(new File(getRootDir(), "pom.xml"), new File(getAppDir(), "pom.xml"));
   }

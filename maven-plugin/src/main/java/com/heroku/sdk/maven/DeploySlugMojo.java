@@ -5,18 +5,17 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Deploys a Slug to upload to Heroku. Creates the slug only if needed.
+ * Deploys an application to Heroku
  *
- * @goal release-slug
+ * @goal deploy-slug
  * @execute phase="package"
  * @requiresDependencyResolution
  */
-public class ReleaseSlugMojo extends HerokuMojo {
+public class DeploySlugMojo extends HerokuMojo {
 
   /**
    * The process types used to run on Heroku (similar to Procfile).
@@ -28,7 +27,6 @@ public class ReleaseSlugMojo extends HerokuMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-
     CopyDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
 
     List<File> includedDirs = getIncludes();
@@ -37,12 +35,11 @@ public class ReleaseSlugMojo extends HerokuMojo {
     }
 
     try {
-      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog()))
-          .releaseSlug(slugFilename, processTypes, configVars, stack);
-    } catch (FileNotFoundException e) {
-      throw new MojoFailureException("The slug file was not found. You must run heroku:create-slug first", e);
+      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog())).deploySlug(
+          includedDirs, getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack, processTypes, slugFilename
+      );
     } catch (Exception e) {
-      throw new MojoFailureException("Failed to deploy Slug", e);
+      throw new MojoFailureException("Failed to deploy application", e);
     }
   }
 }

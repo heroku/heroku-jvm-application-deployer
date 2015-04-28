@@ -24,6 +24,11 @@ public class BuildsDeployer extends Deployer {
 
   @Override
   protected void addExtras(Map<String, String> processTypes) throws IOException {
+    addProcfile(processTypes);
+    addJdkOverlay();
+  }
+
+  private void addProcfile(Map<String, String> processTypes) throws IOException {
     Map<String, String> allProcessTypes = getProcfile();
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
@@ -41,11 +46,21 @@ public class BuildsDeployer extends Deployer {
     );
   }
 
+  private void addJdkOverlay() throws IOException {
+    File jdkOverlayDir = new File(getRootDir(), ".jdk-overlay");
+    File toJdkOverlayDir = new File(getAppDir(), ".jdk-overlay");
+    if (jdkOverlayDir.exists()) {
+      logInfo("     - including JDK overlay");
+      FileUtils.copyDirectory(jdkOverlayDir, toJdkOverlayDir);
+    }
+  }
+
   protected void vendorJdk(String jdkVersion, URL jdkUrl, String stackName) throws IOException, InterruptedException, ArchiveException {
-    if (jdkVersion != null) {
+    String realJdkVersion = jdkVersion == null ? getJdkVersion() : jdkVersion;
+    if (realJdkVersion != null) {
       Files.write(
           Paths.get(new File(getAppDir(), "system.properties").getPath()),
-          ("java.runtime.version=" + jdkVersion).getBytes(StandardCharsets.UTF_8)
+          ("java.runtime.version=" + realJdkVersion).getBytes(StandardCharsets.UTF_8)
       );
     } else if (jdkUrl != null) {
       logWarn("JDK URL is not supported with partial slug deployment! Ignoring...");

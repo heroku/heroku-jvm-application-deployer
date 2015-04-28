@@ -46,7 +46,7 @@ public class SlugDeployer extends Deployer {
     buildSlugFile(slugFilename);
   }
 
-  public void deploySlug(String slugFilename, Map<String, String> processTypes, Map<String, String> configVars, String stack) throws Exception {
+  public void releaseSlug(String slugFilename, Map<String, String> processTypes, Map<String, String> configVars, String stack) throws Exception {
     mergeConfigVars(configVars);
 
     File slugFile = new File(getHerokuDir(), slugFilename);

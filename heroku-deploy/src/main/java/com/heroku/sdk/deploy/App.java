@@ -21,8 +21,7 @@ public class App implements Logger  {
   }
 
   public App(String buildPackDesc, String name, File rootDir, File targetDir) {
-    // TODO determine the right deployer
-    this.deployer = new SlugDeployer(buildPackDesc, name, rootDir, targetDir, this);
+    this.deployer = new BuildsDeployer(buildPackDesc, name, rootDir, targetDir, this);
   }
 
   @Override
@@ -65,13 +64,28 @@ public class App implements Logger  {
     deploy(includedFiles, configVars, jdkUrl.toString(), jdkUrl, stack, processTypes, tarFilename);
   }
 
-  public void deploySlug(String slugFilename, Map<String, String> processTypes, Map<String, String> configVars, String stack) throws Exception {
+  protected void deploySlug(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String, String> processTypes, String tarFilename) throws Exception {
+    deployer = new SlugDeployer(deployer.getBuildPackDesc(), getName(), getRootDir(), deployer.getTargetDir(), this);
+    deploy(includedFiles, configVars, jdkVersion, jdkUrl, stack, processTypes, tarFilename);
+  }
+
+  public void deploySlug(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, String stack, Map<String, String> processTypes, String tarFilename) throws Exception {
+    deploySlug(includedFiles, configVars, jdkVersion, null, stack, processTypes, tarFilename);
+  }
+
+  public void deploySlug(List<File> includedFiles, Map<String, String> configVars, URL jdkUrl, String stack, Map<String, String> processTypes, String tarFilename) throws Exception {
+    deploySlug(includedFiles, configVars, jdkUrl.toString(), jdkUrl, stack, processTypes, tarFilename);
+  }
+
+  public void releaseSlug(String slugFilename, Map<String, String> processTypes, Map<String, String> configVars, String stack) throws Exception {
     SlugDeployer slugDeployer = new SlugDeployer(deployer.getBuildPackDesc(), getName(), getRootDir(), deployer.getTargetDir(), this);
-    slugDeployer.deploySlug(slugFilename, processTypes, configVars, stack);
+    deployer = slugDeployer;
+    slugDeployer.releaseSlug(slugFilename, processTypes, configVars, stack);
   }
 
   protected void createSlug(String slugFilename, List<File> includedFiles, String jdkVersion, URL jdkUrl, String stack) throws Exception {
     SlugDeployer slugDeployer = new SlugDeployer(deployer.getBuildPackDesc(), getName(), getRootDir(), deployer.getTargetDir(), this);
+    deployer = slugDeployer;
     prepare(includedFiles, new HashMap<String, String>());
     slugDeployer.createSlug(slugFilename, jdkVersion, jdkUrl, stack);
   }

@@ -15,7 +15,6 @@ public class MavenApp extends App {
 
   public MavenApp(String name, File rootDir, File targetDir, Log log) {
     super("heroku-maven-plugin", name, rootDir, targetDir);
-//    super(name, rootDir, targetDir);
     this.log = log;
   }
 

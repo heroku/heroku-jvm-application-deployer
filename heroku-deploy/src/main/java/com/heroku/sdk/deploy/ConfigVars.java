@@ -9,18 +9,18 @@ import java.util.Map;
 
 public class ConfigVars {
 
-  private App app;
+  private Deployer deployer;
 
   private String encodedApiKey;
 
-  public ConfigVars(App app, String encodedApiKey) {
-    this.app = app;
+  public ConfigVars(Deployer deployer, String encodedApiKey) {
+    this.deployer = deployer;
     this.encodedApiKey = encodedApiKey;
   }
 
   public void merge(Map<String, String> configVars) throws Exception {
     Map<String, String> existingConfigVars = getConfigVars();
-    app.logDebug("Heroku existing config variables: " + existingConfigVars.keySet());
+    deployer.logDebug("Heroku existing config variables: " + existingConfigVars.keySet());
 
     Map<String, String> newConfigVars = new HashMap<String, String>();
     for (String key : configVars.keySet()) {
@@ -30,7 +30,7 @@ public class ConfigVars {
   }
 
   protected Map<String, String> getConfigVars() throws Exception {
-    String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(app.getName(), "UTF-8") + "/config-vars";
+    String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(deployer.getName(), "UTF-8") + "/config-vars";
 
     Map<String, String> headers = new HashMap<String, String>();
     headers.put("Authorization", encodedApiKey);
@@ -51,7 +51,7 @@ public class ConfigVars {
 
   protected void setConfigVars(Map<String, String> configVars) throws IOException {
     if (!configVars.isEmpty()) {
-      String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(app.getName(), "UTF-8") + "/config-vars";
+      String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(deployer.getName(), "UTF-8") + "/config-vars";
 
       String data = "{";
       boolean first = true;

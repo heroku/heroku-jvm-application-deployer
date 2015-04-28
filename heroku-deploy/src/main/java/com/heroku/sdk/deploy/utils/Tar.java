@@ -1,4 +1,4 @@
-package com.heroku.sdk.deploy;
+package com.heroku.sdk.deploy.utils;
 
 import org.apache.commons.compress.archivers.*;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;

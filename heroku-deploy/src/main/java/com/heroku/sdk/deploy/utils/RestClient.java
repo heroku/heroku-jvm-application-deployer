@@ -1,4 +1,4 @@
-package com.heroku.sdk.deploy;
+package com.heroku.sdk.deploy.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heroku.sdk.deploy.utils.Logger;

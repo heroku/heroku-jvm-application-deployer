@@ -1,6 +1,7 @@
 package com.heroku.sdk.deploy;
 
 import com.heroku.sdk.deploy.utils.Logger;
+import com.heroku.sdk.deploy.utils.RestClient;
 
 import java.io.File;
 import java.io.IOException;

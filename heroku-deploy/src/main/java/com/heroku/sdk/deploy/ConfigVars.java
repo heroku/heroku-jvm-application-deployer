@@ -1,5 +1,6 @@
 package com.heroku.sdk.deploy;
 
+import com.heroku.sdk.deploy.utils.RestClient;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.IOException;

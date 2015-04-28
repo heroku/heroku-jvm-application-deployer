@@ -246,7 +246,7 @@ You can customize the JDK by creating a `.jdk-overlay` directory as described in
 +  `mvn heroku:dashboard` opens the Dashboard for the application on Heroku.com
 +  `mvn heroku:eclipse-launch-config` generates launch configurations for Eclipse IDE
 +  `mvn heroku:create-slug` builds the slug file without deploying it
-+  `mvn heroku:deploy-slug` deploys a slug already created by `create-slug` or `deploy` and deploy it. This command does not work with the `deploy-war` goal.
++  `mvn heroku:release-slug` deploys a slug already created by `create-slug` or `deploy` and deploy it. This command does not work with the `deploy-war` goal.
 
 ## Hacking
 

@@ -12,11 +12,11 @@ import java.util.Map;
 /**
  * Deploys a Slug to upload to Heroku. Creates the slug only if needed.
  *
- * @goal deploy-slug
+ * @goal release-slug
  * @execute phase="package"
  * @requiresDependencyResolution
  */
-public class DeploySlugMojo extends HerokuMojo {
+public class ReleaseSlugMojo extends HerokuMojo {
 
   /**
    * The process types used to run on Heroku (similar to Procfile).

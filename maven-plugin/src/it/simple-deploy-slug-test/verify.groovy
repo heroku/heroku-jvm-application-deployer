@@ -9,8 +9,8 @@ String appName = props["heroku.appName"]
 
 try {
     def log = FileUtils.fileRead(new File(basedir, "build.log"));
-    assert log.contains("Creating build"), "the build was not created"
-    assert log.contains("Uploading build"), "the build was not uploaded"
+    assert log.contains("Creating slug"), "did not create the slug"
+    assert log.contains("Uploading slug"), "did not upload the slug"
     assert log.contains("BUILD SUCCESS"), "the build was not successful"
 
     def process = "heroku run java -version -a${appName}".execute()

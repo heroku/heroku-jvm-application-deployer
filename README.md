@@ -1,7 +1,7 @@
 # heroku-maven-plugin [![Build Status](https://travis-ci.org/heroku/heroku-maven-plugin.svg)](https://travis-ci.org/heroku/heroku-maven-plugin) [![Download](https://api.bintray.com/packages/heroku/maven/sdk/images/download.svg) ](https://bintray.com/heroku/maven/sdk/_latestVersion)
 
 This plugin is used to deploy Java applications directly to Heroku without pushing to a Git repository.
-This is can be useful when deploying from a CI server.
+This is can be useful when deploying from a CI server, deploying pre-built Jar or War files.
 
 The plugin has two targets:
 
@@ -119,7 +119,7 @@ You can set configuration variables like this:
 </configVars>
 ```
 
-Any variable defined in `configVars` will override defaults and previous defined config variables.
+Any variable defined in `configVars` will override defaults and previously defined config variables.
 
 You may set process types (similar to a `Procfile`):
 
@@ -245,6 +245,8 @@ You can customize the JDK by creating a `.jdk-overlay` directory as described in
 
 +  `mvn heroku:dashboard` opens the Dashboard for the application on Heroku.com
 +  `mvn heroku:eclipse-launch-config` generates launch configurations for Eclipse IDE
++  `mvn heroku:deploy-slug` packages an entire slug locally, and deploy it's to Heroku
++  `mvn heroku:deploy-war-slug` packages an entire slug locally with a WAR file, and deploy it's to Heroku
 +  `mvn heroku:create-slug` builds the slug file without deploying it
 +  `mvn heroku:release-slug` deploys a slug already created by `create-slug` or `deploy` and deploy it. This command does not work with the `deploy-war` goal.
 

@@ -35,6 +35,18 @@ public class WarApp extends App {
     super.deploy(includedFiles, configVars, jdkUrl, stack, defaultProcTypes(), slugFileName);
   }
 
+  public void deploySlug(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, String slugFileName) throws Exception {
+    includedFiles.add(webappRunnerJar);
+    includedFiles.add(warFile);
+    super.deploySlug(includedFiles, configVars, jdkVersion, stack, defaultProcTypes(), slugFileName);
+  }
+
+  public void deploySlug(List<File> includedFiles, Map<String,String> configVars, URL jdkUrl, String stack, String slugFileName) throws Exception {
+    includedFiles.add(webappRunnerJar);
+    includedFiles.add(warFile);
+    super.deploySlug(includedFiles, configVars, jdkUrl, stack, defaultProcTypes(), slugFileName);
+  }
+
   protected Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = new HashMap<String, String>();
     processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(webappRunnerJar) + " $WEBAPP_RUNNER_OPTS --port $PORT " + relativize(warFile));

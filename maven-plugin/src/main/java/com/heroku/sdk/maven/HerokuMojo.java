@@ -52,7 +52,6 @@ public abstract class HerokuMojo extends AbstractMojo {
    * <br/>
    * Command line -Dheroku.appName=...
    *
-   * @required
    * @parameter property="heroku.appName"
    */
   protected String appName = null;

@@ -17,6 +17,16 @@ public class Toolbelt {
     }
   }
 
+  public static String getAppName() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    String appsInfo = runHerokuCommand("apps:info -s");
+    for (String line : appsInfo.split("\n")) {
+      if (line.startsWith("name=")) {
+        return line.replace("name=", "");
+      }
+    }
+    return null;
+  }
+
   private static String runHerokuCommand(final String command) throws InterruptedException, ExecutionException, TimeoutException {
     ExecutorService executor = Executors.newSingleThreadExecutor();
     FutureTask<String> future =

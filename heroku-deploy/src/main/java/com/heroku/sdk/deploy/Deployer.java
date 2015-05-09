@@ -38,6 +38,11 @@ public abstract class Deployer {
     this.logger = logger;
     this.buildPackDesc = buildPackDesc;
     this.name = getHerokuProperties().getProperty("heroku.appName", name);
+    try {
+      if (this.name == null) this.name = Toolbelt.getAppName();
+    } catch (Exception e) {
+      throw new IllegalArgumentException("No app specified.");
+    }
     this.rootDir = rootDir;
     this.targetDir = targetDir;
 

@@ -14,9 +14,12 @@ public class DeployJar extends App {
 
   protected File jarFile;
 
-  public DeployJar(String name, File jarFile) throws IOException {
+  protected String jarOpts;
+
+  public DeployJar(String name, File jarFile, String jarOpts) throws IOException {
     super(name);
     this.jarFile = jarFile;
+    this.jarOpts = jarOpts;
   }
 
   public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, String slugFileName) throws Exception {
@@ -31,7 +34,7 @@ public class DeployJar extends App {
 
   protected Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = new HashMap<>();
-    processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(jarFile));
+    processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(jarFile) + " " + jarOpts + " $JAR_OPTS");
 
     return processTypes;
   }
@@ -53,7 +56,8 @@ public class DeployJar extends App {
   public void logInfo(String message) { System.out.println(message); }
 
   public static void main(String[] args) throws Exception {
-    String warFile = System.getProperty("heroku.jarFile", null);
+    String jarFile = System.getProperty("heroku.jarFile", null);
+    String jarOpts = System.getProperty("heroku.jarOpts", "");
     String appName = System.getProperty("heroku.appName", null);
     String jdkVersion = System.getProperty("heroku.jdkVersion", null);
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
@@ -62,14 +66,14 @@ public class DeployJar extends App {
 
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
 
-    if (warFile == null) {
+    if (jarFile == null) {
       throw new IllegalArgumentException("Path to WAR file must be provided with heroku.warFile system property!");
     }
     if (appName == null) {
       throw new IllegalArgumentException("Heroku app name must be provided with heroku.appName system property!");
     }
 
-    (new DeployJar(appName, new File(warFile))).
+    (new DeployJar(appName, new File(jarFile), jarOpts)).
         deploy(includes, new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName);
   }
 }

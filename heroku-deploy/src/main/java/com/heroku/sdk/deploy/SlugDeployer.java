@@ -1,5 +1,6 @@
 package com.heroku.sdk.deploy;
 
+import com.heroku.sdk.deploy.endpoints.Slug;
 import com.heroku.sdk.deploy.utils.Logger;
 import com.heroku.sdk.deploy.utils.Tar;
 import org.apache.commons.compress.archivers.ArchiveException;

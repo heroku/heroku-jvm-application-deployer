@@ -1,4 +1,4 @@
-package com.heroku.sdk.deploy;
+package com.heroku.sdk.deploy.endpoints;
 
 
 import com.heroku.sdk.deploy.utils.RestClient;

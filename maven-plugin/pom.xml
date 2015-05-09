@@ -80,7 +80,7 @@
 
   <profiles>
     <profile>
-      <id>integration-test</id>
+      <id>it</id>
       <properties>
         <invoker.skip>false</invoker.skip>
       </properties>

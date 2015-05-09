@@ -255,11 +255,11 @@ You can customize the JDK by creating a `.jdk-overlay` directory as described in
 To run the entire suite of integration tests, use the following command:
 
 ```sh-session
-$ mvn clean install -Pintegration-test
+$ mvn clean install -Pit
 ```
 
 To run an individual integration test, use a command like this:
 
 ```sh-session
-$ mvn clean install -Pintegration-test -Dinvoker.test=simple-deploy-test
+$ mvn clean install -Pit -Dinvoker.test=simple-deploy-test
 ```

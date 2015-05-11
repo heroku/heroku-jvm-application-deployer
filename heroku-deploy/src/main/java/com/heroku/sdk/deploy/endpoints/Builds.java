@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class Builds extends ApiEndpoint {
 
+  private static final String JVM_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz";
+
   private String blobGetUrl;
 
   public Builds(String appName, String stackName, String commit, String encodedApiKey) {
@@ -44,7 +46,9 @@ public class Builds extends ApiEndpoint {
 
     String urlStr = BASE_URL + "/apps/" + appName + "/builds";
 
-    String data = "{\"source_blob\":{\"url\":\"" + StringEscapeUtils.escapeJson(blobGetUrl) + "\",\"version\":\"" + StringEscapeUtils.escapeJson(commit) + "\"}}";
+    String data = "{"+
+        "\"buildpacks\":[{\"url\":\"" + StringEscapeUtils.escapeJson(JVM_BUILDPACK_URL) + "\"}], " +
+        "\"source_blob\":{\"url\":\"" + StringEscapeUtils.escapeJson(blobGetUrl) + "\",\"version\":\"" + StringEscapeUtils.escapeJson(commit) + "\"}}";
 
     Map buildResponse = RestClient.post(urlStr, data, headers);
 

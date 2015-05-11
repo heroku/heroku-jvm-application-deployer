@@ -17,8 +17,6 @@ import java.util.Map;
 
 public class BuildsDeployer extends Deployer {
 
-  private static final String JVM_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz";
-
   public BuildsDeployer(String notUsed, String name, File rootDir, File targetDir, Logger logger) {
     super("builds-api", name, rootDir, targetDir, logger);
   }
@@ -89,18 +87,15 @@ public class BuildsDeployer extends Deployer {
       throws IOException, ArchiveException, InterruptedException {
     Builds builds = new Builds(name, stack, parseCommit(), getEncodedApiKey());
 
-    logInfo("---> Setting buildpack...");
-    logInfo("     - name: jvm-common");
-    builds.setBuildpack(JVM_BUILDPACK_URL);
-
     Map sourceResponse = builds.createSource();
     logDebug("Heroku Source response: " + sourceResponse);
     logDebug("Heroku Blob URL: " + builds.getBlobUrl());
 
     logInfo("---> Uploading build...");
     builds.upload(tarFile, logger);
+    logInfo("     - success");
 
-    logInfo("---> Running buildpack...");
+    logInfo("---> Deploying...");
     builds.build(new RestClient.OutputLogger() {
       @Override
       public void log(String line) {

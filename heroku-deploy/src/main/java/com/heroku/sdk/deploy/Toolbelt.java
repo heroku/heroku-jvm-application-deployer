@@ -21,7 +21,7 @@ public class Toolbelt {
     if (remotes.containsKey("heroku")) {
       return parseAppFromRemote(remotes.get("heroku"));
     } else {
-      throw new RuntimeException("Could not find app name. No 'heroku' remote.");
+      throw new RuntimeException("No 'heroku' remote found.");
     }
   }
 

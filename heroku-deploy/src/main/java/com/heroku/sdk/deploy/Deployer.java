@@ -42,7 +42,7 @@ public abstract class Deployer {
     try {
       if (this.name == null) this.name = Toolbelt.getAppName(rootDir);
     } catch (Exception e) {
-      throw new IllegalArgumentException("No app specified.");
+      throw new IllegalArgumentException("Could not find app name: " + e.getMessage(), e);
     }
     this.rootDir = rootDir;
     this.targetDir = targetDir;

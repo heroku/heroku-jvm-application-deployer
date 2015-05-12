@@ -19,7 +19,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>0.3.6</version>
+      <version>0.4.1</version>
       <configuration>
         <appName>${heroku.appName}</appName>
         <processTypes>
@@ -57,7 +57,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>0.3.6</version>
+      <version>0.4.1</version>
       <configuration>
         <appName>${heroku.appName}</appName>
       </configuration>
@@ -249,6 +249,7 @@ You can customize the JDK by creating a `.jdk-overlay` directory as described in
 +  `mvn heroku:deploy-war-slug` packages an entire slug locally with a WAR file, and deploy it's to Heroku
 +  `mvn heroku:create-slug` builds the slug file without deploying it
 +  `mvn heroku:release-slug` deploys a slug already created by `create-slug` or `deploy` and deploy it. This command does not work with the `deploy-war` goal.
++  `mvn heroku:run-war` runs a war file locally
 
 ## Hacking
 

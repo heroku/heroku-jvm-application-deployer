@@ -49,7 +49,7 @@ public class BuildsDeployer extends Deployer {
     File jdkOverlayDir = new File(getRootDir(), ".jdk-overlay");
     File toJdkOverlayDir = new File(getAppDir(), ".jdk-overlay");
     if (jdkOverlayDir.exists()) {
-      logInfo("     - including JDK overlay");
+      logInfo("       - including JDK overlay");
       FileUtils.copyDirectory(jdkOverlayDir, toJdkOverlayDir);
     }
   }
@@ -68,7 +68,7 @@ public class BuildsDeployer extends Deployer {
 
   protected File buildSlugFile(String tarFilename)
       throws InterruptedException, ArchiveException, IOException {
-    logInfo("---> Creating build...");
+    logInfo("-----> Creating build...");
     try {
       FileUtils.forceDelete(new File(getHerokuDir(), tarFilename));
     } catch (IOException e) { /* no-op */ }
@@ -78,8 +78,8 @@ public class BuildsDeployer extends Deployer {
     Long size = tarFile.length() / (1024 * 1024);
     if (size == 0l) size = 1l;
 
-    logInfo("     - file: " + relativize(tarFile));
-    logInfo("     - size: " + size + "MB");
+    logInfo("       - file: " + relativize(tarFile));
+    logInfo("       - size: " + size + "MB");
     return tarFile;
   }
 
@@ -91,11 +91,11 @@ public class BuildsDeployer extends Deployer {
     logDebug("Heroku Source response: " + sourceResponse);
     logDebug("Heroku Blob URL: " + builds.getBlobUrl());
 
-    logInfo("---> Uploading build...");
+    logInfo("-----> Uploading build...");
     builds.upload(tarFile, logger);
-    logInfo("     - success");
+    logInfo("       - success");
 
-    logInfo("---> Deploying...");
+    logInfo("-----> Deploying...");
     builds.build(new RestClient.OutputLogger() {
       @Override
       public void log(String line) {

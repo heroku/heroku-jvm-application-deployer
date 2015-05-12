@@ -52,9 +52,9 @@ public class SlugDeployer extends Deployer {
 
     File slugFile = new File(getHerokuDir(), slugFilename);
     if (slugFile.exists()) {
-      logInfo("---> Using existing slug...");
-      logInfo("     - file: " + relativize(slugFile));
-      logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
+      logInfo("-----> Using existing slug...");
+      logInfo("       - file: " + relativize(slugFile));
+      logInfo("       - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
       deploySlug(stack, processTypes, slugFile);
     } else {
       throw new FileNotFoundException("Slug file not found!");
@@ -63,13 +63,13 @@ public class SlugDeployer extends Deployer {
 
   protected File buildSlugFile(String slugFilename)
       throws InterruptedException, ArchiveException, IOException {
-    logInfo("---> Creating slug...");
+    logInfo("-----> Creating slug...");
     try {
       FileUtils.forceDelete(new File(getHerokuDir(), slugFilename));
     } catch (IOException e) { /* no-op */ }
     File slugFile = Tar.create(slugFilename, "./app", getHerokuDir(), getHerokuDir());
-    logInfo("     - file: " + relativize(slugFile));
-    logInfo("     - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
+    logInfo("       - file: " + relativize(slugFile));
+    logInfo("       - size: " + (slugFile.length() / (1024 * 1024)) + "MB");
     return slugFile;
   }
 
@@ -113,14 +113,14 @@ public class SlugDeployer extends Deployer {
       } else {
         throw new IllegalArgumentException("Unsupported Stack: " + stackName);
       }
-      logInfo("     - installing: OpenJDK " + realJdkVersion);
+      logInfo("       - installing: OpenJDK " + realJdkVersion);
 
       Files.write(
           Paths.get(new File(getAppDir(), "system.properties").getPath()),
           ("java.runtime.version=" + realJdkVersion).getBytes(StandardCharsets.UTF_8)
       );
     } else {
-      logInfo("     - installing: Custom JDK");
+      logInfo("       - installing: Custom JDK");
     }
 
     File jdkHome = new File(getAppDir(), ".jdk");
@@ -191,7 +191,7 @@ public class SlugDeployer extends Deployer {
     File jdkOverlayDir = new File(getRootDir(), ".jdk-overlay");
 
     if (jdkOverlayDir.exists() && jdkDir.exists()) {
-      logInfo("     - applying JDK overlay");
+      logInfo("       - applying JDK overlay");
       FileUtils.copyDirectory(jdkOverlayDir, jdkDir);
     }
   }

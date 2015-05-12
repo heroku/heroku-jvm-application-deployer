@@ -70,12 +70,12 @@ public abstract class Deployer {
   }
 
   public void prepare(List<File> includedFiles, Map<String, String> processTypes) throws IOException {
-    logInfo("---> Packaging application...");
-    logInfo("     - app: " + name);
+    logInfo("-----> Packaging application...");
+    logInfo("       - app: " + name);
 
     try {
       for (File file : includedFiles) {
-        logInfo("     - including: " + relativize(file));
+        logInfo("       - including: " + relativize(file));
         copy(file, new File(getAppDir(), relativize(file)));
       }
       try {
@@ -106,7 +106,7 @@ public abstract class Deployer {
   protected void createAndReleaseSlug(String stack, Map<String, String> processTypes, String slugFilename)
       throws IOException, ArchiveException, InterruptedException {
     deploySlug(stack, processTypes, buildSlugFile(slugFilename));
-    logInfo("---> Done");
+    logInfo("-----> Done");
   }
 
   protected abstract File buildSlugFile(String slugFilename)
@@ -117,17 +117,17 @@ public abstract class Deployer {
 
   protected void uploadSlug(Slug slug, File slugFile, Set processTypes)
       throws IOException, ArchiveException, InterruptedException {
-    logInfo("---> Uploading slug...");
+    logInfo("-----> Uploading slug...");
     slug.upload(slugFile, logger);
-    logInfo("     - stack: " + slug.getStackName());
-    logInfo("     - process types: " + processTypes);
+    logInfo("       - stack: " + slug.getStackName());
+    logInfo("       - process types: " + processTypes);
   }
 
   protected void releaseSlug(Slug slug) throws IOException {
-    logInfo("---> Releasing...");
+    logInfo("-----> Releasing...");
     Map releaseResponse = slug.release();
     logDebug("Heroku Release response: " + releaseResponse);
-    logInfo("     - version: " + releaseResponse.get("version"));
+    logInfo("       - version: " + releaseResponse.get("version"));
   }
 
   protected String getJdkVersion() {

@@ -1,5 +1,9 @@
 ## Master
 
+Accounted for Procfile's with empty lines in parsing
+
+## 0.4.1
+
 * Added ability to log incremental progress of slug upload.
 
 ## 0.3.6

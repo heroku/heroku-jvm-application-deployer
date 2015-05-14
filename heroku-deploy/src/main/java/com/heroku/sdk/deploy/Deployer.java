@@ -167,11 +167,12 @@ public abstract class Deployer {
         BufferedReader reader = new BufferedReader(new FileReader(procfile));
         String line = reader.readLine();
         while (line != null) {
-          Integer colon = line.indexOf(":");
-          String key = line.substring(0, colon);
-          String value = line.substring(colon + 1);
-          procTypes.put(key.trim(), value.trim());
-
+          if (line.contains(":")) {
+            Integer colon = line.indexOf(":");
+            String key = line.substring(0, colon);
+            String value = line.substring(colon + 1);
+            procTypes.put(key.trim(), value.trim());
+          }
           line = reader.readLine();
         }
       } catch (Exception e) {

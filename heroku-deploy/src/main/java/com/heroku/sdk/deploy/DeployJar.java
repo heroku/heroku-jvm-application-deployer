@@ -2,7 +2,9 @@ package com.heroku.sdk.deploy;
 
 import org.apache.commons.io.FileUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -35,7 +37,7 @@ public class DeployJar extends App {
   protected Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = new HashMap<>();
     processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(jarFile) + " " + jarOpts + " $JAR_OPTS");
-
+    processTypes.putAll(getProcfile());
     return processTypes;
   }
 
@@ -50,6 +52,31 @@ public class DeployJar extends App {
     }
 
     return includeFiles;
+  }
+
+  protected Map<String, String> getProcfile() {
+    Map<String, String> procTypes = new HashMap<String, String>();
+
+    File procfile = new File("Procfile");
+    if (procfile.exists()) {
+      try {
+        BufferedReader reader = new BufferedReader(new FileReader(procfile));
+        String line = reader.readLine();
+        while (line != null) {
+          if (line.contains(":")) {
+            Integer colon = line.indexOf(":");
+            String key = line.substring(0, colon);
+            String value = line.substring(colon + 1);
+            procTypes.put(key.trim(), value.trim());
+          }
+          line = reader.readLine();
+        }
+      } catch (Exception e) {
+        logDebug(e.getMessage());
+      }
+    }
+
+    return procTypes;
   }
 
   @Override

@@ -101,7 +101,20 @@ This will start the web application in a way that is very similar to how it is r
 
 ## Configuration
 
-In the `<configuration>` element of the plugin, you can set the JDK version like so:
+In the `<configuration>` element of the plugin, you can set the app name like this:
+
+```xml
+<appName>my-app-name</appName>
+```
+
+The plugin will detect the appName from the following places in this order:
+
+* The `heroku.properties` file (see below)
+* The `heroku.appName` system property
+* The Maven configuration (shown above)
+* The "heroku" Git remote
+
+You can set the JDK version like so:
 
 ```xml
 <jdkVersion>1.8</jdkVersion>

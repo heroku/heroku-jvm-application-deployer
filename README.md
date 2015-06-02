@@ -256,7 +256,7 @@ You can customize the JDK by creating a `.jdk-overlay` directory as described in
 
 ## Customizing the Slug
 
-You can customize the slug by using auxillary buildpacks using the `<buildpacks>` configuration element.
+You can customize the slug by using auxiliary buildpacks using the `<buildpacks>` configuration element.
 For example, if you need to install a native library such as imagemagik, you can add the following to the
 plugin config:
 

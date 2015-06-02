@@ -46,11 +46,6 @@ try {
     output = process.text
     assert output.contains("1.8"), "with_jmap failed: ${output}"
 
-    process = "heroku logs -a${appName}".execute()
-    process.waitFor()
-    output = process.text
-    assert output.contains("Picked up JAVA_TOOL_OPTIONS: -Xmx384m"), "profile.d script was not run: " + output
-
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text

@@ -11,6 +11,8 @@ try {
     def log = FileUtils.fileRead(new File(basedir, "build.log"));
     assert log.contains("Creating build"), "the build was not created"
     assert log.contains("Uploading build"), "the build was not uploaded"
+    assert log.contains("remote:"), "the buildpacks were not run"
+    assert log.contains("heroku-maven-plugin app detected"), "jvm-common buildpack not detected"
     assert log.contains("BUILD SUCCESS"), "the build was not successful"
 
     def process = "heroku run java -version -a${appName}".execute()
@@ -18,7 +20,7 @@ try {
     output = process.text
     assert output.contains("1.8"), "Wrong version of JDK packaged into slug: ${output}"
 
-    process = "heroku run cat .startup/with_jmap -a${appName}".execute()
+    process = "heroku run cat .heroku/bin/with_jmap -a${appName}".execute()
     process.waitFor()
     output = process.text
     process = "curl -L https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/master/opt/with_jmap".execute()
@@ -26,7 +28,7 @@ try {
     jvmCommonScript = process.text
     assert output.contains(jvmCommonScript), "with_jmap script not copied properly: ${output}"
 
-    process = "heroku run cat .startup/with_jstack -a${appName}".execute()
+    process = "heroku run cat .heroku/bin/with_jstack -a${appName}".execute()
     process.waitFor()
     output = process.text
     process = "curl -L https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/master/opt/with_jstack".execute()

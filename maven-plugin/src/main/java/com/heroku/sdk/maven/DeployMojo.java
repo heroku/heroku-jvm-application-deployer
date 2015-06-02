@@ -5,6 +5,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +27,13 @@ public class DeployMojo extends HerokuMojo {
    */
   protected Map<String,String> processTypes = null;
 
+  /**
+   * The buildpacks to run against the partial slug
+   *
+   * @parameter property="heroku.buildpacks"
+   */
+  protected String[] buildpacks = new String[]{};
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     CopyDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
@@ -35,8 +44,8 @@ public class DeployMojo extends HerokuMojo {
     }
 
     try {
-      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog())).deploy(
-          includedDirs, getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack, processTypes, slugFilename
+      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), Arrays.asList(buildpacks), getLog())).deploy(
+              includedDirs, getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack, processTypes, slugFilename
       );
     } catch (Exception e) {
       throw new MojoFailureException("Failed to deploy application", e);

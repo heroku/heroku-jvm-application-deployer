@@ -13,12 +13,16 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 public class BuildsDeployer extends Deployer {
 
-  public BuildsDeployer(String notUsed, String name, File rootDir, File targetDir, Logger logger) {
+  private List<String> buildpacks;
+
+  public BuildsDeployer(String notUsed, String name, File rootDir, File targetDir, List<String> buildpacks, Logger logger) {
     super("builds-api", name, rootDir, targetDir, logger);
+    this.buildpacks = buildpacks;
   }
 
   @Override
@@ -85,7 +89,7 @@ public class BuildsDeployer extends Deployer {
 
   protected void deploySlug(String stack, Map<String, String> processTypes, File tarFile)
       throws IOException, ArchiveException, InterruptedException {
-    Builds builds = new Builds(name, stack, parseCommit(), getEncodedApiKey());
+    Builds builds = new Builds(name, stack, parseCommit(), getEncodedApiKey(), buildpacks);
 
     Map sourceResponse = builds.createSource();
     logDebug("Heroku Source response: " + sourceResponse);

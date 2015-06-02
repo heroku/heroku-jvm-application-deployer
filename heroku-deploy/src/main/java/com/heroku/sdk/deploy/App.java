@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +18,11 @@ public class App implements Logger  {
   protected String name;
 
   public App(String name) throws IOException {
-    this("heroku-deploy", name, new File(System.getProperty("user.dir")), createTempDir());
+    this("heroku-deploy", name, new File(System.getProperty("user.dir")), createTempDir(), new ArrayList<String>());
   }
 
-  public App(String buildPackDesc, String name, File rootDir, File targetDir) {
-    this.deployer = new BuildsDeployer(buildPackDesc, name, rootDir, targetDir, this);
+  public App(String buildPackDesc, String name, File rootDir, File targetDir, List<String> buildpacks) {
+    this.deployer = new BuildsDeployer(buildPackDesc, name, rootDir, targetDir, buildpacks, this);
   }
 
   @Override

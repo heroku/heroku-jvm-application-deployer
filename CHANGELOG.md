@@ -1,6 +1,7 @@
 ## Master
 
 * Accounted for Procfile's with empty lines in parsing
+* Added ability to define custom buildpacks or multi-buildpack
 
 ## 0.4.1
 

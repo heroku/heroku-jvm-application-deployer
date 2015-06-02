@@ -6,6 +6,7 @@ import org.apache.maven.plugin.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,11 @@ public class MavenApp extends App {
   private Log log;
 
   public MavenApp(String name, File rootDir, File targetDir, Log log) {
-    super("heroku-maven-plugin", name, rootDir, targetDir);
+    this(name, rootDir, targetDir, new ArrayList<String>(), log);
+  }
+
+  public MavenApp(String name, File rootDir, File targetDir, List<String> buildpacks, Log log) {
+    super("heroku-maven-plugin", name, rootDir, targetDir, buildpacks);
     this.log = log;
   }
 

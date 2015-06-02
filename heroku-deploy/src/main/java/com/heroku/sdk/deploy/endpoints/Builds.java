@@ -5,6 +5,9 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class Builds extends ApiEndpoint {
@@ -13,19 +16,26 @@ public class Builds extends ApiEndpoint {
 
   private String blobGetUrl;
 
-  public Builds(String appName, String stackName, String commit, String encodedApiKey) {
+  private List<String> buildpackUrls;
+
+  public Builds(String appName, String stackName, String commit, String encodedApiKey, List<String> buildpacks) {
     super(appName, stackName, commit, encodedApiKey);
+
+    if (buildpacks == null || buildpacks.isEmpty()) {
+      buildpackUrls = Arrays.asList(JVM_BUILDPACK_URL);
+    } else {
+      buildpackUrls = new ArrayList<>(buildpacks.size());
+        for (String buildpack : buildpacks) {
+          if (buildpack.equals("jvm-common")) {
+            buildpackUrls.add(JVM_BUILDPACK_URL);
+          } else {
+            buildpackUrls.add(buildpack);
+          }
+        }
+    }
 
     headers.remove("Accept");
     headers.put("Accept", "application/vnd.heroku+json; version=3.streaming-build-output");
-  }
-
-  public void setBuildpack(String buildpackUrl) throws IOException {
-    String bpUrlStr = BASE_URL + "/apps/" + URLEncoder.encode(appName, "UTF-8") + "/buildpack-installations";
-
-    String buildpackData = "{\"updates\":[{\"buildpack\":\"" + StringEscapeUtils.escapeJson(buildpackUrl) + "\"}]}";
-
-    RestClient.put(bpUrlStr, buildpackData, headers);
   }
 
   public Map createSource() throws IOException {
@@ -47,7 +57,7 @@ public class Builds extends ApiEndpoint {
     String urlStr = BASE_URL + "/apps/" + appName + "/builds";
 
     String data = "{"+
-        "\"buildpacks\":[{\"url\":\"" + StringEscapeUtils.escapeJson(JVM_BUILDPACK_URL) + "\"}], " +
+        "\"buildpacks\":" + getBuildpacksJson() + ", " +
         "\"source_blob\":{\"url\":\"" + StringEscapeUtils.escapeJson(blobGetUrl) + "\",\"version\":\"" + StringEscapeUtils.escapeJson(commit) + "\"}}";
 
     Map buildResponse = RestClient.post(urlStr, data, headers);
@@ -59,5 +69,13 @@ public class Builds extends ApiEndpoint {
     }
 
     return buildResponse;
+  }
+
+  public String getBuildpacksJson() {
+    String buildpacksString = "";
+    for (String url : buildpackUrls) {
+      buildpacksString += ",{\"url\":\"" + StringEscapeUtils.escapeJson(url) + "\"}";
+    }
+    return buildpacksString.replaceFirst(",", "[") + "]";
   }
 }

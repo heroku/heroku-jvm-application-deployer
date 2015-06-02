@@ -252,7 +252,23 @@ The value in `heroku.properties` will take precedence over anything configured i
 
 ## Customizing the JDK
 
-You can customize the JDK by creating a `.jdk-overlay` directory as described in [this Dev Center article](https://devcenter.heroku.com/articles/customizing-the-jdk). 
+You can customize the JDK by creating a `.jdk-overlay` directory as described in [this Dev Center article](https://devcenter.heroku.com/articles/customizing-the-jdk).
+
+## Customizing the Slug
+
+You can customize the slug by using auxillary buildpacks using the `<buildpacks>` configuration element.
+For example, if you need to install a native library such as imagemagik, you can add the following to the
+plugin config:
+
+```xml
+<buildpacks>
+  <buildpack>https://github.com/mcollina/heroku-buildpack-imagemagick</buildpack>
+  <buildpack>jvm-common</buildpack>
+</buildpacks>
+```
+
+The `jvm-common` buildpack installs the JDK, and it's the default buildpack. Note that this
+feature does not work when using the `heroku:deploy-slug` goal or the WAR goals.
 
 ## Other Useful Commands
 

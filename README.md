@@ -67,8 +67,8 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
 ```
 
 This assumes your project will generate a WAR file in the `target` directory. If the WAR file is located somewhere else,
-you can specify this with the `<warFile>` configuration element. The `<processTypes>` element is not needed because
-the plugin will determine the appropriate process type for you.
+you can specify this with the `<warFile>` configuration element. The `<processTypes>` element is not needed
+and *will be ignored* because the plugin will determine the appropriate process type for you.
 
 Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, run:
 

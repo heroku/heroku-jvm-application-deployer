@@ -1,5 +1,7 @@
 ## Master
 
+## 0.4.4
+
 * Added a warning for deploy-war when custom processTypes are present
 
 ## 0.4.3

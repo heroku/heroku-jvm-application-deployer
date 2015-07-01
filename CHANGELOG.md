@@ -1,5 +1,9 @@
 ## Master
 
+* Added a warning for deploy-war when custom processTypes are present
+
+## 0.4.3
+
 * Accounted for Procfile's with empty lines in parsing
 * Added ability to define custom buildpacks or multi-buildpack
 

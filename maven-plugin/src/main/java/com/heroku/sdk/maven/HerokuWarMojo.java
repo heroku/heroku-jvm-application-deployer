@@ -7,6 +7,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Map;
 
 public abstract class HerokuWarMojo extends HerokuMojo {
 
@@ -16,6 +17,13 @@ public abstract class HerokuWarMojo extends HerokuMojo {
    * @parameter property="heroku.warFile"
    */
   protected File warFile = null;
+
+  /**
+   * The process types used to run on Heroku (similar to Procfile).
+   *
+   * @parameter property="heroku.processTypes"
+   */
+  protected Map<String,String> processTypes = null;
 
   /**
    * The version of webapp-runner to use.
@@ -41,6 +49,10 @@ public abstract class HerokuWarMojo extends HerokuMojo {
           warFile = files[0];
         }
       }
+    }
+
+    if (processTypes != null && !processTypes.isEmpty()) {
+      getLog().warn("The <processTypes> value will be ignored when deploying a WAR file. Use `heroku:deploy` goal for custom processes.");
     }
 
     CopyWebappRunner.execute(this.mavenProject, this.mavenSession, this.pluginManager, webappRunnerVersion);

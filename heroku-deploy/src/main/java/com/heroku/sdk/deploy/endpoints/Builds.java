@@ -33,9 +33,6 @@ public class Builds extends ApiEndpoint {
           }
         }
     }
-
-    headers.remove("Accept");
-    headers.put("Accept", "application/vnd.heroku+json; version=3.streaming-build-output");
   }
 
   public Map createSource() throws IOException {

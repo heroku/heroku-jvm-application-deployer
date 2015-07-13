@@ -1,5 +1,6 @@
 package com.heroku.sdk.maven;
 
+import com.heroku.sdk.deploy.DeployWar;
 import com.heroku.sdk.maven.executor.CopyWebappRunner;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -30,7 +31,7 @@ public abstract class HerokuWarMojo extends HerokuMojo {
    *
    * @parameter property="heroku.webappRunnerVersion"
    */
-  protected String webappRunnerVersion = CopyWebappRunner.DEFAULT_WEBAPP_RUNNER_VERSION;
+  protected String webappRunnerVersion = DeployWar.DEFAULT_WEBAPP_RUNNER_VERSION;
 
   protected MavenWarApp prepareWarFile() throws MojoExecutionException, MojoFailureException {
     if (null == warFile) {

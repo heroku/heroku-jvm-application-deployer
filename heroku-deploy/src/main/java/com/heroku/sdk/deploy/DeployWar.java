@@ -9,7 +9,9 @@ import java.util.*;
 
 public class DeployWar extends WarApp {
 
-  private static final String WEBAPP_RUNNER_URL="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/8.0.23.2/webapp-runner-8.0.23.2.jar";
+  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "8.0.23.0";
+
+  private static final String WEBAPP_RUNNER_URL_FORMAT="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar";
 
   public DeployWar(String name, File warFile, URL webappRunnerUrl) throws IOException {
     super(name);
@@ -50,9 +52,12 @@ public class DeployWar extends WarApp {
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
     String stack = System.getProperty("heroku.stack", "cedar-14");
     List<File> includes = includesToList(System.getProperty("heroku.includes", ""));
-
-    String webappRunnerUrl = System.getProperty("heroku.webappRunnerUrl", WEBAPP_RUNNER_URL);
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
+
+    String webappRunnerVersion = System.getProperty(
+            "heroku.webappRunnerVersion", DEFAULT_WEBAPP_RUNNER_VERSION);
+    String webappRunnerUrl = System.getProperty(
+            "heroku.webappRunnerUrl", String.format(WEBAPP_RUNNER_URL_FORMAT, webappRunnerVersion, webappRunnerVersion));
 
     if (warFile == null) {
       throw new IllegalArgumentException("Path to WAR file must be provided with heroku.warFile system property!");

@@ -1,5 +1,6 @@
 package com.heroku.sdk.maven.executor;
 
+import com.heroku.sdk.deploy.DeployWar;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -10,12 +11,10 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 public class CopyWebappRunner extends MojoExecutor {
 
-  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "8.0.23.0";
-
     public static void execute(MavenProject mavenProject,
                                MavenSession mavenSession,
                                BuildPluginManager pluginManager) throws MojoExecutionException {
-        execute(mavenProject, mavenSession, pluginManager, DEFAULT_WEBAPP_RUNNER_VERSION);
+        execute(mavenProject, mavenSession, pluginManager, DeployWar.DEFAULT_WEBAPP_RUNNER_VERSION);
     }
 
     public static void execute(MavenProject mavenProject,

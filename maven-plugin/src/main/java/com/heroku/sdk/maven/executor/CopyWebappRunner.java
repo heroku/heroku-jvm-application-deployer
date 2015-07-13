@@ -10,7 +10,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 public class CopyWebappRunner extends MojoExecutor {
 
-  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "7.0.57.2";
+  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "8.0.23.0";
 
     public static void execute(MavenProject mavenProject,
                                MavenSession mavenSession,

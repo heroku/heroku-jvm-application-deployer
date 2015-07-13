@@ -9,7 +9,7 @@ import java.util.*;
 
 public class DeployWar extends WarApp {
 
-  private static final String WEBAPP_RUNNER_URL="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/7.0.57.2/webapp-runner-7.0.57.2.jar";
+  private static final String WEBAPP_RUNNER_URL="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/8.0.23.2/webapp-runner-8.0.23.2.jar";
 
   public DeployWar(String name, File warFile, URL webappRunnerUrl) throws IOException {
     super(name);

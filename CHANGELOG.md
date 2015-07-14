@@ -1,5 +1,9 @@
 ## Master
 
+## 0.5.0
+
+* Upgraded to Tomcat 8 as default container
+
 ## 0.4.4
 
 * Added a warning for deploy-war when custom processTypes are present

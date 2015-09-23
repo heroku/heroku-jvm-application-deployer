@@ -65,7 +65,11 @@ public class Builds extends ApiEndpoint {
       RestClient.get(outputUrl, headers, logger);
     }
 
-    return buildResponse;
+    String buildId = (String)buildResponse.get("id");
+
+    RestClient.get(outputUrl, headers, logger);
+    String buildStatusUrlStr = BASE_URL + "/apps/" + appName + "/builds/" + buildId;
+    return RestClient.get(buildStatusUrlStr, headers);
   }
 
   public String getBuildpacksJson() {

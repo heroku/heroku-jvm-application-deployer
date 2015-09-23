@@ -100,11 +100,18 @@ public class BuildsDeployer extends Deployer {
     logInfo("       - success");
 
     logInfo("-----> Deploying...");
-    builds.build(new RestClient.OutputLogger() {
+    Map buildInfo = builds.build(new RestClient.OutputLogger() {
       @Override
       public void log(String line) {
         logInfo("remote: " + line);
       }
     });
+
+    if (!"succeeded".equals(buildInfo.get("status"))) {
+      logDebug("Failed Build ID: " + buildInfo.get("id"));
+      logDebug("Failed Build Status: " + buildInfo.get("status"));
+      logDebug("Failed Build UpdatedAt: " + buildInfo.get("updated_at"));
+      throw new RuntimeException("The build failed");
+    }
   }
 }

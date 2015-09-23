@@ -20,22 +20,6 @@ try {
     output = process.text
     assert output.contains("1.8"), "Wrong version of JDK packaged into slug: ${output}"
 
-    process = "heroku run cat .heroku/bin/with_jmap -a${appName}".execute()
-    process.waitFor()
-    output = process.text
-    process = "curl -L https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/master/opt/with_jmap".execute()
-    process.waitFor()
-    jvmCommonScript = process.text
-    assert output.contains(jvmCommonScript), "with_jmap script not copied properly: ${output}"
-
-    process = "heroku run cat .heroku/bin/with_jstack -a${appName}".execute()
-    process.waitFor()
-    output = process.text
-    process = "curl -L https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/master/opt/with_jstack".execute()
-    process.waitFor()
-    jvmCommonScript = process.text
-    assert output.contains(jvmCommonScript), "with_jstack script not copied properly: ${output}"
-
     process = "heroku run with_jstack java -version -a${appName}".execute()
     process.waitFor()
     output = process.text

@@ -108,10 +108,15 @@ public class BuildsDeployer extends Deployer {
     });
 
     if (!"succeeded".equals(buildInfo.get("status"))) {
-      logDebug("Failed Build ID: " + buildInfo.get("id"));
-      logDebug("Failed Build Status: " + buildInfo.get("status"));
-      logDebug("Failed Build UpdatedAt: " + buildInfo.get("updated_at"));
-      throw new RuntimeException("The build failed");
+      Thread.sleep(4000);
+      Map secondAttemptBuildInfo = builds.getBuildInfo((String) buildInfo.get("id"));
+
+      if (!"succeeded".equals(secondAttemptBuildInfo.get("status"))) {
+        logDebug("Failed Build ID: " + buildInfo.get("id"));
+        logDebug("Failed Build Status: " + buildInfo.get("status"));
+        logDebug("Failed Build UpdatedAt: " + buildInfo.get("updated_at"));
+        throw new RuntimeException("The build failed");
+      }
     }
   }
 }

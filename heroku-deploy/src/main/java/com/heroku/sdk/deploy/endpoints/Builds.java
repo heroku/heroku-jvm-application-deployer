@@ -46,7 +46,7 @@ public class Builds extends ApiEndpoint {
     return sourceResponse;
   }
 
-  public Map build(RestClient.OutputLogger logger)  throws IOException {
+  public Map build(RestClient.OutputLogger logger) throws IOException, InterruptedException {
     if (blobGetUrl == null) {
       throw new IllegalStateException("Source must be created before releasing!");
     }
@@ -64,10 +64,12 @@ public class Builds extends ApiEndpoint {
     if (outputUrl != null) {
       RestClient.get(outputUrl, headers, logger);
     }
+    Thread.sleep(2000);
 
-    String buildId = (String)buildResponse.get("id");
+    return getBuildInfo((String)buildResponse.get("id"));
+  }
 
-    RestClient.get(outputUrl, headers, logger);
+  public Map getBuildInfo(String buildId) throws IOException {
     String buildStatusUrlStr = BASE_URL + "/apps/" + appName + "/builds/" + buildId;
     return RestClient.get(buildStatusUrlStr, headers);
   }

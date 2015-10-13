@@ -1,6 +1,7 @@
 package com.heroku.sdk.maven;
 
 import com.heroku.sdk.maven.executor.CopyDependencies;
+import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -27,6 +28,7 @@ public class DeploySlugMojo extends HerokuMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    super.execute();
     CopyDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
 
     List<File> includedDirs = getIncludes();

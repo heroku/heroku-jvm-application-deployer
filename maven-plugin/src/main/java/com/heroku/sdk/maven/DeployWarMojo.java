@@ -1,5 +1,6 @@
 package com.heroku.sdk.maven;
 
+import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -16,6 +17,7 @@ public class DeployWarMojo extends HerokuWarMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    super.execute();
     try {
       (prepareWarFile()).deploy(
           new ArrayList<File>(getIncludes()), getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFilename

@@ -1,6 +1,7 @@
 package com.heroku.sdk.maven;
 
 import com.heroku.sdk.deploy.App;
+import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
 
@@ -27,6 +28,11 @@ public class MavenApp extends App {
   protected void prepare(List<File> includedFiles, Map<String, String> processTypes) throws IOException {
     super.prepare(includedFiles, processTypes);
 
+    File appTargetDir = new File (getAppDir(), "target");
+    FileUtils.forceMkdir(appTargetDir);
+    FileUtils.copyFile(
+            new File(getTargetDir(), ListDependencies.FILENAME),
+            new File(appTargetDir, ListDependencies.FILENAME));
     FileUtils.copyFile(new File(getRootDir(), "pom.xml"), new File(getAppDir(), "pom.xml"));
   }
 

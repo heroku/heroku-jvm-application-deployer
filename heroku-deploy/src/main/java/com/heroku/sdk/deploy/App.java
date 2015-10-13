@@ -114,4 +114,6 @@ public class App implements Logger  {
   protected File getRootDir() {
     return deployer.getRootDir();
   }
+
+  protected File getTargetDir() { return deployer.getTargetDir(); }
 }

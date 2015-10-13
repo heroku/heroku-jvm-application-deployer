@@ -18,7 +18,7 @@ public class CreateSlugMojo extends HerokuMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-
+    super.execute();
     CopyDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
 
     List<File> includedDirs = getIncludes();

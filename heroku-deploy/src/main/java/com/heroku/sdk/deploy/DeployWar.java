@@ -24,7 +24,7 @@ public class DeployWar extends WarApp {
   @Override
   protected Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = new HashMap<String, String>();
-    processTypes.put("web", "java $JAVA_OPTS -jar webapp-runner.jar $WEBAPP_RUNNER_OPTS --port $PORT ./" + relativize(warFile));
+    processTypes.put("web", "java $JAVA_OPTS -jar webapp-runner.jar ${WEBAPP_RUNNER_OPTS:-\"--expand-war\"} --port $PORT ./" + relativize(warFile));
 
     return processTypes;
   }

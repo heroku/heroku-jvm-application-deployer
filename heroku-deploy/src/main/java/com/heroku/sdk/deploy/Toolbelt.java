@@ -59,7 +59,11 @@ public class Toolbelt {
     File gitConfigFile = new File(new File(projectDir, ".git"), "config");
 
     if (!gitConfigFile.exists()) {
-      throw new FileNotFoundException(gitConfigFile.toString());
+      File userDir = new File(System.getProperty("user.home"));
+      if (userDir.equals(projectDir) || projectDir.getParent() == null) {
+        throw new RuntimeException("Git repo not found. Did you init one before creating your app?");
+      }
+      return getGitRemotes(projectDir.getParentFile());
     }
 
     Map<String,String> remotes = new HashMap<String, String>();

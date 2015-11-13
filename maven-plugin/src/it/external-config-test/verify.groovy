@@ -19,7 +19,7 @@ try {
     process = "heroku ps -a${appName}".execute()
     process.waitFor()
     output = process.text
-    assert output.contains("=== web (Free): `java \$JAVA_OPTS -Dmy.var=foobar -cp target/classes:target/dependency/* Main`"), "web process type not detected"
+    assert output.contains("java \$JAVA_OPTS -Dmy.var=foobar -cp target/classes:target/dependency/* Main"), "web process type not detected"
 
     Thread.sleep(5000)
 

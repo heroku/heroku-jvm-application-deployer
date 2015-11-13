@@ -12,7 +12,6 @@ try {
     assert log.contains("Creating build"), "the build was not created"
     assert log.contains("Uploading build"), "the build was not uploaded"
     assert log.contains("remote:"), "the buildpacks were not run"
-    assert log.contains("Multipack app detected"), "Multipack not detected"
     assert log.contains("Null app detected"), "null buildpack not detected"
     assert log.contains("heroku-maven-plugin app detected"), "jvm-common buildpack not detected"
     assert log.contains("BUILD SUCCESS"), "the build was not successful"

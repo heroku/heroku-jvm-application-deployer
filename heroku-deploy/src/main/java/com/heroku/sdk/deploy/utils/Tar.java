@@ -3,14 +3,19 @@ package com.heroku.sdk.deploy.utils;
 import org.apache.commons.compress.archivers.*;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.FileSystems;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
 
 public class Tar {
   public static File create(String filename, String directory, File workingDir, File outputDir) throws IOException, ArchiveException, InterruptedException {
@@ -45,14 +50,24 @@ public class Tar {
     private void addFilesToTar(ArchiveOutputStream tarBall, File dir) throws IOException {
       for (File file : recursiveListFiles(dir)) {
         if (!file.isDirectory()) {
-          TarArchiveEntry tarFile = new TarArchiveEntry(file, relativize(file));
-          tarFile.setSize(file.length());
-          if (java.nio.file.Files.isExecutable(java.nio.file.FileSystems.getDefault().getPath(file.getAbsolutePath()))) {
-            tarFile.setMode(493);
+          Path path = FileSystems.getDefault().getPath(file.getAbsolutePath());
+          String pathInTar = relativize(file);
+          if (Files.isSymbolicLink(path)) {
+            TarArchiveEntry tarFile = new TarArchiveEntry(pathInTar, TarConstants.LF_SYMLINK);
+            String symbolicLink = Files.readSymbolicLink(path).toString();
+            tarFile.setLinkName(symbolicLink);
+            tarBall.putArchiveEntry(tarFile);
+            tarBall.closeArchiveEntry();
+          } else {
+            TarArchiveEntry tarFile = new TarArchiveEntry(file, pathInTar);
+            tarFile.setSize(file.length());
+            if (Files.isExecutable(path)) {
+              tarFile.setMode(493);
+            }
+            tarBall.putArchiveEntry(tarFile);
+            IOUtils.copy(new FileInputStream(file), tarBall);
+            tarBall.closeArchiveEntry();
           }
-          tarBall.putArchiveEntry(tarFile);
-          IOUtils.copy(new FileInputStream(file), tarBall);
-          tarBall.closeArchiveEntry();
         }
       }
     }

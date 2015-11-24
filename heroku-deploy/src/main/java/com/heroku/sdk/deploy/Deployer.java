@@ -95,7 +95,7 @@ public abstract class Deployer {
       Files.walkFileTree(file.toPath(), new CopyFileVisitor(copyTarget.toPath()));
     } else {
       Files.createDirectories(copyTarget.getParentFile().toPath());
-      Files.copy(file.toPath(), copyTarget.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+      copy(file.toPath(), copyTarget.toPath());
     }
   }
 
@@ -249,8 +249,17 @@ public abstract class Deployer {
 
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-      Files.copy(file, targetPath.resolve(sourcePath.relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
+      Path target = targetPath.resolve(sourcePath.relativize(file));
+      copy(file, target);
       return FileVisitResult.CONTINUE;
+    }
+  }
+
+  private static void copy(final Path file, final Path target) throws IOException {
+    if (Files.isSymbolicLink(file)) {
+      Files.createSymbolicLink(target, Files.readSymbolicLink(file));
+    } else {
+      Files.copy(file, target, StandardCopyOption.COPY_ATTRIBUTES);
     }
   }
 

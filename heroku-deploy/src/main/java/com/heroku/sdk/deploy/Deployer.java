@@ -207,7 +207,7 @@ public abstract class Deployer {
       if (apiKey == null || apiKey.isEmpty()) {
         throw new RuntimeException("Could not get API key! Please install the toolbelt and login with `heroku login` or set the HEROKU_API_KEY environment variable.");
       }
-      encodedApiKey = new BASE64Encoder().encode((":" + apiKey).getBytes());
+      setEncodedApiKey(apiKey);
     }
     return encodedApiKey;
   }
@@ -291,5 +291,9 @@ public abstract class Deployer {
 
     ObjectId head = repository.resolve("HEAD");
     return head == null ? null : head.name();
+  }
+  
+  public void setEncodedApiKey(String apiKey) {
+      encodedApiKey = new BASE64Encoder().encode((":" + apiKey).getBytes());
   }
 }

@@ -21,6 +21,11 @@ public class DeployWar extends WarApp {
     FileUtils.copyURLToFile(webappRunnerUrl, webappRunnerJar);
   }
 
+  public DeployWar(String name, File warFile, URL webappRunnerUrl, String apiKey) throws IOException {
+      this(name, warFile, webappRunnerUrl);
+      this.deployer.setEncodedApiKey(apiKey);
+  }
+  
   @Override
   protected Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = new HashMap<String, String>();

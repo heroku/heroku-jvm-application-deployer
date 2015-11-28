@@ -1,5 +1,8 @@
 ## Master
 
+* Added mechanism to set api key programmatically
+* Fix: Symlinks are imported into slug as files, not symlinks
+
 ## 0.5.0
 
 * Upgraded to Tomcat 8 as default container

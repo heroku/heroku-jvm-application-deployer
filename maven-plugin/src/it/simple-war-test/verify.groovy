@@ -15,17 +15,17 @@ try {
     assert log.contains("heroku-maven-plugin app detected"), "jvm-common buildpack not detected"
     assert log.contains("BUILD SUCCESS"), "the build was not successful"
 
+    Thread.sleep(3000)
     def process = "heroku run java -version -a${appName}".execute()
     process.waitFor()
     output = process.text
     assert output.contains("1.8"), "Wrong version of JDK packages into slug"
 
+    Thread.sleep(3000)
     process = "heroku run cat target/mvn-dependency-list.log -a${appName}".execute()
     process.waitFor()
     output = process.text
     assert output.contains("The following files have been resolved"), "Dependencies not listed: ${output}"
-
-    Thread.sleep(2000)
 
     process = "heroku logs -a${appName}".execute()
     process.waitFor()

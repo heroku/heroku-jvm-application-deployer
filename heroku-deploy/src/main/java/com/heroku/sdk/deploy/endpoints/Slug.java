@@ -69,6 +69,16 @@ public class Slug extends ApiEndpoint {
 
     String data = "{\"slug\":\"" + slugId + "\"}";
 
+
+    System.out.println("release: ");
+    System.out.print("  curl -n -X POST " + urlStr);
+    for (String key : headers.keySet()) {
+      System.out.print(" -H \"" + key + ": " + headers.get(key) + "\" \\");
+    }
+    System.out.print(" -d '" + data + "'");
+    //Thread.sleep(360000l);
+    System.out.println("");
+
     return RestClient.post(urlStr, data, headers);
   }
 

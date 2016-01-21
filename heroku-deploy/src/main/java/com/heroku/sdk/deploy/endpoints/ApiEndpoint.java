@@ -28,7 +28,7 @@ public abstract class ApiEndpoint {
     this.appName = appName;
     this.stackName = stackName;
     this.commit = commit;
-    this.useCurl = "true".equals(System.getProperty("heroku.useCurl", "false"));
+    this.useCurl = "true".equals(System.getProperty("heroku.curl.enabled", "false"));
     headers = new HashMap<String,String>();
     headers.put("Authorization", encodedApiKey);
     headers.put("Content-Type", "application/json");

@@ -120,7 +120,7 @@ You can set the JDK version like so:
 <jdkVersion>1.8</jdkVersion>
 ```
 
-The default is 1.8, but 1.6 and 1.7 are valid values. The plugin will also pick up the `java.runtime.version` set in
+The default is 1.8, but 1.7 is also a valid value. The plugin will also pick up the `java.runtime.version` set in
 your `system.properties` file, but the plugin configuration will take precedence.
 
 You can set configuration variables like this:

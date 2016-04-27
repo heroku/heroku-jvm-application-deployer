@@ -3,6 +3,7 @@ package com.heroku.sdk.deploy.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heroku.sdk.deploy.utils.Logger;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
@@ -11,16 +12,51 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class RestClient {
+
+  private static CloseableHttpClient createClientWithProxy(String proxyStr) throws URISyntaxException {
+    URI proxyUri = new URI(proxyStr);
+    HttpHost proxy = new HttpHost(proxyUri.getHost(), proxyUri.getPort(), proxyUri.getScheme());
+    DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+    return HttpClients.custom()
+        .setRoutePlanner(routePlanner)
+        .build();
+  }
+
+  private static CloseableHttpClient createClient() {
+    String httpProxy = System.getenv("HTTP_PROXY");
+    String httpsProxy = System.getenv("HTTPS_PROXY");
+
+    if (httpsProxy != null) {
+      try {
+        return createClientWithProxy(httpsProxy);
+      } catch (URISyntaxException e) {
+        throw new IllegalArgumentException("HTTPS_PROXY is not valid!" , e);
+      }
+    } else if (httpProxy != null) {
+      try {
+        return createClientWithProxy(httpProxy);
+      } catch (URISyntaxException e) {
+        throw new IllegalArgumentException("HTTP_PROXY is not valid!" , e);
+      }
+    } else {
+      return HttpClients.createDefault();
+    }
+  }
+
   public static Map get(String urlStr, Map<String,String> headers) throws IOException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     HttpGet request = new HttpGet(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
@@ -32,7 +68,7 @@ public class RestClient {
   }
 
   public static void get(String urlStr, Map<String,String> headers, OutputLogger logger) throws IOException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     HttpGet request = new HttpGet(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
@@ -44,7 +80,7 @@ public class RestClient {
   }
 
   public static List put(String urlStr, String data, Map<String,String> headers) throws IOException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     HttpPut request = new HttpPut(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
@@ -62,7 +98,7 @@ public class RestClient {
   }
 
   public static Map post(String urlStr, Map<String,String> headers) throws IOException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     HttpPost request = new HttpPost(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
@@ -75,7 +111,7 @@ public class RestClient {
   }
 
   public static Map post(String urlStr, String data, Map<String,String> headers) throws IOException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     HttpPost request = new HttpPost(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
@@ -93,7 +129,7 @@ public class RestClient {
   }
 
   public static Map patch(String urlStr, String data, Map<String,String> headers) throws IOException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     HttpPatch request = new HttpPatch(urlStr);
     for (String key : headers.keySet()) {
       String value = headers.get(key);
@@ -111,7 +147,7 @@ public class RestClient {
   }
 
   public static void put(String urlStr, File file, Logger uploadListener) throws IOException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     HttpPut request = new HttpPut(urlStr);
 
     FileEntityWithProgress body = new FileEntityWithProgress(file, uploadListener);

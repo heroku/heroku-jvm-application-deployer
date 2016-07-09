@@ -20,7 +20,7 @@ try {
 
     Thread.sleep(5000)
 
-    process = "heroku logs -a${appName}".execute()
+    process = "heroku logs -n 2000 -a${appName}".execute()
     process.waitFor()
     output = process.text
     assert output.contains("--expand-war"), "Did not pick up WEBAPP_RUNNER_OPTS: ${output}"

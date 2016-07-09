@@ -4,6 +4,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
@@ -16,6 +18,8 @@ public class DeployWar extends WarApp {
   public DeployWar(String name, File warFile, URL webappRunnerUrl) throws IOException {
     super(name);
     this.warFile = warFile;
+
+    setProxy();
 
     this.webappRunnerJar = new File(getAppDir(), "webapp-runner.jar");
     FileUtils.copyURLToFile(webappRunnerUrl, webappRunnerJar);
@@ -32,6 +36,28 @@ public class DeployWar extends WarApp {
     processTypes.put("web", "java $JAVA_OPTS -jar webapp-runner.jar ${WEBAPP_RUNNER_OPTS:-\"--expand-war\"} --port $PORT ./" + relativize(warFile));
 
     return processTypes;
+  }
+
+  private void setProxy() {
+    String httpProxy = System.getenv("HTTP_PROXY");
+    String httpsProxy = System.getenv("HTTPS_PROXY");
+    if (null != httpsProxy) {
+      setProxyProperties("https", httpsProxy);
+    } else if (null != httpProxy) {
+      setProxyProperties("http", httpProxy);
+    }
+  }
+
+  private void setProxyProperties(String prefix, String proxy) {
+    try {
+      URI proxyUri = new URI(proxy);
+      System.setProperty(prefix + ".proxyHost", proxyUri.getHost());
+      if (proxyUri.getPort() > 0) {
+        System.setProperty(prefix + ".proxyPort", String.valueOf(proxyUri.getPort()));
+      }
+    } catch (URISyntaxException e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   private static List<File> includesToList(String includes) {

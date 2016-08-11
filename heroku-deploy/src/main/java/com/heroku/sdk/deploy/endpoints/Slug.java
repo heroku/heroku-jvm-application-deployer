@@ -17,7 +17,7 @@ public class Slug extends ApiEndpoint {
 
   public static final String BASE_URL = "https://api.heroku.com";
 
-  public Slug(String buildPackDesc, String appName, String stack, String commit, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
+  public Slug(String client, String appName, String stack, String commit, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
     super(appName, stack, commit, encodedApiKey);
 
     if (processTypes.isEmpty()) {
@@ -25,7 +25,7 @@ public class Slug extends ApiEndpoint {
     }
 
     createJson = "{" +
-        "\"buildpack_provided_description\":\"" + StringEscapeUtils.escapeJson(buildPackDesc) +"\"," +
+        "\"buildpack_provided_description\":\"" + StringEscapeUtils.escapeJson(client) +"\"," +
         "\"stack\":\"" + (stack == null ? "cedar-14" : StringEscapeUtils.escapeJson(stack)) +"\"," +
         "\"commit\":\"" + (commit == null ? "" : StringEscapeUtils.escapeJson(commit)) +"\"," +
         "\"process_types\":{";

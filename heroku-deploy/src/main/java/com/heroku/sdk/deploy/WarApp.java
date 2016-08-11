@@ -18,8 +18,8 @@ public class WarApp extends App {
     super(name);
   }
 
-  public WarApp(String buildPackDesc, String name, File warFile, File webappRunnerJar, File rootDir, File targetDir) {
-    super(buildPackDesc, name, rootDir, targetDir, new ArrayList<String>());
+  public WarApp(String client, String name, File warFile, File webappRunnerJar, File rootDir, File targetDir) {
+    super(client, name, rootDir, targetDir, new ArrayList<String>());
     this.warFile = warFile;
     this.webappRunnerJar = webappRunnerJar;
   }

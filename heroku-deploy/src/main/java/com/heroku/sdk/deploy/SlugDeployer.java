@@ -38,8 +38,8 @@ public class SlugDeployer extends Deployer {
     jdkUrlsByStack.put("cedar-14", cedar14JdkUrlStrings);
   }
 
-  public SlugDeployer(String buildPackDesc,String name, File rootDir, File targetDir, Logger logger) {
-    super(buildPackDesc, name, rootDir, targetDir, logger);
+  public SlugDeployer(String client,String name, File rootDir, File targetDir, Logger logger) {
+    super(client, name, rootDir, targetDir, logger);
   }
 
   protected void createSlug(String slugFilename, String jdkVersion, URL jdkUrl, String stack) throws Exception {
@@ -79,7 +79,7 @@ public class SlugDeployer extends Deployer {
     allProcessTypes.putAll(processTypes);
     if (allProcessTypes.isEmpty()) logWarn("No processTypes specified!");
 
-    Slug slug = new Slug(buildPackDesc, name, stack, parseCommit(), getEncodedApiKey(), allProcessTypes);
+    Slug slug = new Slug(client, name, stack, parseCommit(), getEncodedApiKey(), allProcessTypes);
     logDebug("Heroku Slug request: " + slug.getSlugRequest());
 
     Map slugResponse = slug.create();

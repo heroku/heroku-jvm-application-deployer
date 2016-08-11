@@ -20,13 +20,14 @@ public class BuildsDeployer extends Deployer {
 
   private List<String> buildpacks;
 
-  public BuildsDeployer(String notUsed, String name, File rootDir, File targetDir, List<String> buildpacks, Logger logger) {
-    super("builds-api", name, rootDir, targetDir, logger);
+  public BuildsDeployer(String client, String name, File rootDir, File targetDir, List<String> buildpacks, Logger logger) {
+    super(client, name, rootDir, targetDir, logger);
     this.buildpacks = buildpacks;
   }
 
   @Override
   protected void addExtras(Map<String, String> processTypes) throws IOException {
+    super.addExtras(processTypes);
     addProcfile(processTypes);
     addJdkOverlay();
   }
@@ -45,7 +46,8 @@ public class BuildsDeployer extends Deployer {
     logDebug("Procfile:\n===================\n" + procfile + "\n===================");
 
     Files.write(
-        Paths.get(new File(getAppDir(), "Procfile").getPath()), (procfile).getBytes(StandardCharsets.UTF_8)
+        Paths.get(new File(getAppDir(), "Procfile").getPath()),
+        (procfile).getBytes(StandardCharsets.UTF_8)
     );
   }
 

@@ -11,13 +11,14 @@ import sun.misc.BASE64Encoder;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 public abstract class Deployer {
 
-  protected String buildPackDesc;
+  protected String client;
 
   protected String name;
 
@@ -35,9 +36,9 @@ public abstract class Deployer {
 
   public void logWarn(String message) { logger.logWarn(message); }
 
-  public Deployer(String buildPackDesc, String name, File rootDir, File targetDir, Logger logger) {
+  public Deployer(String client, String name, File rootDir, File targetDir, Logger logger) {
     this.logger = logger;
-    this.buildPackDesc = buildPackDesc;
+    this.client = client;
     this.name = getHerokuProperties().getProperty("heroku.appName", name);
     try {
       if (this.name == null) this.name = Toolbelt.getAppName(rootDir);
@@ -59,8 +60,8 @@ public abstract class Deployer {
     return this.name;
   }
 
-  public String getBuildPackDesc() {
-    return buildPackDesc;
+  public String getClient() {
+    return client;
   }
 
   protected void deploy(Map<String, String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String, String> processTypes, String slugFilename) throws Exception {
@@ -88,7 +89,9 @@ public abstract class Deployer {
     }
   }
 
-  protected void addExtras(Map<String, String> processTypes) throws IOException { /* nothing extra by default */ }
+  protected void addExtras(Map<String, String> processTypes) throws IOException {
+    addMetadata();
+  }
 
   protected void copy(File file, File copyTarget) throws IOException {
     if (file.isDirectory()) {
@@ -291,6 +294,22 @@ public abstract class Deployer {
 
     ObjectId head = repository.resolve("HEAD");
     return head == null ? null : head.name();
+  }
+
+  protected void addMetadata() throws IOException {
+    String metadata = toPropertiesString();
+
+    File metadataFile = new File(getAppDir(), ".heroku-deploy");
+
+    if (!metadataFile.exists()) {
+      Files.write(
+          Paths.get(metadataFile.getPath()), (metadata).getBytes(StandardCharsets.UTF_8)
+      );
+    }
+  }
+
+  protected String toPropertiesString() {
+    return "client=" + client + "\n";
   }
   
   public void setEncodedApiKey(String apiKey) {

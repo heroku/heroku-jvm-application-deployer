@@ -23,6 +23,12 @@ try {
     assert output.contains("1.8"), "Wrong version of JDK packaged into slug: ${output}"
 
     Thread.sleep(4000)
+    process = "heroku run cat .heroku-deploy -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("client=heroku-maven-plugin"), "Metadata invalid: ${output}"
+
+    Thread.sleep(4000)
     process = "heroku run with_jstack java -version -a${appName}".execute()
     process.waitFor()
     output = process.text

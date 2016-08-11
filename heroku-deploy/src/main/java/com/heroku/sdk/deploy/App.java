@@ -21,8 +21,8 @@ public class App implements Logger  {
     this("heroku-deploy", name, new File(System.getProperty("user.dir")), createTempDir(), new ArrayList<String>());
   }
 
-  public App(String buildPackDesc, String name, File rootDir, File targetDir, List<String> buildpacks) {
-    this.deployer = new BuildsDeployer(buildPackDesc, name, rootDir, targetDir, buildpacks, this);
+  public App(String client, String name, File rootDir, File targetDir, List<String> buildpacks) {
+    this.deployer = new BuildsDeployer(client, name, rootDir, targetDir, buildpacks, this);
   }
 
   @Override
@@ -66,7 +66,7 @@ public class App implements Logger  {
   }
 
   protected void deploySlug(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String, String> processTypes, String tarFilename) throws Exception {
-    deployer = new SlugDeployer(deployer.getBuildPackDesc(), getName(), getRootDir(), deployer.getTargetDir(), this);
+    deployer = new SlugDeployer(deployer.getClient(), getName(), getRootDir(), deployer.getTargetDir(), this);
     deploy(includedFiles, configVars, jdkVersion, jdkUrl, stack, processTypes, tarFilename);
   }
 
@@ -79,13 +79,13 @@ public class App implements Logger  {
   }
 
   public void releaseSlug(String slugFilename, Map<String, String> processTypes, Map<String, String> configVars, String stack) throws Exception {
-    SlugDeployer slugDeployer = new SlugDeployer(deployer.getBuildPackDesc(), getName(), getRootDir(), deployer.getTargetDir(), this);
+    SlugDeployer slugDeployer = new SlugDeployer(deployer.getClient(), getName(), getRootDir(), deployer.getTargetDir(), this);
     deployer = slugDeployer;
     slugDeployer.releaseSlug(slugFilename, processTypes, configVars, stack);
   }
 
   protected void createSlug(String slugFilename, List<File> includedFiles, String jdkVersion, URL jdkUrl, String stack) throws Exception {
-    SlugDeployer slugDeployer = new SlugDeployer(deployer.getBuildPackDesc(), getName(), getRootDir(), deployer.getTargetDir(), this);
+    SlugDeployer slugDeployer = new SlugDeployer(deployer.getClient(), getName(), getRootDir(), deployer.getTargetDir(), this);
     deployer = slugDeployer;
     prepare(includedFiles, new HashMap<String, String>());
     slugDeployer.createSlug(slugFilename, jdkVersion, jdkUrl, stack);

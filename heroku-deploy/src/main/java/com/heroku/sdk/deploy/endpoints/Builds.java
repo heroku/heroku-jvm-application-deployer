@@ -58,7 +58,6 @@ public class Builds extends ApiEndpoint {
         "\"source_blob\":{\"url\":\"" + StringEscapeUtils.escapeJson(blobGetUrl) +
         "\",\"version\":\"" + StringEscapeUtils.escapeJson(commit) + "\"}}";
 
-    System.out.println("Request: " + data);
     Map buildResponse = RestClient.post(urlStr, data, headers);
 
     String outputUrl = (String)buildResponse.get("output_stream_url");

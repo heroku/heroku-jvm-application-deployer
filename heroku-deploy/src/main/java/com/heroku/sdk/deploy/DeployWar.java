@@ -11,7 +11,7 @@ import java.util.*;
 
 public class DeployWar extends WarApp {
 
-  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "8.0.30.2";
+  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "8.0.33.4";
 
   private static final String WEBAPP_RUNNER_URL_FORMAT="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar";
 
@@ -33,7 +33,7 @@ public class DeployWar extends WarApp {
   @Override
   protected Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = new HashMap<String, String>();
-    processTypes.put("web", "java $JAVA_OPTS -jar webapp-runner.jar ${WEBAPP_RUNNER_OPTS:-\"--expand-war\"} --port $PORT ./" + relativize(warFile));
+    processTypes.put("web", "java $JAVA_OPTS -jar webapp-runner.jar ${WEBAPP_RUNNER_OPTS} --port $PORT ./" + relativize(warFile));
 
     return processTypes;
   }

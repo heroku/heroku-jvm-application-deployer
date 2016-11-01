@@ -7,7 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import sun.misc.BASE64Encoder;
+import org.eclipse.jgit.util.Base64;
 
 import java.io.*;
 import java.net.URL;
@@ -313,6 +313,6 @@ public abstract class Deployer {
   }
   
   public void setEncodedApiKey(String apiKey) {
-      encodedApiKey = new BASE64Encoder().encode((":" + apiKey).getBytes());
+    encodedApiKey = Base64.encodeBytes((":" + apiKey).getBytes());
   }
 }

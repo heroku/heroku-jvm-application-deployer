@@ -61,13 +61,30 @@ public class Builds extends ApiEndpoint {
     Map buildResponse = RestClient.post(urlStr, data, headers);
 
     String outputUrl = (String)buildResponse.get("output_stream_url");
+    String buildId = (String)buildResponse.get("id");
 
     if (outputUrl != null) {
-      RestClient.get(outputUrl, headers, logger);
+      try {
+        RestClient.get(outputUrl, headers, logger);
+      } catch (IOException e) {
+        logger.log("Deployment output not available. Polling for status...");
+      }
+      return pollForBuildInfo(buildId);
+    } else {
+      logger.log("Deployment output not available. Polling for status...");
+      return pollForBuildInfo(buildId);
     }
-    Thread.sleep(2000);
+  }
 
-    return getBuildInfo((String)buildResponse.get("id"));
+  public Map pollForBuildInfo(String buildId) throws IOException, InterruptedException {
+    for (int i = 0; i < 15; i++) {
+      Thread.sleep(2000);
+      Map info = getBuildInfo(buildId);
+      if (!"pending".equals(info.get("status"))) {
+        return info;
+      }
+    }
+    return getBuildInfo(buildId);
   }
 
   public Map getBuildInfo(String buildId) throws IOException {

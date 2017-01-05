@@ -286,7 +286,7 @@ public abstract class Deployer {
   }
 
   protected String parseCommit() throws IOException {
-    String providedCommit = System.getProperty("heroku.commit");
+    String providedCommit = System.getProperty("heroku.buildVersion");
 
     if (null == providedCommit) {
       FileRepositoryBuilder builder = new FileRepositoryBuilder();

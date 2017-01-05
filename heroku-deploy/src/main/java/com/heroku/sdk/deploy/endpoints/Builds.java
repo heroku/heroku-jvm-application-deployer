@@ -55,8 +55,8 @@ public class Builds extends ApiEndpoint {
 
     String data = "{"+
         "\"buildpacks\":" + getBuildpacksJson() + ", " +
-        "\"source_blob\":{\"url\":\"" + StringEscapeUtils.escapeJson(blobGetUrl) +
-        "\",\"version\":\"" + StringEscapeUtils.escapeJson(commit) + "\"}}";
+        "\"source_blob\":{\"url\":\"" + (null == blobGetUrl ? "" : StringEscapeUtils.escapeJson(blobGetUrl)) +
+        "\",\"version\":\"" + (null == commit ? "" : StringEscapeUtils.escapeJson(commit)) + "\"}}";
 
     Map buildResponse = RestClient.post(urlStr, data, headers);
 

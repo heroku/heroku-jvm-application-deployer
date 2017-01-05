@@ -286,14 +286,20 @@ public abstract class Deployer {
   }
 
   protected String parseCommit() throws IOException {
-    FileRepositoryBuilder builder = new FileRepositoryBuilder();
-    Repository repository = builder.setWorkTree(getRootDir())
-        .readEnvironment() // scan environment GIT_* variables
-        .findGitDir() // scan up the file system tree
-        .build();
+    String providedCommit = System.getProperty("heroku.commit");
 
-    ObjectId head = repository.resolve("HEAD");
-    return head == null ? null : head.name();
+    if (null == providedCommit) {
+      FileRepositoryBuilder builder = new FileRepositoryBuilder();
+      Repository repository = builder.setWorkTree(getRootDir())
+          .readEnvironment() // scan environment GIT_* variables
+          .findGitDir() // scan up the file system tree
+          .build();
+
+      ObjectId head = repository.resolve("HEAD");
+      return head == null ? null : head.name();
+    } else {
+      return providedCommit;
+    }
   }
 
   protected void addMetadata() throws IOException {

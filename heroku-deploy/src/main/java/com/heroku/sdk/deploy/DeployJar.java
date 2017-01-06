@@ -1,7 +1,5 @@
 package com.heroku.sdk.deploy;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -35,9 +33,12 @@ public class DeployJar extends App {
   }
 
   protected Map<String,String> defaultProcTypes() {
-    Map<String,String> processTypes = new HashMap<>();
-    processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(jarFile) + " " + jarOpts + " $JAR_OPTS");
-    processTypes.putAll(getProcfile());
+    Map<String,String> processTypes = getProcfile();
+
+    if (processTypes.isEmpty()) {
+      processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(jarFile) + " " + jarOpts + " $JAR_OPTS");
+    }
+
     return processTypes;
   }
 

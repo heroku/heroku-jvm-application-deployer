@@ -76,6 +76,14 @@ public class DeployWar extends WarApp {
   @Override
   public void logInfo(String message) { System.out.println(message); }
 
+  @Override
+  public void logDebug(String message) {
+    String debug = System.getenv("HEROKU_DEBUG");
+    if ("1".equals(debug) || "true".equals(debug)) {
+      System.out.println(message);
+    }
+  }
+
   public static void main(String[] args) throws Exception {
     String warFile = System.getProperty("heroku.warFile", null);
     String appName = System.getProperty("heroku.appName", null);

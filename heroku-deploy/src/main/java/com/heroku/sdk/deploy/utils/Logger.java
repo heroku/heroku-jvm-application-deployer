@@ -8,6 +8,8 @@ public interface Logger {
 
   public void logWarn(String message);
 
+  public void logError(String message);
+
   public void logUploadProgress(Long uploaded, Long contentLength);
 
   public Boolean isUploadProgressEnabled();

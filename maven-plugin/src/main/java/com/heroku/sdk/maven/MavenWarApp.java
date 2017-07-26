@@ -54,4 +54,8 @@ public class MavenWarApp extends WarApp {
   public void logWarn(String message) {
     log.warn(message);
   }
+
+  public void logError(String message) {
+    log.error(message);
+  }
 }

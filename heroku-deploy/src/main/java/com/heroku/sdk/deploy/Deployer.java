@@ -4,6 +4,7 @@ import com.heroku.sdk.deploy.endpoints.Slug;
 import com.heroku.sdk.deploy.utils.Logger;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.client.HttpResponseException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -36,6 +37,8 @@ public abstract class Deployer {
 
   public void logWarn(String message) { logger.logWarn(message); }
 
+  public void logError(String message) { logger.logError(message); }
+
   public Deployer(String client, String name, File rootDir, File targetDir, Logger logger) {
     this.logger = logger;
     this.client = client;
@@ -65,7 +68,14 @@ public abstract class Deployer {
   }
 
   protected void deploy(Map<String, String> configVars, String jdkVersion, URL jdkUrl, String stack, Map<String, String> processTypes, String slugFilename) throws Exception {
-    mergeConfigVars(configVars);
+    try {
+      mergeConfigVars(configVars);
+    } catch (HttpResponseException e) {
+      if (e.getStatusCode() == 404) {
+        logError("! Could not find app: " + name);
+      }
+      throw e;
+    }
     vendorJdk(jdkVersion, jdkUrl, stack);
     createAndReleaseSlug(stack, processTypes, slugFilename);
   }

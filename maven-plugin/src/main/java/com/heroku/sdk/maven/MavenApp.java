@@ -61,4 +61,8 @@ public class MavenApp extends App {
     log.warn(message);
   }
 
+  public void logError(String message) {
+    log.error(message);
+  }
+
 }

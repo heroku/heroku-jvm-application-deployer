@@ -35,6 +35,9 @@ public class App implements Logger  {
   public void logWarn(String message) { /* nothing by default */ }
 
   @Override
+  public void logError(String message) { /* nothing by default */ }
+
+  @Override
   public void logUploadProgress(Long uploaded, Long contentLength) {
     logDebug("Uploaded " + uploaded + "/" + contentLength);
   }

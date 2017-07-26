@@ -2,7 +2,6 @@ package com.heroku.sdk.maven;
 
 import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -10,11 +9,12 @@ import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.archiver.util.DefaultFileSet;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public abstract class HerokuMojo extends AbstractMojo {
 
@@ -111,6 +111,13 @@ public abstract class HerokuMojo extends AbstractMojo {
    * @parameter property="heroku.slugFilename"
    */
   protected String slugFilename = "slug.tgz";
+
+  /**
+   * If upload progress should be logged to debug.
+   *
+   * @parameter property="heroku.logProgress"
+   */
+  protected boolean logProgess = false;
 
   protected File getTargetDir() {
     return outputPath;

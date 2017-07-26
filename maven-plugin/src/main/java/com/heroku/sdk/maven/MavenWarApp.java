@@ -13,9 +13,22 @@ import java.util.Map;
 public class MavenWarApp extends WarApp {
   private Log log;
 
-  public MavenWarApp(String name, File warFile, File webappRunnerJar, File rootDir, File targetDir, Log log) {
+  private boolean isUploadProgressEnabled;
+
+  public MavenWarApp(String name, File warFile, File webappRunnerJar, File rootDir, File targetDir, Log log, boolean logProgress) {
     super("heroku-maven-plugin", name, warFile, webappRunnerJar, rootDir, targetDir);
+    this.isUploadProgressEnabled = logProgress;
     this.log = log;
+  }
+
+  @Override
+  public void logUploadProgress(Long uploaded, Long contentLength) {
+    logInfo("[" + uploaded + "/" + contentLength + "]");
+  }
+
+  @Override
+  public Boolean isUploadProgressEnabled() {
+    return isUploadProgressEnabled;
   }
 
   @Override

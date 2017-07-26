@@ -37,7 +37,7 @@ public class ReleaseSlugMojo extends HerokuMojo {
     }
 
     try {
-      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog()))
+      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog(), logProgess))
           .releaseSlug(slugFilename, processTypes, configVars, stack);
     } catch (FileNotFoundException e) {
       throw new MojoFailureException("The slug file was not found. You must run heroku:create-slug first", e);

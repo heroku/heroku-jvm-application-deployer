@@ -15,13 +15,26 @@ public class MavenApp extends App {
 
   private Log log;
 
-  public MavenApp(String name, File rootDir, File targetDir, Log log) {
-    this(name, rootDir, targetDir, new ArrayList<String>(), log);
+  private boolean isUploadProgressEnabled;
+
+  public MavenApp(String name, File rootDir, File targetDir, Log log, boolean logProgress) {
+    this(name, rootDir, targetDir, new ArrayList<String>(), log, logProgress);
   }
 
-  public MavenApp(String name, File rootDir, File targetDir, List<String> buildpacks, Log log) {
+  public MavenApp(String name, File rootDir, File targetDir, List<String> buildpacks, Log log, boolean logProgress) {
     super("heroku-maven-plugin", name, rootDir, targetDir, buildpacks);
     this.log = log;
+    this.isUploadProgressEnabled = logProgress;
+  }
+
+  @Override
+  public void logUploadProgress(Long uploaded, Long contentLength) {
+    logInfo("[" + uploaded + "/" + contentLength + "]");
+  }
+
+  @Override
+  public Boolean isUploadProgressEnabled() {
+    return isUploadProgressEnabled;
   }
 
   @Override

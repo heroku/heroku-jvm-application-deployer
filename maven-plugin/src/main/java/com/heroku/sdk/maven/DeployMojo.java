@@ -1,12 +1,10 @@
 package com.heroku.sdk.maven;
 
 import com.heroku.sdk.maven.executor.CopyDependencies;
-import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +44,7 @@ public class DeployMojo extends HerokuMojo {
     }
 
     try {
-      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), Arrays.asList(buildpacks), getLog())).deploy(
+      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), Arrays.asList(buildpacks), getLog(), logProgess)).deploy(
               includedDirs, getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack, processTypes, slugFilename
       );
     } catch (Exception e) {

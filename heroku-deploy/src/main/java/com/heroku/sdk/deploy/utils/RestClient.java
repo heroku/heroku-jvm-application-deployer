@@ -1,7 +1,6 @@
 package com.heroku.sdk.deploy.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heroku.sdk.deploy.utils.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.StatusLine;
@@ -12,7 +11,6 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 
 import java.io.*;

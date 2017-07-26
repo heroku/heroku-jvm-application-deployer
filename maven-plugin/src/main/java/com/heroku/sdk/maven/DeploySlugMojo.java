@@ -1,7 +1,6 @@
 package com.heroku.sdk.maven;
 
 import com.heroku.sdk.maven.executor.CopyDependencies;
-import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -37,7 +36,7 @@ public class DeploySlugMojo extends HerokuMojo {
     }
 
     try {
-      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog())).deploySlug(
+      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog(), logProgess)).deploySlug(
           includedDirs, getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack, processTypes, slugFilename
       );
     } catch (Exception e) {

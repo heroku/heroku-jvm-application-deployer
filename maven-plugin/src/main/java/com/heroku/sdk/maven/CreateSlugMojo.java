@@ -27,7 +27,7 @@ public class CreateSlugMojo extends HerokuMojo {
     }
 
     try {
-      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog()))
+      (new MavenApp(appName, getTargetDir().getParentFile(), getTargetDir(), getLog(), logProgess))
           .createSlug(slugFilename, includedDirs, jdkUrl == null ? jdkVersion : jdkUrl, stack);
     } catch (Exception e) {
       throw new MojoFailureException("Failed to create Slug", e);

@@ -52,7 +52,7 @@ try {
     process = "heroku stack -a${appName}".execute()
     process.waitFor()
     output = process.text
-    assert output.contains("* cedar-14"), "Wrong stack used: ${output}"
+    assert output.contains("* cedar-14"), "Wrong stack used: ${output}" // slug deploy defaults to cedar-14
 
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()

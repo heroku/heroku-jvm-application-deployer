@@ -26,7 +26,6 @@
         <version>@project.version@</version>
         <configuration>
           <appName>${heroku.appName}</appName>
-          <stack>cedar-14</stack>
           <slugFilename>myapp-slug.tar.gz</slugFilename>
           <processTypes>
             <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>

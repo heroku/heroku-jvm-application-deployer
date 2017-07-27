@@ -2,6 +2,11 @@ machine:
   java:
     version: openjdk8
 
+dependencies:
+  override:
+    - ./mvnw install -pl heroku-deploy
+    - ./mvnw dependency:go-offline
+
 test:
   pre:
     - bash etc/ci-setup.sh

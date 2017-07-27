@@ -1,4 +1,4 @@
 language: java
-install: "./etc/travis-setup.sh"
-script: mvn clean install -Pit
+install: "./etc/ci-setup.sh"
+script: ./mvnw clean install -Pit
 after_script: heroku keys:remove $USER@`hostname`

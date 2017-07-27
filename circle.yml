@@ -1,0 +1,11 @@
+machine:
+  java:
+    version: openjdk8
+
+test:
+  pre:
+    - bash etc/ci-setup.sh
+  override:
+    - ./mvnw clean install -Pit
+  post:
+    - if [ -n "$HEROKU_API_KEY" ]; then heroku keys:remove $USER@`hostname | sed -e "s/\.localdomain//g"`; fi

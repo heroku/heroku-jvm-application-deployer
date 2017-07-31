@@ -1,4 +1,5 @@
 language: java
+dist: trusty
 install: "./etc/ci-setup.sh"
 script: ./mvnw clean install -Pit
 after_script: heroku keys:remove $USER@`hostname`

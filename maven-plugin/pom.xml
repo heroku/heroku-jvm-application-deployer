@@ -75,6 +75,13 @@
           <goalPrefix>heroku</goalPrefix>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${javadoc.plugin.version}</version>
+        <configuration>
+          <additionalparam>-Xdoclint:none</additionalparam>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

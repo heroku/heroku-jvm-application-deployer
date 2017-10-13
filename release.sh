@@ -3,7 +3,7 @@
 set -o pipefail
 set -eu
 
-mvn release:clean release:prepare release:perform
+./mvnw release:clean release:prepare release:perform
 
 echo "Now make sure you update these articles and projects:
 

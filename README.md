@@ -57,7 +57,6 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>1.0.0</version>
       <configuration>
         <appName>${heroku.appName}</appName>
       </configuration>

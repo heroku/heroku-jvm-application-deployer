@@ -18,6 +18,10 @@ public class WarApp extends App {
     super(name);
   }
 
+  public WarApp(String name, List<String> buildpacks) throws IOException {
+    super(name, buildpacks);
+  }
+
   public WarApp(String client, String name, File warFile, File webappRunnerJar, File rootDir, File targetDir) {
     super(client, name, rootDir, targetDir, new ArrayList<String>());
     this.warFile = warFile;

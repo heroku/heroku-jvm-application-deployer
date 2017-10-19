@@ -15,19 +15,14 @@ public class DeployWar extends WarApp {
 
   private static final String WEBAPP_RUNNER_URL_FORMAT="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar";
 
-  public DeployWar(String name, File warFile, URL webappRunnerUrl) throws IOException {
-    super(name);
+  public DeployWar(String name, File warFile, URL webappRunnerUrl, List<String> buildpacks) throws IOException {
+    super(name, buildpacks);
     this.warFile = warFile;
 
     setProxy();
 
     this.webappRunnerJar = new File(getAppDir(), "webapp-runner.jar");
     FileUtils.copyURLToFile(webappRunnerUrl, webappRunnerJar);
-  }
-
-  public DeployWar(String name, File warFile, URL webappRunnerUrl, String apiKey) throws IOException {
-      this(name, warFile, webappRunnerUrl);
-      this.deployer.setEncodedApiKey(apiKey);
   }
 
   @Override
@@ -60,8 +55,8 @@ public class DeployWar extends WarApp {
     }
   }
 
-  private static List<File> includesToList(String includes) {
-    List<String> includeStrings = Arrays.asList(includes.split(File.pathSeparator));
+  private static List<File> includesToFiles(String includes) {
+    List<String> includeStrings = includesToList(includes, File.pathSeparator);
 
     List<File> includeFiles = new ArrayList<>(includeStrings.size());
     for (String includeString : includeStrings) {
@@ -71,6 +66,12 @@ public class DeployWar extends WarApp {
     }
 
     return includeFiles;
+  }
+
+  private static List<String> includesToList(String includes, String delim) {
+    return includes == null || includes.isEmpty() ?
+        new ArrayList<String>() :
+        Arrays.asList(includes.split(delim));
   }
 
   @Override
@@ -90,9 +91,11 @@ public class DeployWar extends WarApp {
     String jdkVersion = System.getProperty("heroku.jdkVersion", null);
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
     String stack = System.getProperty("heroku.stack", "cedar-14");
-    List<File> includes = includesToList(System.getProperty("heroku.includes", ""));
+    List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
-
+    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), "\\|");
+System.out.println(System.getProperty("heroku.buildpacks"));
+System.out.println(buildpacks);
     String webappRunnerVersion = System.getProperty(
             "heroku.webappRunnerVersion", DEFAULT_WEBAPP_RUNNER_VERSION);
     String webappRunnerUrl = System.getProperty(
@@ -105,7 +108,7 @@ public class DeployWar extends WarApp {
       throw new IllegalArgumentException("Heroku app name must be provided with heroku.appName system property!");
     }
 
-    (new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl))).
+    (new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl), buildpacks)).
         deploy(includes, new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName);
   }
 }

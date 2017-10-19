@@ -18,7 +18,11 @@ public class App implements Logger  {
   protected String name;
 
   public App(String name) throws IOException {
-    this("heroku-deploy", name, new File(System.getProperty("user.dir")), createTempDir(), new ArrayList<String>());
+    this(name, new ArrayList<String>());
+  }
+
+  public App(String name, List<String> buildpacks) throws IOException {
+    this("heroku-deploy", name, new File(System.getProperty("user.dir")), createTempDir(), buildpacks);
   }
 
   public App(String client, String name, File rootDir, File targetDir, List<String> buildpacks) {

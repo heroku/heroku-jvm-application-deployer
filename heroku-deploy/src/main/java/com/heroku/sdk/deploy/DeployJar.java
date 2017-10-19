@@ -16,8 +16,8 @@ public class DeployJar extends App {
 
   protected String jarOpts;
 
-  public DeployJar(String name, File jarFile, String jarOpts) throws IOException {
-    super(name);
+  public DeployJar(String name, File jarFile, String jarOpts, List<String> buildpacks) throws IOException {
+    super(name, buildpacks);
     this.jarFile = jarFile;
     this.jarOpts = jarOpts;
   }
@@ -42,8 +42,8 @@ public class DeployJar extends App {
     return processTypes;
   }
 
-  private static List<File> includesToList(String includes) {
-    List<String> includeStrings = Arrays.asList(includes.split(File.pathSeparator));
+  private static List<File> includesToFiles(String includes) {
+    List<String> includeStrings = includesToList(includes, File.pathSeparator);
 
     List<File> includeFiles = new ArrayList<>(includeStrings.size());
     for (String includeString : includeStrings) {
@@ -53,6 +53,12 @@ public class DeployJar extends App {
     }
 
     return includeFiles;
+  }
+
+  private static List<String> includesToList(String includes, String delim) {
+    return includes == null || includes.isEmpty() ?
+        new ArrayList<String>() :
+        Arrays.asList(includes.split(delim));
   }
 
   protected Map<String, String> getProcfile() {
@@ -90,7 +96,8 @@ public class DeployJar extends App {
     String jdkVersion = System.getProperty("heroku.jdkVersion", null);
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
     String stack = System.getProperty("heroku.stack", "cedar-14");
-    List<File> includes = includesToList(System.getProperty("heroku.includes", ""));
+    List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
+    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), "|");
 
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
 
@@ -101,7 +108,7 @@ public class DeployJar extends App {
       throw new IllegalArgumentException("Heroku app name must be provided with heroku.appName system property!");
     }
 
-    (new DeployJar(appName, new File(jarFile), jarOpts)).
+    (new DeployJar(appName, new File(jarFile), jarOpts, buildpacks)).
         deploy(includes, new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName);
   }
 }

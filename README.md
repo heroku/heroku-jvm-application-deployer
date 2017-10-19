@@ -1,4 +1,4 @@
-# heroku-maven-plugin [![Build Status](https://travis-ci.org/heroku/heroku-maven-plugin.svg)](https://travis-ci.org/heroku/heroku-maven-plugin) [![CircleCI](https://circleci.com/gh/heroku/heroku-maven-plugin.svg?style=svg)](https://circleci.com/gh/heroku/heroku-maven-plugin) [![Download](https://api.bintray.com/packages/heroku/maven/sdk/images/download.svg) ](https://bintray.com/heroku/maven/sdk/_latestVersion) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.heroku.sdk/heroku-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.heroku.sdk/heroku-maven-plugin)
+# heroku-maven-plugin [![Build Status](https://travis-ci.org/heroku/heroku-maven-plugin.svg)](https://travis-ci.org/heroku/heroku-maven-plugin) [![CircleCI](https://circleci.com/gh/heroku/heroku-maven-plugin.svg?style=svg)](https://circleci.com/gh/heroku/heroku-maven-plugin) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.heroku.sdk/heroku-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.heroku.sdk/heroku-maven-plugin)
 
 This plugin is used to deploy Java applications directly to Heroku without pushing to a Git repository.
 This is can be useful when deploying from a CI server, deploying pre-built Jar or War files.
@@ -19,7 +19,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>1.2.1</version>
+      <version>1.2.2</version>
       <configuration>
         <appName>${heroku.appName}</appName>
         <processTypes>

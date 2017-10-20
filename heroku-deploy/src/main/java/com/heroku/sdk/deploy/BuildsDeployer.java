@@ -91,7 +91,7 @@ public class BuildsDeployer extends Deployer {
 
   protected void deploySlug(String stack, Map<String, String> processTypes, File tarFile)
       throws IOException, ArchiveException, InterruptedException {
-    Builds builds = new Builds(name, stack, parseCommit(), getEncodedApiKey(), buildpacks);
+    Builds builds = new Builds(name, client, stack, parseCommit(), getEncodedApiKey(), buildpacks);
 
     Map sourceResponse = builds.createSource();
     logDebug("Heroku Source response: " + sourceResponse);

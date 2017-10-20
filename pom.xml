@@ -55,6 +55,7 @@
   </developers>
 
   <properties>
+    <heroku-deploy.version>${project.version}</heroku-deploy.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <invoker.skip>true</invoker.skip>
     <maven.version>3.2.3</maven.version>

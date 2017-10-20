@@ -1,13 +1,13 @@
 package com.heroku.sdk.deploy.endpoints;
 
 
-import com.heroku.sdk.deploy.utils.RestClient;
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
+
+import com.heroku.sdk.deploy.utils.RestClient;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class Slug extends ApiEndpoint {
 
@@ -18,7 +18,7 @@ public class Slug extends ApiEndpoint {
   public static final String BASE_URL = "https://api.heroku.com";
 
   public Slug(String client, String appName, String stack, String commit, String encodedApiKey, Map<String,String> processTypes) throws UnsupportedEncodingException {
-    super(appName, stack, commit, encodedApiKey);
+    super(appName, client, stack, commit, encodedApiKey);
 
     if (processTypes.isEmpty()) {
       throw new MissingProcessTypesException();

@@ -284,11 +284,11 @@ feature does not work when using the `heroku:deploy-slug` goal or the WAR goals.
 To run the entire suite of integration tests, use the following command:
 
 ```sh-session
-$ mvn clean install -Pit
+$ ./mvnw clean install -Pit
 ```
 
 To run an individual integration test, use a command like this:
 
 ```sh-session
-$ mvn clean install -Pit -Dinvoker.test=simple-deploy-test
+$ ./mvnw clean install -Pit -Dinvoker.test=simple-deploy-test
 ```

@@ -1,14 +1,14 @@
 package com.heroku.sdk.deploy.endpoints;
 
-import com.heroku.sdk.deploy.utils.RestClient;
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import com.heroku.sdk.deploy.utils.RestClient;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class Builds extends ApiEndpoint {
 
@@ -20,8 +20,8 @@ public class Builds extends ApiEndpoint {
 
   private List<String> buildpackUrls;
 
-  public Builds(String appName, String stackName, String commit, String encodedApiKey, List<String> buildpacks) {
-    super(appName, stackName, commit, encodedApiKey);
+  public Builds(String appName, String client, String stackName, String commit, String encodedApiKey, List<String> buildpacks) {
+    super(appName, client, stackName, commit, encodedApiKey);
 
     if (buildpacks == null || buildpacks.isEmpty()) {
       buildpackUrls = Arrays.asList(JVM_BUILDPACK_URL);

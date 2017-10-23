@@ -97,7 +97,8 @@ public class DeployWar extends WarApp {
     String stack = System.getProperty("heroku.stack", "cedar-14");
     List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
-    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), ",");
+    String buildpacksDelim = System.getProperty("heroku.buildpacksDelim", ",");
+    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), buildpacksDelim);
 
     String webappRunnerVersion = System.getProperty(
             "heroku.webappRunnerVersion", DEFAULT_WEBAPP_RUNNER_VERSION);

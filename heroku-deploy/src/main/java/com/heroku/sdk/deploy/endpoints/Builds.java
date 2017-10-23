@@ -16,6 +16,8 @@ public class Builds extends ApiEndpoint {
 
   private static final String METRICS_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/metrics.tgz";
 
+  private static final String EXEC_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/exec.tgz";
+
   private String blobGetUrl;
 
   private List<String> buildpackUrls;
@@ -31,9 +33,11 @@ public class Builds extends ApiEndpoint {
           if (buildpack.equals("jvm-common")) {
             buildpackUrls.add(JVM_BUILDPACK_URL);
           } else if (buildpack.equals("heroku/jvm")) {
-              buildpackUrls.add(JVM_BUILDPACK_URL);
+            buildpackUrls.add(JVM_BUILDPACK_URL);
           } else if (buildpack.equals("heroku/metrics")) {
             buildpackUrls.add(METRICS_BUILDPACK_URL);
+          } else if (buildpack.equals("heroku/exec")) {
+            buildpackUrls.add(EXEC_BUILDPACK_URL);
           } else {
             buildpackUrls.add(buildpack);
           }

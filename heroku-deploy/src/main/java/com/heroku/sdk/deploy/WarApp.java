@@ -3,7 +3,6 @@ package com.heroku.sdk.deploy;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +21,8 @@ public class WarApp extends App {
     super(name, buildpacks);
   }
 
-  public WarApp(String client, String name, File warFile, File webappRunnerJar, File rootDir, File targetDir) {
-    super(client, name, rootDir, targetDir, new ArrayList<String>());
+  public WarApp(String client, String name, File warFile, File webappRunnerJar, File rootDir, File targetDir, List<String> buildpacks) {
+    super(client, name, rootDir, targetDir, buildpacks);
     this.warFile = warFile;
     this.webappRunnerJar = webappRunnerJar;
   }

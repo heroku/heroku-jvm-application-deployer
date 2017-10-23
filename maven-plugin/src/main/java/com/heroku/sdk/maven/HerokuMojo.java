@@ -1,5 +1,11 @@
 package com.heroku.sdk.maven;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -9,12 +15,6 @@ import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 public abstract class HerokuMojo extends AbstractMojo {
 
@@ -118,6 +118,13 @@ public abstract class HerokuMojo extends AbstractMojo {
    * @parameter property="heroku.logProgress"
    */
   protected boolean logProgess = false;
+
+  /**
+   * The buildpacks to run against the partial slug
+   *
+   * @parameter property="heroku.buildpacks"
+   */
+  protected String[] buildpacks = new String[]{};
 
   protected File getTargetDir() {
     return outputPath;

@@ -1,13 +1,13 @@
 package com.heroku.sdk.maven;
 
-import com.heroku.sdk.maven.executor.CopyDependencies;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import com.heroku.sdk.maven.executor.CopyDependencies;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * Deploys an application to Heroku
@@ -25,13 +25,6 @@ public class DeployMojo extends HerokuMojo {
    * @parameter property="heroku.processTypes"
    */
   protected Map<String,String> processTypes = null;
-
-  /**
-   * The buildpacks to run against the partial slug
-   *
-   * @parameter property="heroku.buildpacks"
-   */
-  protected String[] buildpacks = new String[]{};
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {

@@ -59,6 +59,6 @@ public abstract class HerokuWarMojo extends HerokuMojo {
 
     File webappRunnerJar = new File(getTargetDir(), "dependency/webapp-runner.jar");
 
-    return new MavenWarApp(appName, warFile, webappRunnerJar, getTargetDir().getParentFile(), getTargetDir(), getLog(), logProgess);
+    return new MavenWarApp(appName, warFile, webappRunnerJar, getTargetDir().getParentFile(), getTargetDir(), getLog(), logProgess, buildpacks);
   }
 }

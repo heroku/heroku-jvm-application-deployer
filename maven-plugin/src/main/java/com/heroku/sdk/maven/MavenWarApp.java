@@ -1,22 +1,23 @@
 package com.heroku.sdk.maven;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import com.heroku.sdk.deploy.WarApp;
 import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 public class MavenWarApp extends WarApp {
   private Log log;
 
   private boolean isUploadProgressEnabled;
 
-  public MavenWarApp(String name, File warFile, File webappRunnerJar, File rootDir, File targetDir, Log log, boolean logProgress) {
-    super("heroku-maven-plugin", name, warFile, webappRunnerJar, rootDir, targetDir);
+  public MavenWarApp(String name, File warFile, File webappRunnerJar, File rootDir, File targetDir, Log log, boolean logProgress, String[] buildpacks) {
+    super("heroku-maven-plugin", name, warFile, webappRunnerJar, rootDir, targetDir, Arrays.asList(buildpacks));
     this.isUploadProgressEnabled = logProgress;
     this.log = log;
   }

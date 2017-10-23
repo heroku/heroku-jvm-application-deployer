@@ -97,7 +97,7 @@ public class DeployJar extends App {
     String jdkUrl = System.getProperty("heroku.jdkUrl", null);
     String stack = System.getProperty("heroku.stack", "cedar-14");
     List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
-    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), "\\|");
+    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), ",");
 
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
 

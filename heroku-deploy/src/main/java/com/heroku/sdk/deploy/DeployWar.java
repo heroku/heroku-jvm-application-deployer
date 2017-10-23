@@ -1,13 +1,17 @@
 package com.heroku.sdk.deploy;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
 
 public class DeployWar extends WarApp {
 
@@ -93,7 +97,7 @@ public class DeployWar extends WarApp {
     String stack = System.getProperty("heroku.stack", "cedar-14");
     List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
-    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), "\\|");
+    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), ",");
 
     String webappRunnerVersion = System.getProperty(
             "heroku.webappRunnerVersion", DEFAULT_WEBAPP_RUNNER_VERSION);

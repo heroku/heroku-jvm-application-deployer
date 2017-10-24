@@ -1,13 +1,13 @@
 package com.heroku.sdk.maven;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.Map;
+
 import com.heroku.sdk.deploy.DeployWar;
 import com.heroku.sdk.maven.executor.CopyWebappRunner;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.Map;
 
 public abstract class HerokuWarMojo extends HerokuMojo {
 
@@ -59,6 +59,14 @@ public abstract class HerokuWarMojo extends HerokuMojo {
 
     File webappRunnerJar = new File(getTargetDir(), "dependency/webapp-runner.jar");
 
-    return new MavenWarApp(appName, warFile, webappRunnerJar, getTargetDir().getParentFile(), getTargetDir(), getLog(), logProgess, buildpacks);
+    return new MavenWarApp(
+        appName,
+        warFile,
+        webappRunnerJar,
+        getTargetDir().getParentFile(),
+        getTargetDir(),
+        getLog(),
+        logProgess,
+        buildpacks);
   }
 }

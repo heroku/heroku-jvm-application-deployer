@@ -1,13 +1,13 @@
 package com.heroku.sdk.deploy;
 
-import com.heroku.sdk.deploy.endpoints.Slug;
-import com.heroku.sdk.deploy.utils.RestClient;
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.heroku.sdk.deploy.endpoints.ApiEndpoint;
+import com.heroku.sdk.deploy.utils.RestClient;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class ConfigVars {
 
@@ -32,7 +32,7 @@ public class ConfigVars {
   }
 
   protected Map<String, String> getConfigVars() throws Exception {
-    String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(deployer.getName(), "UTF-8") + "/config-vars";
+    String urlStr = ApiEndpoint.BASE_URL + "/apps/" + URLEncoder.encode(deployer.getName(), "UTF-8") + "/config-vars";
 
     Map<String, String> headers = new HashMap<String, String>();
     headers.put("Authorization", encodedApiKey);
@@ -53,7 +53,7 @@ public class ConfigVars {
 
   protected void setConfigVars(Map<String, String> configVars) throws IOException {
     if (!configVars.isEmpty()) {
-      String urlStr = Slug.BASE_URL + "/apps/" + URLEncoder.encode(deployer.getName(), "UTF-8") + "/config-vars";
+      String urlStr = ApiEndpoint.BASE_URL + "/apps/" + URLEncoder.encode(deployer.getName(), "UTF-8") + "/config-vars";
 
       String data = "{";
       boolean first = true;

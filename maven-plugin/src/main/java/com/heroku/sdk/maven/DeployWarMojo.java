@@ -1,11 +1,9 @@
 package com.heroku.sdk.maven;
 
-import com.heroku.sdk.maven.executor.ListDependencies;
+import java.util.ArrayList;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Deploys a war file to Heroku
@@ -20,7 +18,7 @@ public class DeployWarMojo extends HerokuWarMojo {
     super.execute();
     try {
       (prepareWarFile()).deploy(
-          new ArrayList<File>(getIncludes()), getConfigVars(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFilename
+          new ArrayList<>(getIncludes()), getConfigVars(), jdkVersion, stack, buildFilename
       );
     } catch (Exception e) {
       throw new MojoFailureException("Failed to deploy application", e);

@@ -26,7 +26,7 @@
         <version>@project.version@</version>
         <configuration>
           <appName>${heroku.appName}</appName>
-          <slugFilename>myapp-slug.tar.gz</slugFilename>
+          <buildFilename>myapp-slug.tar.gz</buildFilename>
           <processTypes>
             <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
           </processTypes>

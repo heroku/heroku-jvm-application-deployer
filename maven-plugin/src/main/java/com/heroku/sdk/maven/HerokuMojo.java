@@ -69,15 +69,6 @@ public abstract class HerokuMojo extends AbstractMojo {
   protected String jdkVersion = null;
 
   /**
-   * The URL of the JDK binaries Heroku will use.
-   * <br/>
-   * Command line -Dheroku.jdkUrl=...
-   *
-   * @parameter property="heroku.jdkUrl"
-   */
-  protected String jdkUrl = null;
-
-  /**
    * The Heorku runtime stack.
    * <br/>
    * Command line -Dheroku.stack=...
@@ -108,9 +99,9 @@ public abstract class HerokuMojo extends AbstractMojo {
   /**
    * A filename where the slug is stored at, inside the heroku-target directory
    *
-   * @parameter property="heroku.slugFilename"
+   * @parameter property="heroku.buildFilename"
    */
-  protected String slugFilename = "slug.tgz";
+  protected String buildFilename = "build.tgz";
 
   /**
    * If upload progress should be logged to debug.
@@ -120,7 +111,7 @@ public abstract class HerokuMojo extends AbstractMojo {
   protected boolean logProgess = false;
 
   /**
-   * The buildpacks to run against the partial slug
+   * The buildpacks to run against the partial build
    *
    * @parameter property="heroku.buildpacks"
    */
@@ -165,7 +156,7 @@ public abstract class HerokuMojo extends AbstractMojo {
   }
 
   public String getSlugFilename() {
-    return slugFilename;
+    return buildFilename;
   }
 
   @Override

@@ -93,7 +93,6 @@ public class DeployWar extends WarApp {
     String warFile = System.getProperty("heroku.warFile", null);
     String appName = System.getProperty("heroku.appName", null);
     String jdkVersion = System.getProperty("heroku.jdkVersion", null);
-    String jdkUrl = System.getProperty("heroku.jdkUrl", null);
     String stack = System.getProperty("heroku.stack", "cedar-14");
     List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
     String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
@@ -113,6 +112,6 @@ public class DeployWar extends WarApp {
     }
 
     (new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl), buildpacks)).
-        deploy(includes, new HashMap<String, String>(), jdkUrl == null ? jdkVersion : jdkUrl, stack, slugFileName);
+        deploy(includes, new HashMap<String, String>(), jdkVersion, stack, slugFileName);
   }
 }

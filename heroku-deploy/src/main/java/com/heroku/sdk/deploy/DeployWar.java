@@ -22,6 +22,7 @@ public class DeployWar extends WarApp {
     super(name, buildpacks);
     this.warFile = warFile;
 
+    // Setup the proxy before making the request to Maven Central
     setProxy();
 
     this.webappRunnerJar = new File(getAppDir(), "webapp-runner.jar");

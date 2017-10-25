@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.heroku.sdk.deploy.utils.Main;
 import org.apache.commons.io.FileUtils;
 
 public class DeployWar extends WarApp {
@@ -59,25 +58,6 @@ public class DeployWar extends WarApp {
     }
   }
 
-  private static List<File> includesToFiles(String includes) {
-    List<String> includeStrings = includesToList(includes, File.pathSeparator);
-
-    List<File> includeFiles = new ArrayList<>(includeStrings.size());
-    for (String includeString : includeStrings) {
-      if (!includeString.isEmpty()) {
-        includeFiles.add(new File(includeString));
-      }
-    }
-
-    return includeFiles;
-  }
-
-  private static List<String> includesToList(String includes, String delim) {
-    return includes == null || includes.isEmpty() ?
-        new ArrayList<String>() :
-        Arrays.asList(includes.split(delim));
-  }
-
   @Override
   public void logInfo(String message) { System.out.println(message); }
 
@@ -91,13 +71,6 @@ public class DeployWar extends WarApp {
 
   public static void main(String[] args) throws Exception {
     String warFile = System.getProperty("heroku.warFile", null);
-    String appName = System.getProperty("heroku.appName", null);
-    String jdkVersion = System.getProperty("heroku.jdkVersion", null);
-    String stack = System.getProperty("heroku.stack", "cedar-14");
-    List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
-    String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
-    String buildpacksDelim = System.getProperty("heroku.buildpacksDelim", ",");
-    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), buildpacksDelim);
 
     String webappRunnerVersion = System.getProperty(
             "heroku.webappRunnerVersion", DEFAULT_WEBAPP_RUNNER_VERSION);
@@ -107,11 +80,7 @@ public class DeployWar extends WarApp {
     if (warFile == null) {
       throw new IllegalArgumentException("Path to WAR file must be provided with heroku.warFile system property!");
     }
-    if (appName == null) {
-      throw new IllegalArgumentException("Heroku app name must be provided with heroku.appName system property!");
-    }
 
-    (new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl), buildpacks)).
-        deploy(includes, new HashMap<String, String>(), jdkVersion, stack, slugFileName);
+    Main.deploy((appName, buildpacks) -> new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl), buildpacks));
   }
 }

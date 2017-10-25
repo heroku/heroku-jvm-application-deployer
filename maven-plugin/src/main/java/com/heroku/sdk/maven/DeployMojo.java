@@ -41,6 +41,7 @@ public class DeployMojo extends HerokuMojo {
           appName,
           getTargetDir().getParentFile(),
           getTargetDir(),
+          processTypes,
           Arrays.asList(buildpacks),
           getLog(),
           logProgess)
@@ -49,7 +50,6 @@ public class DeployMojo extends HerokuMojo {
           getConfigVars(),
           jdkVersion,
           stack,
-          processTypes,
           buildFilename
       );
     } catch (Exception e) {

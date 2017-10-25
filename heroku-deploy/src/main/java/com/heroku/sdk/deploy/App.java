@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,8 +58,8 @@ public class App implements Logger  {
     deployer.prepare(includedFiles, processTypes);
   }
 
-  public void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, String stack, Map<String, String> processTypes, String tarFilename) throws Exception {
-    prepare(includedFiles, processTypes);
+  public void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, String stack, String tarFilename) throws Exception {
+    prepare(includedFiles, defaultProcTypes());
     deployer.deploy(configVars, jdkVersion, stack, tarFilename);
   }
 
@@ -79,4 +80,8 @@ public class App implements Logger  {
   }
 
   protected File getTargetDir() { return deployer.getTargetDir(); }
+
+  protected Map<String,String> defaultProcTypes() {
+    return new HashMap<>();
+  }
 }

@@ -12,14 +12,22 @@ import org.apache.maven.plugin.logging.Log;
 
 public class MavenApp extends App {
 
+  private Map<String,String> processTypes;
+
   private Log log;
 
   private boolean isUploadProgressEnabled;
 
-  public MavenApp(String name, File rootDir, File targetDir, List<String> buildpacks, Log log, boolean logProgress) {
+  public MavenApp(String name, File rootDir, File targetDir, Map<String, String> processTypes, List<String> buildpacks, Log log, boolean logProgress) {
     super("heroku-maven-plugin", name, rootDir, targetDir, buildpacks);
     this.log = log;
     this.isUploadProgressEnabled = logProgress;
+    this.processTypes = processTypes;
+  }
+
+  @Override
+  protected Map<String,String> defaultProcTypes() {
+    return this.processTypes;
   }
 
   @Override

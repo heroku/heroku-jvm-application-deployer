@@ -4,11 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.heroku.sdk.deploy.utils.Main;
 
 /**
  * An easy way to deploy an executable Jar file
@@ -25,11 +25,13 @@ public class DeployJar extends App {
     this.jarOpts = jarOpts;
   }
 
+  @Override
   public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, String slugFileName) throws Exception {
     includedFiles.add(jarFile);
-    super.deploy(includedFiles, configVars, jdkVersion, stack, defaultProcTypes(), slugFileName);
+    super.deploy(includedFiles, configVars, jdkVersion, stack, slugFileName);
   }
 
+  @Override
   protected Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = getProcfile();
 
@@ -38,25 +40,6 @@ public class DeployJar extends App {
     }
 
     return processTypes;
-  }
-
-  private static List<File> includesToFiles(String includes) {
-    List<String> includeStrings = includesToList(includes, File.pathSeparator);
-
-    List<File> includeFiles = new ArrayList<>(includeStrings.size());
-    for (String includeString : includeStrings) {
-      if (!includeString.isEmpty()) {
-        includeFiles.add(new File(includeString));
-      }
-    }
-
-    return includeFiles;
-  }
-
-  private static List<String> includesToList(String includes, String delim) {
-    return includes == null || includes.isEmpty() ?
-        new ArrayList<String>() :
-        Arrays.asList(includes.split(delim));
   }
 
   protected Map<String, String> getProcfile() {
@@ -90,23 +73,11 @@ public class DeployJar extends App {
   public static void main(String[] args) throws Exception {
     String jarFile = System.getProperty("heroku.jarFile", null);
     String jarOpts = System.getProperty("heroku.jarOpts", "");
-    String appName = System.getProperty("heroku.appName", null);
-    String jdkVersion = System.getProperty("heroku.jdkVersion", null);
-    String stack = System.getProperty("heroku.stack", "cedar-14");
-    List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
-    String buildpacksDelim = System.getProperty("heroku.buildpacksDelim", ",");
-    List<String> buildpacks = includesToList(System.getProperty("heroku.buildpacks", ""), buildpacksDelim);
-
-    String slugFileName = System.getProperty("heroku.slugFileName", "slug.tgz");
 
     if (jarFile == null) {
-      throw new IllegalArgumentException("Path to WAR file must be provided with heroku.warFile system property!");
-    }
-    if (appName == null) {
-      throw new IllegalArgumentException("Heroku app name must be provided with heroku.appName system property!");
+      throw new IllegalArgumentException("Path to JAR file must be provided with heroku.jarFile system property!");
     }
 
-    (new DeployJar(appName, new File(jarFile), jarOpts, buildpacks)).
-        deploy(includes, new HashMap<String, String>(), jdkVersion, stack, slugFileName);
+    Main.deploy((appName, buildpacks) -> new DeployJar(appName, new File(jarFile), jarOpts, buildpacks));
   }
 }

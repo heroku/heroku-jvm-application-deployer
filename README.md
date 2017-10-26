@@ -145,18 +145,12 @@ You may set process types (similar to a `Procfile`):
 The plugin will also pick up any process types defined in your `Procfile`, but the plugin configuration
 will take precedence.
 
-You can include additional directories in the slug as long as they are relative to the project root:
+You can include additional directories in the build as long as they are relative to the project root:
 
 ```xml
 <includes>
   <include>etc/readme.txt</include>
 </includes>
-```
-
-You can set the Heroku runtime stack like this:
-
-```xml
-<stack>cedar-14</stack>
 ```
 
 See the integration tests under `maven-plugin/src/it` for more examples.
@@ -255,28 +249,26 @@ You can customize the JDK by creating a `.jdk-overlay` directory as described in
 
 ## Customizing the Slug
 
-You can customize the slug by using auxiliary buildpacks using the `<buildpacks>` configuration element.
+You can customize the slug with auxiliary buildpacks using the `<buildpacks>` configuration element.
 For example, if you need to install a native library such as imagemagik, you can add the following to the
 plugin config:
 
 ```xml
 <buildpacks>
   <buildpack>https://github.com/mcollina/heroku-buildpack-imagemagick</buildpack>
-  <buildpack>jvm-common</buildpack>
+  <buildpack>heroku/jvm</buildpack>
 </buildpacks>
 ```
 
-The `jvm-common` buildpack installs the JDK, and it's the default buildpack. Note that this
-feature does not work when using the `heroku:deploy-slug` goal or the WAR goals.
+The `heroku/jvm` buildpack installs the JDK, and it's the default buildpack.
+
+You can also define your buildpacks using the Heroku Dashboard or the Heroku CLI (i.e. the `heroku buildpacks` command).
+But if your list of buildpacks does not include the `heroku/jvm` buildpack, the plugin will throw an error.
 
 ## Other Useful Commands
 
 +  `mvn heroku:dashboard` opens the Dashboard for the application on Heroku.com
 +  `mvn heroku:eclipse-launch-config` generates launch configurations for Eclipse IDE
-+  `mvn heroku:deploy-slug` packages an entire slug locally, and deploy it's to Heroku
-+  `mvn heroku:deploy-war-slug` packages an entire slug locally with a WAR file, and deploy it's to Heroku
-+  `mvn heroku:create-slug` builds the slug file without deploying it
-+  `mvn heroku:release-slug` deploys a slug already created by `create-slug` or `deploy` and deploy it. This command does not work with the `deploy-war` goal.
 +  `mvn heroku:run-war` runs a war file locally
 
 ## Hacking

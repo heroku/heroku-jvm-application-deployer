@@ -1,5 +1,6 @@
 package com.heroku.sdk.deploy.endpoints;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -7,6 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.heroku.api.BuildpackInstallation;
+import com.heroku.api.HerokuAPI;
+import com.heroku.sdk.deploy.utils.Curl;
+import com.heroku.sdk.deploy.utils.Logger;
 import com.heroku.sdk.deploy.utils.RestClient;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -22,11 +27,26 @@ public class Builds extends ApiEndpoint {
 
   private List<String> buildpackUrls;
 
-  public Builds(String appName, String client, String stackName, String commit, String encodedApiKey, List<String> buildpacks) {
-    super(appName, client, stackName, commit, encodedApiKey);
+  private String commit;
+
+  public Builds(String appName, String client, String commit, String apiKey, List<String> buildpacks) throws IOException {
+    super(appName, client, apiKey);
+    this.commit = commit;
 
     if (buildpacks == null || buildpacks.isEmpty()) {
-      buildpackUrls = Arrays.asList(JVM_BUILDPACK_URL);
+      HerokuAPI api = new HerokuAPI(apiKey);
+      List<BuildpackInstallation> buildpackInstalls = api.listBuildpackInstallations(appName);
+
+      if (buildpackInstalls.isEmpty()) {
+        buildpackUrls = Arrays.asList(JVM_BUILDPACK_URL);
+      } else if (containsJvmBuildpack(buildpackInstalls)) {
+        for (BuildpackInstallation buildpack : buildpackInstalls) {
+          buildpackUrls.add(buildpack.getBuildpack().getUrl());
+        }
+      } else {
+        throw new IllegalArgumentException("Your buildpacks do not contain the heroku/jvm buildpack!" +
+            "Add heroku/jvm to your buildpack configuration or run `heroku buildpacks:clear`.");
+      }
     } else {
       buildpackUrls = new ArrayList<>(buildpacks.size());
         for (String buildpack : buildpacks) {
@@ -43,6 +63,23 @@ public class Builds extends ApiEndpoint {
           }
         }
     }
+  }
+
+  public void upload(File slugFile, Logger listener) throws IOException, InterruptedException {
+    if (blobUrl == null) {
+      throw new IllegalStateException("Slug must be created before uploading!");
+    }
+
+    if (useCurl) {
+      listener.logDebug("Uploading with curl");
+      Curl.put(blobUrl, slugFile);
+    } else {
+      RestClient.put(blobUrl, slugFile, listener);
+    }
+  }
+
+  public String getBlobUrl() {
+    return blobUrl;
   }
 
   public Map createSource() throws IOException {
@@ -108,5 +145,18 @@ public class Builds extends ApiEndpoint {
       buildpacksString += ",{\"url\":\"" + StringEscapeUtils.escapeJson(url) + "\"}";
     }
     return buildpacksString.replaceFirst(",", "[") + "]";
+  }
+
+  private Boolean containsJvmBuildpack(List<BuildpackInstallation> buildpackInstalls) {
+    for (BuildpackInstallation buildpack : buildpackInstalls) {
+      if (buildpack.getBuildpack().getName().startsWith("heroku/jvm")) {
+        return true;
+      } else if (buildpack.getBuildpack().getName().startsWith("https://github.com/heroku/heroku-buildpack-jvm-common")) {
+        return true;
+      } else if (buildpack.getBuildpack().getName().startsWith("https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz")) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -18,37 +18,52 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.3.0</version>
+      <version>2.9.2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.3.0</version>
+      <version>2.9.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>1.12</version>
+      <version>1.15</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.5</version>
+      <version>2.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.5</version>
+      <version>3.6</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
       <artifactId>org.eclipse.jgit</artifactId>
-      <version>4.5.0.201609210915-r</version>
+      <version>4.9.0.201710071750-r</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.2</version>
+      <version>4.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.heroku.api</groupId>
+      <artifactId>heroku-api</artifactId>
+      <version>0.29</version>
+    </dependency>
+    <dependency>
+      <groupId>com.heroku.api</groupId>
+      <artifactId>heroku-json-jackson</artifactId>
+      <version>0.29</version>
+    </dependency>
+    <dependency>
+      <groupId>com.heroku.api</groupId>
+      <artifactId>heroku-http-apache</artifactId>
+      <version>0.29</version>
     </dependency>
   </dependencies>
 
@@ -71,14 +86,14 @@
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-nop</artifactId>
-          <version>1.7.22</version>
+          <version>1.7.25</version>
         </dependency>
       </dependencies>
       <build>
         <plugins>
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.3</version>
+            <version>3.1.0</version>
             <configuration>
               <descriptorRefs>
                 <descriptorRef>jar-with-dependencies</descriptorRef>

@@ -32,7 +32,6 @@ import org.apache.http.client.HttpResponseException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.util.Base64;
 
 public class Deployer {
 
@@ -44,7 +43,7 @@ public class Deployer {
 
   protected File targetDir;
 
-  protected String encodedApiKey = null;
+  protected String apiKey = null;
 
   protected Logger logger;
 
@@ -83,7 +82,7 @@ public class Deployer {
     return this.name;
   }
 
-  protected void deploy(Map<String, String> configVars, String jdkVersion, String stack, String buildFilename) throws Exception {
+  protected void deploy(Map<String, String> configVars, String jdkVersion, String buildFilename) throws Exception {
     try {
       mergeConfigVars(configVars);
     } catch (HttpResponseException e) {
@@ -93,7 +92,7 @@ public class Deployer {
       throw e;
     }
     vendorJdk(jdkVersion);
-    createRelease(stack, createBuild(buildFilename));
+    createRelease(createBuild(buildFilename));
   }
 
   public void prepare(List<File> includedFiles, Map<String, String> processTypes) throws IOException {
@@ -160,12 +159,12 @@ public class Deployer {
   }
 
   protected void mergeConfigVars(Map<String, String> configVars) throws Exception {
-    (new ConfigVars(this, getEncodedApiKey())).merge(configVars);
+    (new ConfigVars(this, getApiKey())).merge(configVars);
   }
 
-  protected void createRelease(String stack, File tarFile)
+  protected void createRelease(File tarFile)
       throws IOException, ArchiveException, InterruptedException {
-    Builds builds = new Builds(name, client, stack, parseCommit(), getEncodedApiKey(), buildpacks);
+    Builds builds = new Builds(name, client, parseCommit(), getApiKey(), buildpacks);
 
     Map sourceResponse = builds.createSource();
     logDebug("Heroku Source response: " + sourceResponse);
@@ -285,23 +284,23 @@ public class Deployer {
     }
   }
 
-  protected String getEncodedApiKey() throws IOException {
-    if (encodedApiKey == null) {
-      String apiKey = System.getenv("HEROKU_API_KEY");
-      if (null == apiKey || apiKey.isEmpty()) {
+  protected String getApiKey() throws IOException {
+    if (apiKey == null) {
+      String key = System.getenv("HEROKU_API_KEY");
+      if (null == key || key.isEmpty()) {
         try {
-          apiKey = Toolbelt.getApiToken();
+          key = Toolbelt.getApiToken();
         } catch (Exception e) {
           // do nothing
         }
       }
 
-      if (apiKey == null || apiKey.isEmpty()) {
+      if (key == null || key.isEmpty()) {
         throw new RuntimeException("Could not get API key! Please install the toolbelt and login with `heroku login` or set the HEROKU_API_KEY environment variable.");
       }
-      setEncodedApiKey(apiKey);
+      this.apiKey = key;
     }
-    return encodedApiKey;
+    return apiKey;
   }
 
   protected File getAppDir() {
@@ -405,9 +404,5 @@ public class Deployer {
 
   protected String toPropertiesString() {
     return "client=" + client + "\n";
-  }
-  
-  public void setEncodedApiKey(String apiKey) {
-    encodedApiKey = Base64.encodeBytes((":" + apiKey).getBytes());
   }
 }

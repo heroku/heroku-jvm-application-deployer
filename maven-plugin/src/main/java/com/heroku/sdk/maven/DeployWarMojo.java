@@ -18,7 +18,7 @@ public class DeployWarMojo extends HerokuWarMojo {
     super.execute();
     try {
       (prepareWarFile()).deploy(
-          new ArrayList<>(getIncludes()), getConfigVars(), jdkVersion, stack, buildFilename
+          new ArrayList<>(getIncludes()), getConfigVars(), jdkVersion, buildFilename
       );
     } catch (Exception e) {
       throw new MojoFailureException("Failed to deploy application", e);

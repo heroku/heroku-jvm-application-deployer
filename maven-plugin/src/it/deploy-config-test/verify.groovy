@@ -51,11 +51,6 @@ try {
     output = process.text
     assert output.contains("hello from security"), "JDK Overlay not copied"
 
-    process = "heroku stack -a${appName}".execute()
-    process.waitFor()
-    output = process.text
-    assert output.contains("* heroku-16"), "Wrong stack used: ${output}"
-
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text

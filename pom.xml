@@ -58,8 +58,8 @@
     <heroku-deploy.version>${project.version}</heroku-deploy.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <invoker.skip>true</invoker.skip>
-    <maven.version>3.2.3</maven.version>
-    <nexus-staging.plugin.version>1.6.7</nexus-staging.plugin.version>
+    <maven.version>3.5.0</maven.version>
+    <nexus-staging.plugin.version>1.6.8</nexus-staging.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
     <gpg.plugin.version>1.6</gpg.plugin.version>
     <invoker.plugin.version>2.0.0</invoker.plugin.version>

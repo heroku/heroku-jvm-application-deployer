@@ -58,9 +58,9 @@ public class App implements Logger  {
     deployer.prepare(includedFiles, processTypes);
   }
 
-  public void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, String stack, String tarFilename) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, String tarFilename) throws Exception {
     prepare(includedFiles, defaultProcTypes());
-    deployer.deploy(configVars, jdkVersion, stack, tarFilename);
+    deployer.deploy(configVars, jdkVersion, tarFilename);
   }
 
   protected static File createTempDir() throws IOException {

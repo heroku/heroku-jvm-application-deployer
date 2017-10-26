@@ -49,7 +49,6 @@ public class DeployMojo extends HerokuMojo {
           includedDirs,
           getConfigVars(),
           jdkVersion,
-          stack,
           buildFilename
       );
     } catch (Exception e) {

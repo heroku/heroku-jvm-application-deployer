@@ -1,23 +1,20 @@
 package com.heroku.sdk.deploy;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.heroku.sdk.deploy.endpoints.ApiEndpoint;
-import com.heroku.sdk.deploy.utils.RestClient;
-import org.apache.commons.lang3.StringEscapeUtils;
+import com.heroku.api.HerokuAPI;
 
 public class ConfigVars {
 
   private Deployer deployer;
 
-  private String encodedApiKey;
+  private HerokuAPI api;
 
-  public ConfigVars(Deployer deployer, String encodedApiKey) {
+  public ConfigVars(Deployer deployer, String apiKey) {
     this.deployer = deployer;
-    this.encodedApiKey = encodedApiKey;
+    this.api = new HerokuAPI(apiKey);
   }
 
   public void merge(Map<String, String> configVars) throws Exception {
@@ -32,44 +29,12 @@ public class ConfigVars {
   }
 
   protected Map<String, String> getConfigVars() throws Exception {
-    String urlStr = ApiEndpoint.BASE_URL + "/apps/" + URLEncoder.encode(deployer.getName(), "UTF-8") + "/config-vars";
-
-    Map<String, String> headers = new HashMap<String, String>();
-    headers.put("Authorization", encodedApiKey);
-    headers.put("Accept", "application/vnd.heroku+json; version=3");
-
-    Map m = RestClient.get(urlStr, headers);
-    Map<String, String> configVars = new HashMap<String, String>();
-    for (Object key : m.keySet()) {
-      Object value = m.get(key);
-      if ((key instanceof String) && (value instanceof String)) {
-        configVars.put(key.toString(), value.toString());
-      } else {
-        throw new Exception("Unexpected return type: " + m);
-      }
-    }
-    return configVars;
+    return this.api.listConfig(deployer.getName());
   }
 
   protected void setConfigVars(Map<String, String> configVars) throws IOException {
     if (!configVars.isEmpty()) {
-      String urlStr = ApiEndpoint.BASE_URL + "/apps/" + URLEncoder.encode(deployer.getName(), "UTF-8") + "/config-vars";
-
-      String data = "{";
-      boolean first = true;
-      for (String key : configVars.keySet()) {
-        String value = configVars.get(key);
-        if (!first) data += ", ";
-        first = false;
-        data += "\"" + key + "\"" + ":" + "\"" + StringEscapeUtils.escapeJson(value) + "\"";
-      }
-      data += "}";
-
-      Map<String, String> headers = new HashMap<String, String>();
-      headers.put("Authorization", encodedApiKey);
-      headers.put("Accept", "application/vnd.heroku+json; version=3");
-
-      RestClient.patch(urlStr, data, headers);
+      api.updateConfig(deployer.getName(), configVars);
     }
   }
 

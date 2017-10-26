@@ -26,9 +26,9 @@ public class DeployJar extends App {
   }
 
   @Override
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String stack, String slugFileName) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String slugFileName) throws Exception {
     includedFiles.add(jarFile);
-    super.deploy(includedFiles, configVars, jdkVersion, stack, slugFileName);
+    super.deploy(includedFiles, configVars, jdkVersion, slugFileName);
   }
 
   @Override

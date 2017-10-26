@@ -42,7 +42,6 @@ public class Main {
   public static void deploy(DeployFunction<String, List<String>, App> f) throws Exception {
     String appName = System.getProperty("heroku.appName", null);
     String jdkVersion = System.getProperty("heroku.jdkVersion", null);
-    String stack = System.getProperty("heroku.stack", "heroku-16");
     List<File> includes = includesToFiles(System.getProperty("heroku.includes", ""));
     String buildFileName = System.getProperty("heroku.buildFileName", "slug.tgz");
     String buildpacksDelim = System.getProperty("heroku.buildpacksDelim", ",");
@@ -53,6 +52,6 @@ public class Main {
     }
 
     f.apply(appName, buildpacks).
-        deploy(includes, new HashMap<>(), jdkVersion, stack, buildFileName);
+        deploy(includes, new HashMap<>(), jdkVersion, buildFileName);
   }
 }

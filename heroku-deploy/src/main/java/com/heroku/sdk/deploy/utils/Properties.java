@@ -2,19 +2,18 @@ package com.heroku.sdk.deploy.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * @author Joe Kutner on 10/20/17.
  *         Twitter: @codefinger
  */
-public class HerokuDeployProperties {
+public class Properties {
 
-  static final Properties properties = new Properties();
+  static final java.util.Properties properties = new java.util.Properties();
 
   static {
     try {
-      InputStream jarProps = HerokuDeployProperties.class.getResourceAsStream("/heroku-deploy.properties");
+      InputStream jarProps = Properties.class.getResourceAsStream("/heroku-deploy.properties");
       properties.load(jarProps);
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -25,7 +24,7 @@ public class HerokuDeployProperties {
     return properties.getProperty(propName);
   }
 
-  public static Properties getProperties() {
+  public static java.util.Properties getProperties() {
     return properties;
   }
 }

@@ -130,7 +130,7 @@ public class Builds extends ApiEndpoint {
     return RestClient.get(buildStatusUrlStr, headers);
   }
 
-  public String getBuildpacksJson() {
+  private String getBuildpacksJson() {
     String buildpacksString = "";
     for (String url : buildpackUrls) {
       buildpacksString += ",{\"url\":\"" + StringEscapeUtils.escapeJson(url) + "\"}";

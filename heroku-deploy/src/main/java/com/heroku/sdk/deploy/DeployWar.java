@@ -64,13 +64,12 @@ public class DeployWar extends WarApp {
 
   @Override
   public void logDebug(String message) {
-    String debug = System.getenv("HEROKU_DEBUG");
-    if ("1".equals(debug) || "true".equals(debug)) {
+    if (Main.isDebug()) {
       System.out.println(message);
     }
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void deploy() throws Exception {
     String warFile = System.getProperty("heroku.warFile", null);
 
     String webappRunnerVersion = System.getProperty(
@@ -83,5 +82,19 @@ public class DeployWar extends WarApp {
     }
 
     Main.deploy((appName, buildpacks) -> new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl), buildpacks));
+  }
+
+  public static void main(String[] args) {
+    try {
+      deploy();
+    } catch (Exception e) {
+      System.out.println(" ! ERROR: " + e.getMessage());
+      if (Main.isDebug()) {
+        e.printStackTrace();
+      } else {
+        System.out.println(" !         Re-run with HEROKU_DEBUG=1 for more info.");
+      }
+      System.exit(1);
+    }
   }
 }

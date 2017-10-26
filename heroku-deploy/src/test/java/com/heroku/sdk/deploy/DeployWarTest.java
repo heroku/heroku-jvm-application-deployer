@@ -22,7 +22,7 @@ public class DeployWarTest extends BaseDeployTest {
   public void testSimpleWar() throws Exception {
     setSimpleWar();
 
-    DeployWar.main(new String[]{});
+    DeployWar.deploy();
     Thread.sleep(3000);
 
     assertEquals(3, this.api.listReleases(this.appName).size());
@@ -37,7 +37,7 @@ public class DeployWarTest extends BaseDeployTest {
     setSimpleWar();
     System.setProperty("heroku.webappRunnerVersion", "8.0.47.0");
 
-    DeployWar.main(new String[]{});
+    DeployWar.deploy();
     Thread.sleep(3000);
 
     assertEquals(3, this.api.listReleases(this.appName).size());
@@ -49,7 +49,7 @@ public class DeployWarTest extends BaseDeployTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testWithoutWarfile() throws Exception {
-    DeployWar.main(new String[]{});
+    DeployWar.deploy();
   }
 
   private void setSimpleWar() {

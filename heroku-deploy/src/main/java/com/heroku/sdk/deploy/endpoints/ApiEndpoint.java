@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.heroku.sdk.deploy.utils.HerokuDeployProperties;
+import com.heroku.sdk.deploy.utils.Properties;
 import org.eclipse.jgit.util.Base64;
 
 public abstract class ApiEndpoint {
@@ -33,7 +33,7 @@ public abstract class ApiEndpoint {
   private String getUserAgentValue(String client) {
     return String.format(
         userAgentValuePattern,
-        HerokuDeployProperties.getProperty("heroku-deploy.version"),
+        Properties.getProperty("heroku-deploy.version"),
         client,
         System.getProperty("java.version"),
         System.getProperty("java.vendor"));

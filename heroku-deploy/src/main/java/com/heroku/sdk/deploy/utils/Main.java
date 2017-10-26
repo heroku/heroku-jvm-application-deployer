@@ -54,4 +54,9 @@ public class Main {
     f.apply(appName, buildpacks).
         deploy(includes, new HashMap<>(), jdkVersion, buildFileName);
   }
+
+  public static Boolean isDebug() {
+    String debug = System.getenv("HEROKU_DEBUG");
+    return "1".equals(debug) || "true".equals(debug);
+  }
 }

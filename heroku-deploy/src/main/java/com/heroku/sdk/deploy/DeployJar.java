@@ -72,13 +72,12 @@ public class DeployJar extends App {
 
   @Override
   public void logDebug(String message) {
-    String debug = System.getenv("HEROKU_DEBUG");
-    if ("1".equals(debug) || "true".equals(debug)) {
+    if (Main.isDebug()) {
       System.out.println(message);
     }
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void deploy() throws Exception {
     String jarFile = System.getProperty("heroku.jarFile", null);
     String jarOpts = System.getProperty("heroku.jarOpts", "");
 
@@ -87,5 +86,19 @@ public class DeployJar extends App {
     }
 
     Main.deploy((appName, buildpacks) -> new DeployJar(appName, new File(jarFile), jarOpts, buildpacks));
+  }
+
+  public static void main(String[] args) {
+    try {
+      deploy();
+    } catch (Exception e) {
+      System.out.println(" ! ERROR: " + e.getMessage());
+      if (Main.isDebug()) {
+        e.printStackTrace();
+      } else {
+        System.out.println(" !         Re-run with HEROKU_DEBUG=1 for more info.");
+      }
+      System.exit(1);
+    }
   }
 }

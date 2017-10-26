@@ -29,7 +29,7 @@ public class DeployJarTest extends BaseDeployTest {
   public void testSimpleJar() throws Exception {
     setSimpleJar();
 
-    DeployJar.main(new String[]{});
+    DeployJar.deploy();
 
     assertEquals(3, this.api.listReleases(this.appName).size());
 
@@ -47,7 +47,7 @@ public class DeployJarTest extends BaseDeployTest {
     System.setProperty("heroku.jarOpts", "-Dfoo=bar");
     setSimpleJar();
 
-    DeployJar.main(new String[]{});
+    DeployJar.deploy();
 
     assertEquals(3, this.api.listReleases(this.appName).size());
     Formation f = this.api.listFormation(this.appName).get(0);
@@ -61,7 +61,7 @@ public class DeployJarTest extends BaseDeployTest {
     System.setProperty("heroku.buildpacks", "heroku/exec,heroku/jvm");
     setSimpleJar();
 
-    DeployJar.main(new String[]{});
+    DeployJar.deploy();
 
     assertEquals(3, this.api.listReleases(this.appName).size());
 
@@ -80,7 +80,7 @@ public class DeployJarTest extends BaseDeployTest {
 
     setSimpleJar();
 
-    DeployJar.main(new String[]{});
+    DeployJar.deploy();
 
     assertEquals(3, this.api.listReleases(this.appName).size());
 
@@ -99,12 +99,12 @@ public class DeployJarTest extends BaseDeployTest {
 
     setSimpleJar();
 
-    DeployJar.main(new String[]{});
+    DeployJar.deploy();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testWithoutJarfile() throws Exception {
-    DeployJar.main(new String[]{});
+    DeployJar.deploy();
   }
 
   private void setSimpleJar() {

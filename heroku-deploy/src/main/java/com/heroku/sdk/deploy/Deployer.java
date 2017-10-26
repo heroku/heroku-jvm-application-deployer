@@ -1,14 +1,10 @@
 package com.heroku.sdk.deploy;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -351,25 +347,6 @@ public class Deployer {
       Files.createSymbolicLink(target, Files.readSymbolicLink(file));
     } else {
       Files.copy(file, target, StandardCopyOption.COPY_ATTRIBUTES);
-    }
-  }
-
-  protected void copyResourceFile(String srcFilename, File targetFile) throws IOException {
-    BufferedWriter out = null;
-    try {
-      InputStream is = getClass().getResourceAsStream( "/" + srcFilename);
-      BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-      FileWriter fw = new FileWriter(targetFile);
-      out = new BufferedWriter(fw);
-
-      String line;
-      while ((line = br.readLine()) != null) {
-        out.write(line);
-        out.write("\n");
-      }
-    } finally {
-      if (null != out) out.close();
     }
   }
 

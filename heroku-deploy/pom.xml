@@ -14,6 +14,10 @@
 
   <artifactId>heroku-deploy</artifactId>
 
+  <properties>
+    <heroku.jar.version>0.30</heroku.jar.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -53,17 +57,23 @@
     <dependency>
       <groupId>com.heroku.api</groupId>
       <artifactId>heroku-api</artifactId>
-      <version>0.29</version>
+      <version>${heroku.jar.version}</version>
     </dependency>
     <dependency>
       <groupId>com.heroku.api</groupId>
       <artifactId>heroku-json-jackson</artifactId>
-      <version>0.29</version>
+      <version>${heroku.jar.version}</version>
     </dependency>
     <dependency>
       <groupId>com.heroku.api</groupId>
       <artifactId>heroku-http-apache</artifactId>
-      <version>0.29</version>
+      <version>${heroku.jar.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

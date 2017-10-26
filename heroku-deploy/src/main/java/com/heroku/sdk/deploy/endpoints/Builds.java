@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +17,11 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 public class Builds extends ApiEndpoint {
 
-  private static final String JVM_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz";
+  public static final String JVM_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz";
 
-  private static final String METRICS_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/metrics.tgz";
+  public static final String METRICS_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/metrics.tgz";
 
-  private static final String EXEC_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/exec.tgz";
+  public static final String EXEC_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/exec.tgz";
 
   private String blobGetUrl;
 
@@ -38,10 +38,11 @@ public class Builds extends ApiEndpoint {
       List<BuildpackInstallation> buildpackInstalls = api.listBuildpackInstallations(appName);
 
       if (buildpackInstalls.isEmpty()) {
-        buildpackUrls = Arrays.asList(JVM_BUILDPACK_URL);
+        buildpackUrls = Collections.singletonList(JVM_BUILDPACK_URL);
       } else if (containsJvmBuildpack(buildpackInstalls)) {
+        buildpackUrls = new ArrayList<>();
         for (BuildpackInstallation buildpack : buildpackInstalls) {
-          buildpackUrls.add(buildpack.getBuildpack().getUrl());
+          buildpackUrls.add(resolveBuildpack(buildpack.getBuildpack().getName()));
         }
       } else {
         throw new IllegalArgumentException("Your buildpacks do not contain the heroku/jvm buildpack!" +
@@ -50,24 +51,14 @@ public class Builds extends ApiEndpoint {
     } else {
       buildpackUrls = new ArrayList<>(buildpacks.size());
         for (String buildpack : buildpacks) {
-          if (buildpack.equals("jvm-common")) {
-            buildpackUrls.add(JVM_BUILDPACK_URL);
-          } else if (buildpack.equals("heroku/jvm")) {
-            buildpackUrls.add(JVM_BUILDPACK_URL);
-          } else if (buildpack.equals("heroku/metrics")) {
-            buildpackUrls.add(METRICS_BUILDPACK_URL);
-          } else if (buildpack.equals("heroku/exec")) {
-            buildpackUrls.add(EXEC_BUILDPACK_URL);
-          } else {
-            buildpackUrls.add(buildpack);
-          }
+          buildpackUrls.add(resolveBuildpack(buildpack));
         }
     }
   }
 
   public void upload(File slugFile, Logger listener) throws IOException, InterruptedException {
     if (blobUrl == null) {
-      throw new IllegalStateException("Slug must be created before uploading!");
+      throw new IllegalStateException("Source must be created before uploading!");
     }
 
     if (useCurl) {
@@ -158,5 +149,19 @@ public class Builds extends ApiEndpoint {
       }
     }
     return false;
+  }
+
+  private String resolveBuildpack(String buildpack) {
+    if (buildpack.equals("jvm-common")) {
+      return JVM_BUILDPACK_URL;
+    } else if (buildpack.equals("heroku/jvm")) {
+      return JVM_BUILDPACK_URL;
+    } else if (buildpack.equals("heroku/metrics")) {
+      return METRICS_BUILDPACK_URL;
+    } else if (buildpack.equals("heroku/exec")) {
+      return EXEC_BUILDPACK_URL;
+    } else {
+      return buildpack;
+    }
   }
 }

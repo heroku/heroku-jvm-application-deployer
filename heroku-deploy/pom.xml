@@ -16,6 +16,7 @@
 
   <properties>
     <heroku.jar.version>0.30</heroku.jar.version>
+    <maven.test.skip>true</maven.test.skip>
   </properties>
 
   <dependencies>
@@ -90,6 +91,12 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>it</id>
+      <properties>
+        <maven.test.skip>false</maven.test.skip>
+      </properties>
+    </profile>
     <profile>
       <id>complete</id>
       <dependencies>

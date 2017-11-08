@@ -15,7 +15,6 @@ import com.heroku.sdk.deploy.App;
  */
 public class Main {
 
-  @FunctionalInterface
   public interface DeployFunction<T, B, R> {
     R apply(T t, B b) throws IOException;
   }
@@ -35,7 +34,7 @@ public class Main {
 
   private static List<String> includesToList(String includes, String delim) {
     return includes == null || includes.isEmpty() ?
-        new ArrayList<>() :
+        new ArrayList<String>() :
         Arrays.asList(includes.split(delim));
   }
 
@@ -52,7 +51,7 @@ public class Main {
     }
 
     f.apply(appName, buildpacks).
-        deploy(includes, new HashMap<>(), jdkVersion, new HashMap<>(), buildFileName);
+        deploy(includes, new HashMap<String,String>(), jdkVersion, new HashMap<String,String>(), buildFileName);
   }
 
   public static Boolean isDebug() {

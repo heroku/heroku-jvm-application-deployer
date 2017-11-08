@@ -42,8 +42,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.6</version>
+      <artifactId>commons-text</artifactId>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
@@ -115,7 +115,7 @@
               <descriptorRefs>
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
-              <finalName>heroku-deploy-complete</finalName>
+              <!--<finalName>heroku-deploy-complete</finalName>-->
               <appendAssemblyId>false</appendAssemblyId>
               <archive>
                 <manifest>

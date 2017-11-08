@@ -70,18 +70,23 @@ public class DeployWar extends WarApp {
   }
 
   public static void deploy() throws Exception {
-    String warFile = System.getProperty("heroku.warFile", null);
+    final String warFile = System.getProperty("heroku.warFile", null);
 
-    String webappRunnerVersion = System.getProperty(
+    final String webappRunnerVersion = System.getProperty(
             "heroku.webappRunnerVersion", DEFAULT_WEBAPP_RUNNER_VERSION);
-    String webappRunnerUrl = System.getProperty(
+    final String webappRunnerUrl = System.getProperty(
             "heroku.webappRunnerUrl", String.format(WEBAPP_RUNNER_URL_FORMAT, webappRunnerVersion, webappRunnerVersion));
 
     if (warFile == null) {
       throw new IllegalArgumentException("Path to WAR file must be provided with heroku.warFile system property!");
     }
 
-    Main.deploy((appName, buildpacks) -> new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl), buildpacks));
+    Main.deploy(new Main.DeployFunction<String, List<String>, App>() {
+      @Override
+      public App apply(String appName, List<String> buildpacks) throws IOException {
+        return new DeployWar(appName, new File(warFile), new URL(webappRunnerUrl), buildpacks);
+      }
+    });
   }
 
   public static void main(String[] args) {

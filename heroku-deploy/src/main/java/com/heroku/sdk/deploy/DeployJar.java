@@ -73,14 +73,19 @@ public class DeployJar extends App {
   }
 
   public static void deploy() throws Exception {
-    String jarFile = System.getProperty("heroku.jarFile", null);
-    String jarOpts = System.getProperty("heroku.jarOpts", "");
+    final String jarFile = System.getProperty("heroku.jarFile", null);
+    final String jarOpts = System.getProperty("heroku.jarOpts", "");
 
     if (jarFile == null) {
       throw new IllegalArgumentException("Path to JAR file must be provided with heroku.jarFile system property!");
     }
 
-    Main.deploy((appName, buildpacks) -> new DeployJar(appName, new File(jarFile), jarOpts, buildpacks));
+    Main.deploy(new Main.DeployFunction<String, List<String>, App>() {
+      @Override
+      public App apply(String appName, List<String> buildpacks) throws IOException {
+        return new DeployJar(appName, new File(jarFile), jarOpts, buildpacks);
+      }
+    });
   }
 
   public static void main(String[] args) {

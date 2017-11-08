@@ -13,7 +13,7 @@ import com.heroku.api.HerokuAPI;
 import com.heroku.sdk.deploy.utils.Curl;
 import com.heroku.sdk.deploy.utils.Logger;
 import com.heroku.sdk.deploy.utils.RestClient;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class Builds extends ApiEndpoint {
 

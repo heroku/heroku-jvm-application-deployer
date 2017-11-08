@@ -3,3 +3,10 @@ dist: trusty
 install: "./etc/ci-setup.sh"
 script: ./mvnw clean install -Pit
 after_script: heroku keys:remove $USER@`hostname`
+
+matrix:
+  fast_finish: true
+  include:
+    - jdk: openjdk7
+    - jdk: oraclejdk8
+    - jdk: oraclejdk9

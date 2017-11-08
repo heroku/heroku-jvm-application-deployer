@@ -27,10 +27,10 @@ public class WarApp extends App {
   }
 
   @Override
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String buildFilename) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, Map<String,String> userDefinedProcessTypes, String buildFilename) throws Exception {
     includedFiles.add(webappRunnerJar);
     includedFiles.add(warFile);
-    super.deploy(includedFiles, configVars, jdkVersion, buildFilename);
+    super.deploy(includedFiles, configVars, jdkVersion, new HashMap<>(), buildFilename);
   }
 
   @Override

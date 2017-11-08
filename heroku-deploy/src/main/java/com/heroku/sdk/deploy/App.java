@@ -54,13 +54,15 @@ public class App implements Logger  {
     return deployer.getName();
   }
 
-  protected void prepare(List<File> includedFiles, Map<String, String> processTypes) throws IOException {
-    deployer.prepare(includedFiles, processTypes);
+  public void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, Map<String, String> userDefinedProcessTypes, String tarFilename) throws Exception {
+    Map<String,String> processTypes = defaultProcTypes();
+    processTypes.putAll(userDefinedProcessTypes);
+    prepare(includedFiles, processTypes);
+    deployer.deploy(configVars, jdkVersion, tarFilename);
   }
 
-  public void deploy(List<File> includedFiles, Map<String, String> configVars, String jdkVersion, String tarFilename) throws Exception {
-    prepare(includedFiles, defaultProcTypes());
-    deployer.deploy(configVars, jdkVersion, tarFilename);
+  protected void prepare(List<File> includedFiles, Map<String, String> processTypes) throws IOException {
+    deployer.prepare(includedFiles, processTypes);
   }
 
   protected static File createTempDir() throws IOException {

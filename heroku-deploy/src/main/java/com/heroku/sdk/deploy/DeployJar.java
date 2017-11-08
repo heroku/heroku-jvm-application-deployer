@@ -26,23 +26,18 @@ public class DeployJar extends App {
   }
 
   @Override
-  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, String slugFileName) throws Exception {
+  public void deploy(List<File> includedFiles, Map<String,String> configVars, String jdkVersion, Map<String,String> userDefinedProcessTypes, String slugFileName) throws Exception {
     includedFiles.add(jarFile);
-    super.deploy(includedFiles, configVars, jdkVersion, slugFileName);
-  }
 
-  @Override
-  protected Map<String,String> defaultProcTypes() {
     Map<String,String> processTypes = getProcfile();
-
     if (processTypes.isEmpty()) {
       processTypes.put("web", "java $JAVA_OPTS -jar " + relativize(jarFile) + " " + jarOpts + " $JAR_OPTS");
     }
 
-    return processTypes;
+    super.deploy(includedFiles, configVars, jdkVersion, processTypes, slugFileName);
   }
 
-  protected Map<String, String> getProcfile() {
+  private Map<String, String> getProcfile() {
     Map<String, String> procTypes = new HashMap<String, String>();
 
     File procfile = new File("Procfile");

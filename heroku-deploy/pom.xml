@@ -107,6 +107,7 @@
         </dependency>
       </dependencies>
       <build>
+        <finalName>heroku-deploy-complete</finalName>
         <plugins>
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
@@ -115,7 +116,6 @@
               <descriptorRefs>
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
-              <!--<finalName>heroku-deploy-complete</finalName>-->
               <appendAssemblyId>false</appendAssemblyId>
               <archive>
                 <manifest>

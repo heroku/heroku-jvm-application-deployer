@@ -1,10 +1,21 @@
 package com.heroku.sdk.deploy;
 
-import org.apache.commons.io.FileUtils;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
+import org.apache.commons.io.FileUtils;
 
 public class Toolbelt {
 
@@ -28,7 +39,7 @@ public class Toolbelt {
   private static String runHerokuCommand(final File projectDir, final String... command) throws InterruptedException, ExecutionException, TimeoutException {
     ExecutorService executor = Executors.newSingleThreadExecutor();
     FutureTask<String> future =
-        new FutureTask<String>(new Callable<String>() {
+        new FutureTask<>(new Callable<String>() {
           public String call() throws IOException {
             String herokuCmd = SystemSettings.isWindows() ? "heroku.bat" : "heroku";
 
@@ -43,12 +54,13 @@ public class Toolbelt {
 
             BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
-            String output = "";
+            StringBuilder output = new StringBuilder();
             while ((line = bri.readLine()) != null) {
-              output += line;
+              output.append(line);
             }
-            return output;
-          }});
+            return output.toString();
+          }
+        });
 
     executor.execute(future);
 
@@ -110,7 +122,7 @@ public class Toolbelt {
         if (line.startsWith("machine")) {
           if (null != machine) {
             netrcMap.put(machine, entry);
-            entry = new HashMap<String, String>();
+            entry = new HashMap<>();
           }
           machine = line.trim().split(" ")[1];
         } else {

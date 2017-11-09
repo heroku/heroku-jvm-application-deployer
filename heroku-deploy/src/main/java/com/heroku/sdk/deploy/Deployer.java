@@ -162,8 +162,7 @@ public class Deployer {
       throws IOException, ArchiveException, InterruptedException {
     Builds builds = new Builds(name, client, parseCommit(), getApiKey(), buildpacks);
 
-    Map sourceResponse = builds.createSource();
-    logDebug("Heroku Source response: " + sourceResponse);
+    builds.createSource();
     logDebug("Heroku Blob URL: " + builds.getBlobUrl());
 
     logInfo("-----> Uploading build...");

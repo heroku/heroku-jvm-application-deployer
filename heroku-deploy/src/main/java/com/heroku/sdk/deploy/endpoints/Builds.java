@@ -2,7 +2,6 @@ package com.heroku.sdk.deploy.endpoints;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Map;
 
 import com.heroku.api.BuildpackInstallation;
 import com.heroku.api.HerokuAPI;
+import com.heroku.api.Source;
 import com.heroku.sdk.deploy.utils.Curl;
 import com.heroku.sdk.deploy.utils.Logger;
 import com.heroku.sdk.deploy.utils.RestClient;
@@ -29,9 +29,12 @@ public class Builds extends ApiEndpoint {
 
   private String commit;
 
+  private HerokuAPI api;
+
   public Builds(String appName, String client, String commit, String apiKey, List<String> buildpacks) throws IOException {
     super(appName, client, apiKey);
     this.commit = commit;
+    this.api = new HerokuAPI(apiKey);
 
     if (buildpacks == null || buildpacks.isEmpty()) {
       HerokuAPI api = new HerokuAPI(apiKey);
@@ -73,15 +76,12 @@ public class Builds extends ApiEndpoint {
     return blobUrl;
   }
 
-  public Map createSource() throws IOException {
-    String urlStr = BASE_URL + "/apps/" + URLEncoder.encode(appName, "UTF-8") + "/sources";
-    Map sourceResponse = RestClient.post(urlStr, headers);
+  public Source createSource() throws IOException {
+    Source source = this.api.createSource();
+    blobUrl = source.getSource_blob().getPut_url();
+    blobGetUrl = source.getSource_blob().getGet_url();
 
-    Map blobJson = (Map)sourceResponse.get("source_blob");
-    blobUrl = (String)blobJson.get("put_url");
-    blobGetUrl = (String)blobJson.get("get_url");
-
-    return sourceResponse;
+    return source;
   }
 
   public Map build(RestClient.OutputLogger logger) throws IOException, InterruptedException {

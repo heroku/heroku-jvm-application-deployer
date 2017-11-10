@@ -8,6 +8,7 @@
   <modules>
     <module>heroku-deploy</module>
     <module>maven-plugin</module>
+    <module>complete</module>
   </modules>
   <parent>
     <groupId>org.sonatype.oss</groupId>

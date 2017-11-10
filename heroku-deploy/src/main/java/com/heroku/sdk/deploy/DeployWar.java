@@ -97,7 +97,7 @@ public class DeployWar extends WarApp {
       if (Main.isDebug()) {
         e.printStackTrace();
       } else {
-        System.out.println(" !         Re-run with HEROKU_DEBUG=1 for more info.");
+        System.out.println(" !        Re-run with HEROKU_DEBUG=1 for more info.");
       }
       System.exit(1);
     }

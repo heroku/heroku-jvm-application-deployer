@@ -9,7 +9,7 @@
 
   <name>Heroku Deployer</name>
   <description>
-    Standalone tool and library for deploying to Heroku
+    Fat JAR version of heroku-deploy
   </description>
 
   <artifactId>heroku-deploy-complete</artifactId>

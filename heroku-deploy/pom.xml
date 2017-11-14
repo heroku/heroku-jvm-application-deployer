@@ -15,7 +15,7 @@
   <artifactId>heroku-deploy</artifactId>
 
   <properties>
-    <heroku.jar.version>0.30</heroku.jar.version>
+    <heroku.jar.version>0.31</heroku.jar.version>
     <maven.test.skip>true</maven.test.skip>
   </properties>
 

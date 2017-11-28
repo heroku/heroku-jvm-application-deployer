@@ -131,11 +131,11 @@ public class Builds extends ApiEndpoint {
   }
 
   private String getBuildpacksJson() {
-    String buildpacksString = "";
+    StringBuilder buildpacksString = new StringBuilder();
     for (String url : buildpackUrls) {
-      buildpacksString += ",{\"url\":\"" + StringEscapeUtils.escapeJson(url) + "\"}";
+      buildpacksString.append(",{\"url\":\"").append(StringEscapeUtils.escapeJson(url)).append("\"}");
     }
-    return buildpacksString.replaceFirst(",", "[") + "]";
+    return buildpacksString.toString().replaceFirst(",", "[") + "]";
   }
 
   private Boolean containsJvmBuildpack(List<BuildpackInstallation> buildpackInstalls) {

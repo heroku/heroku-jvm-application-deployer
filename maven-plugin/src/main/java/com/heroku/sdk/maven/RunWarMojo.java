@@ -5,6 +5,7 @@ import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ import java.util.List;
 public class RunWarMojo extends HerokuWarMojo {
 
   @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
+  public void execute() throws MojoFailureException {
     try {
       prepareWarFile();
 
@@ -28,10 +29,20 @@ public class RunWarMojo extends HerokuWarMojo {
 
       List<String> fullCommand = new ArrayList<String>();
       fullCommand.add(javaCommand);
-      if (null != javaOpts) fullCommand.add(javaOpts);
+      if (null != javaOpts) {
+        for (String javaOpt : javaOpts.split(" ")) {
+          if (!javaOpt.isEmpty()) fullCommand.add(javaOpt);
+        }
+      }
+
       fullCommand.add("-jar");
       fullCommand.add("target" + File.separator + "dependency" + File.separator + "webapp-runner.jar");
-      if (null != webappRunnerOpts) fullCommand.add(webappRunnerOpts);
+      if (null != webappRunnerOpts) {
+        for (String webappRunnerOpt : webappRunnerOpts.split(" ")) {
+          if (!webappRunnerOpt.isEmpty()) fullCommand.add(webappRunnerOpt);
+        }
+      }
+
       fullCommand.add(warFile.getAbsolutePath());
 
       ProcessBuilder pb = new ProcessBuilder().command(fullCommand.toArray(new String[fullCommand.size()]));

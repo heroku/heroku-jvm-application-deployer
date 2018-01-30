@@ -32,17 +32,17 @@ set -eu
 #   </profile>
 # </profiles>
 
-stty -echo
-printf "GPG passphrase: "
-read gpgPwd
-printf '\n'
-stty echo
+#stty -echo
+#printf "GPG passphrase: "
+#read gpgPwd
+#printf '\n'
+#stty echo
 
-./mvnw release:clean release:prepare -DdryRun
+./mvnw release:clean release:prepare -DdryRun #-Darguments="-Dgpg.passphrase=$gpgPwd"
 
-./mvnw release:prepare
+./mvnw release:prepare #-Darguments="-Dgpg.passphrase=$gpgPwd"
 
-./mvnw release:perform -Darguments="-Dgpg.passphrase=$gpgPwd"
+./mvnw release:perform #-Darguments="-Dgpg.passphrase=$gpgPwd"
 
 echo "Now make sure you update these articles and projects:
 

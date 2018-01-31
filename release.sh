@@ -38,11 +38,11 @@ set -eu
 #printf '\n'
 #stty echo
 
-./mvnw release:clean release:prepare -DdryRun #-Darguments="-Dgpg.passphrase=$gpgPwd"
+./mvnw release:clean release:prepare -DdryRun "$@" #-Darguments="-Dgpg.passphrase=$gpgPwd"
 
-./mvnw release:prepare #-Darguments="-Dgpg.passphrase=$gpgPwd"
+./mvnw release:prepare "$@" #-Darguments="-Dgpg.passphrase=$gpgPwd"
 
-./mvnw release:perform #-Darguments="-Dgpg.passphrase=$gpgPwd"
+./mvnw release:perform "$@" #-Darguments="-Dgpg.passphrase=$gpgPwd"
 
 echo "Now make sure you update these articles and projects:
 

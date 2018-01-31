@@ -40,7 +40,7 @@ set -eu
 
 ./mvnw release:clean release:prepare -DdryRun "$@" #-Darguments="-Dgpg.passphrase=$gpgPwd"
 
-./mvnw release:prepare "$@" #-Darguments="-Dgpg.passphrase=$gpgPwd"
+./mvnw release:clean release:prepare "$@" #-Darguments="-Dgpg.passphrase=$gpgPwd"
 
 ./mvnw release:perform "$@" #-Darguments="-Dgpg.passphrase=$gpgPwd"
 

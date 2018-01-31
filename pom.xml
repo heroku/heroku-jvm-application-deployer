@@ -28,7 +28,7 @@
   <scm>
     <connection>scm:git:git://github.com/heroku/heroku-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/heroku/heroku-maven-plugin.git</developerConnection>
-    <url>http://github.com/heroku/heroku-maven-plugin</url>
+    <url>https://github.com/heroku/heroku-maven-plugin</url>
     <tag>HEAD</tag>
   </scm>
 

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -16,12 +17,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jgit.transport.NetRC;
 
 public class Toolbelt {
 
   public static String getApiToken() throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try {
-      return readNetrcFile().get("api.heroku.com").get("password");
+      return String.valueOf(readNetrcFile().getEntry("api.heroku.com").password);
     } catch (Throwable e) {
       return runHerokuCommand(new File(System.getProperty("user.home"), "auth:token"));
     }
@@ -104,38 +106,19 @@ public class Toolbelt {
     return null;
   }
 
-  private static Map<String,Map<String,String>> readNetrcFile() throws IOException {
+  public static NetRC readNetrcFile() throws IOException {
     String homeDir = System.getProperty("user.home");
     String netrcFilename = SystemSettings.isWindows() ? "_netrc" : ".netrc";
     File netrcFile = new File(new File(homeDir), netrcFilename);
 
+    return readNetrcFile(netrcFile);
+  }
+
+  public static NetRC readNetrcFile(File netrcFile) throws IOException {
     if (!netrcFile.exists()) {
       throw new FileNotFoundException(netrcFile.toString());
     }
 
-    Map<String,Map<String,String>> netrcMap = new HashMap<String, Map<String, String>>();
-
-    String machine = null;
-    Map<String,String> entry = new HashMap<String, String>();
-    for (String line : FileUtils.readLines(netrcFile)) {
-      if (line != null && !line.trim().isEmpty()) {
-        if (line.startsWith("machine")) {
-          if (null != machine) {
-            netrcMap.put(machine, entry);
-            entry = new HashMap<>();
-          }
-          machine = line.trim().split(" ")[1];
-        } else {
-          String[] keyValue = line.trim().split(" ");
-          entry.put(keyValue[0], keyValue[1]);
-        }
-      }
-    }
-
-    if (null != machine) {
-      netrcMap.put(machine, entry);
-    }
-
-    return netrcMap;
+    return new NetRC(netrcFile);
   }
 }

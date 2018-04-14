@@ -291,7 +291,7 @@ public class Deployer {
       }
 
       if (key == null || key.isEmpty()) {
-        throw new RuntimeException("Could not get API key! Please install the toolbelt and login with `heroku login` or set the HEROKU_API_KEY environment variable.");
+        throw new RuntimeException("Could not get API key! Please install the Heroku CLI and run `heroku login` or set the HEROKU_API_KEY environment variable.");
       }
       this.apiKey = key;
     }

@@ -7,6 +7,6 @@ after_script: heroku keys:remove $USER@`hostname`
 matrix:
   fast_finish: true
   include:
-    - jdk: openjdk7
     - jdk: oraclejdk8
     - jdk: oraclejdk9
+    - jdk: oraclejdk10

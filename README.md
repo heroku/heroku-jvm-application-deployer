@@ -95,8 +95,8 @@ This will start the web application in a way that is very similar to how it is r
 
 ## Requirements
 
-+  Maven 3.2.x
-+  Java 1.7 or higher
++  Maven 3.5.x
++  Java 8 or higher
 
 ## Configuration
 

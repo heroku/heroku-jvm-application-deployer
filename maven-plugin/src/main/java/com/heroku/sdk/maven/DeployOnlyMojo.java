@@ -10,13 +10,12 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * Deploys an application to Heroku
+ * Deploys an application to Heroku without resolving dependencies, packaging, or vendoring dependencies. This
+ * goal can be used to execute standalone, or be bound to a different phase in the lifecycle.
  *
- * @goal deploy
- * @execute phase="package"
- * @requiresDependencyResolution
+ * @goal deploy-only
  */
-public class DeployMojo extends HerokuMojo {
+public class DeployOnlyMojo extends HerokuMojo {
 
   /**
    * The process types used to run on Heroku (similar to Procfile).
@@ -24,12 +23,11 @@ public class DeployMojo extends HerokuMojo {
    * @required
    * @parameter property="heroku.processTypes"
    */
-  protected Map<String,String> processTypes = null;
+  protected Map<String, String> processTypes = null;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     super.execute();
-    CopyDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
     deploy(processTypes);
   }
 }

@@ -1,10 +1,7 @@
 package com.heroku.sdk.maven;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.heroku.sdk.maven.executor.ListDependencies;
 import org.apache.commons.io.FileUtils;
@@ -153,6 +150,32 @@ public abstract class HerokuMojo extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     ListDependencies.execute(this.mavenProject, this.mavenSession, this.pluginManager);
+  }
+
+  void deploy(Map<String, String> processTypes) throws MojoFailureException {
+    List<File> includedDirs = getIncludes();
+    if(isIncludeTarget()) {
+      includedDirs.add(getTargetDir());
+    }
+
+    try {
+      (new MavenApp(
+          appName,
+          getTargetDir().getParentFile(),
+          getTargetDir(),
+          Arrays.asList(buildpacks),
+          getLog(),
+          logProgess)
+      ).deploy(
+          includedDirs,
+          getConfigVars(),
+          jdkVersion,
+          processTypes,
+          buildFilename
+      );
+    } catch (Exception e) {
+      throw new MojoFailureException("Failed to deploy application", e);
+    }
   }
 
 }

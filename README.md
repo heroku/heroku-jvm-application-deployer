@@ -267,6 +267,7 @@ But if your list of buildpacks does not include the `heroku/jvm` buildpack, the 
 
 ## Other Useful Commands
 
++  `mvn heroku:deploy-only` deploys without running package or vendoring dependencies
 +  `mvn heroku:dashboard` opens the Dashboard for the application on Heroku.com
 +  `mvn heroku:eclipse-launch-config` generates launch configurations for Eclipse IDE
 +  `mvn heroku:run-war` runs a war file locally

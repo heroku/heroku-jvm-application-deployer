@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
 
 public class DeployWar extends WarApp {
 
-  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "8.5.23.0";
+  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "8.5.33.0";
 
   private static final String WEBAPP_RUNNER_URL_FORMAT="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar";
 

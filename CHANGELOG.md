@@ -1,4 +1,11 @@
-## Master
+# Changelog
+
+## 2.0.6
+
+* Upgrade to Tomcat Webapp Runner 8.5.33.0
+* Update default buildpack URL
+
+## 0.6.0
 
 * Added mechanism to set api key programmatically
 * Fix: Symlinks are imported into slug as files, not symlinks

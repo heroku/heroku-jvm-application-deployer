@@ -17,11 +17,11 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class Builds extends ApiEndpoint {
 
-  public static final String JVM_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz";
+  public static final String JVM_BUILDPACK_URL="https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku/jvm.tgz";
 
-  public static final String METRICS_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/metrics.tgz";
+  public static final String METRICS_BUILDPACK_URL="https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku/metrics.tgz";
 
-  public static final String EXEC_BUILDPACK_URL="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/exec.tgz";
+  public static final String EXEC_BUILDPACK_URL="https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku/exec.tgz";
 
   private String blobGetUrl;
 
@@ -143,6 +143,8 @@ public class Builds extends ApiEndpoint {
       if (buildpack.getBuildpack().getName().startsWith("heroku/jvm")) {
         return true;
       } else if (buildpack.getBuildpack().getName().startsWith("https://github.com/heroku/heroku-buildpack-jvm-common")) {
+        return true;
+      } else if (buildpack.getBuildpack().getName().startsWith(JVM_BUILDPACK_URL)) {
         return true;
       } else if (buildpack.getBuildpack().getName().startsWith("https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz")) {
         return true;

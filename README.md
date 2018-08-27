@@ -30,13 +30,13 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
 </build>
 ```
 
-Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, run:
+Now, if you have the [Heroku CLI](https://cli.heroku.com/) installed, run:
 
 ```sh-session
 $ mvn heroku:deploy
 ```
 
-If you do not have the toolbelt installed, then run:
+If you do not have the CLI installed, then run:
 
 ```sh-session
 $ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy
@@ -68,13 +68,13 @@ This assumes your project will generate a WAR file in the `target` directory. If
 you can specify this with the `<warFile>` configuration element. The `<processTypes>` element is not needed
 and *will be ignored* because the plugin will determine the appropriate process type for you.
 
-Now, if you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed, run:
+Now, if you have the [Heroku CLI](https://cli.heroku.com/) installed, run:
 
 ```sh-session
 $ mvn heroku:deploy-war
 ```
 
-If you do not have the toolbelt installed or have not logged in, then run:
+If you do not have the CLI installed or have not logged in, then run:
 
 ```sh-session
 $ HEROKU_API_KEY="xxx-xxx-xxxx" mvn heroku:deploy-war

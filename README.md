@@ -19,7 +19,6 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>2.0.1</version>
       <configuration>
         <appName>${heroku.appName}</appName>
         <processTypes>

@@ -8,4 +8,4 @@ matrix:
   fast_finish: true
   include:
     - jdk: oraclejdk8
-    - jdk: oraclejdk9
+    - jdk: oraclejdk11

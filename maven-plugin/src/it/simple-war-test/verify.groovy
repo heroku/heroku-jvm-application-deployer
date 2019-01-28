@@ -27,7 +27,7 @@ try {
     output = process.text
     assert output.contains("The following files have been resolved"), "Dependencies not listed: ${output}"
 
-    process = "heroku logs -a${appName}".execute()
+    process = "heroku logs -n 1000 -a${appName}".execute()
     process.waitFor()
     output = process.text
     assert output.contains("--expand-war"), "Did not pick up WEBAPP_RUNNER_OPTS: ${output}"

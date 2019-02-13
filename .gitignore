@@ -16,3 +16,4 @@ maven-plugin/.classpath
 maven-plugin/.project
 maven-plugin/.settings
 .DS_Store
+.factorypath

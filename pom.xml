@@ -67,12 +67,12 @@
     <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
     <source.plugin.version>3.0.1</source.plugin.version>
     <jackson.version>2.9.8</jackson.version>
-    <heroku.jar.version>0.33</heroku.jar.version>
+    <heroku.jar.version>0.36</heroku.jar.version>
     <commons-compress.version>1.18</commons-compress.version>
     <commons-io.version>2.6</commons-io.version>
     <commons-text.version>1.6</commons-text.version>
-    <jgit.version>4.11.5.201810191925-r</jgit.version>
-    <httpclient.version>4.5.6</httpclient.version>
+    <jgit.version>4.11.7.201903122105-r</jgit.version>
+    <httpclient.version>4.5.8</httpclient.version>
     <junit.version>4.12</junit.version>
   </properties>
 

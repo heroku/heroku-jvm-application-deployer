@@ -4,7 +4,7 @@
 
   <groupId>com.heroku.sdk</groupId>
   <artifactId>heroku-sdk-parent</artifactId>
-  <version>2.0.8-SNAPSHOT</version>
+  <version>2.0.8</version>
   <modules>
     <module>heroku-deploy</module>
     <module>maven-plugin</module>
@@ -29,7 +29,7 @@
     <connection>scm:git:https://github.com/heroku/heroku-maven-plugin.git</connection>
     <developerConnection>scm:git:https://github.com/heroku/heroku-maven-plugin.git</developerConnection>
     <url>https://github.com/heroku/heroku-maven-plugin</url>
-    <tag>HEAD</tag>
+    <tag>heroku-sdk-parent-2.0.8</tag>
   </scm>
 
   <distributionManagement>

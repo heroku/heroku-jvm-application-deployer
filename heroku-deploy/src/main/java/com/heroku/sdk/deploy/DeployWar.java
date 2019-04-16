@@ -10,11 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.heroku.sdk.deploy.utils.Main;
+import com.heroku.sdk.deploy.utils.Properties;
 import org.apache.commons.io.FileUtils;
 
 public class DeployWar extends WarApp {
 
-  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = "8.5.38.0";
+  public static final String DEFAULT_WEBAPP_RUNNER_VERSION = Properties.getProperty("webapp-runner.version");
 
   private static final String WEBAPP_RUNNER_URL_FORMAT="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar";
 

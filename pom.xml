@@ -235,6 +235,7 @@
             </executions>
             <configuration>
               <interactive>false</interactive>
+              <passphrase>${env.GPG_PASSPHRASE}</passphrase>
             </configuration>
           </plugin>
         </plugins>

@@ -235,7 +235,10 @@
             </executions>
             <configuration>
               <interactive>false</interactive>
-              <passphrase>${env.GPG_PASSPHRASE}</passphrase>
+              <gpgArguments>
+                <arg>--pinentry-mode</arg>
+                <arg>loopback</arg>
+              </gpgArguments>
             </configuration>
           </plugin>
         </plugins>

@@ -139,14 +139,14 @@
   </dependencyManagement>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>${gpg.plugin.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <!--<pluginManagement>-->
+      <!--<plugins>-->
+        <!--<plugin>-->
+          <!--<artifactId>maven-gpg-plugin</artifactId>-->
+          <!--<version>${gpg.plugin.version}</version>-->
+        <!--</plugin>-->
+      <!--</plugins>-->
+    <!--</pluginManagement>-->
 
     <plugins>
       <plugin>
@@ -178,6 +178,13 @@
           <releaseProfiles>release</releaseProfiles>
           <goals>deploy</goals>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${gpg.plugin.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>

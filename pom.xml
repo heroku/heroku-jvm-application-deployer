@@ -226,6 +226,9 @@
                 </goals>
               </execution>
             </executions>
+            <configuration>
+              <interactive>false</interactive>
+            </configuration>
           </plugin>
         </plugins>
       </build>

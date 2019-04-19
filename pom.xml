@@ -62,7 +62,7 @@
     <maven.version>3.5.0</maven.version>
     <nexus-staging.plugin.version>1.6.8</nexus-staging.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
-    <gpg.plugin.version>1.6</gpg.plugin.version>
+    <gpg.plugin.version>1.7-SNAPSHOT</gpg.plugin.version>
     <invoker.plugin.version>2.0.0</invoker.plugin.version>
     <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
     <source.plugin.version>3.0.1</source.plugin.version>
@@ -183,6 +183,13 @@
           <value>true</value>
         </property>
       </activation>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>project.local</id>
+          <name>project</name>
+          <url>file:${project.basedir}/repo</url>
+        </pluginRepository>
+      </pluginRepositories>
       <build>
         <plugins>
           <plugin>

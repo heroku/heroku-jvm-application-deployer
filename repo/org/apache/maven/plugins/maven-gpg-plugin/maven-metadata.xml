@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-gpg-plugin</artifactId>
+  <versioning>
+    <versions>
+      <version>1.7-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20190419193931</lastUpdated>
+  </versioning>
+</metadata>

@@ -139,15 +139,6 @@
   </dependencyManagement>
 
   <build>
-    <!--<pluginManagement>-->
-      <!--<plugins>-->
-        <!--<plugin>-->
-          <!--<artifactId>maven-gpg-plugin</artifactId>-->
-          <!--<version>${gpg.plugin.version}</version>-->
-        <!--</plugin>-->
-      <!--</plugins>-->
-    <!--</pluginManagement>-->
-
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -199,13 +190,6 @@
           <value>true</value>
         </property>
       </activation>
-      <!--<pluginRepositories>-->
-        <!--<pluginRepository>-->
-          <!--<id>project.local</id>-->
-          <!--<name>project</name>-->
-          <!--<url>file:${project.basedir}/repo</url>-->
-        <!--</pluginRepository>-->
-      <!--</pluginRepositories>-->
       <build>
         <plugins>
           <plugin>
@@ -250,7 +234,6 @@
               </execution>
             </executions>
             <configuration>
-              <!--<interactive>false</interactive>-->
               <gpgArguments>
                 <arg>--pinentry-mode</arg>
                 <arg>loopback</arg>

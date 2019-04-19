@@ -234,7 +234,7 @@
               </execution>
             </executions>
             <configuration>
-              <interactive>false</interactive>
+              <!--<interactive>false</interactive>-->
               <gpgArguments>
                 <arg>--pinentry-mode</arg>
                 <arg>loopback</arg>

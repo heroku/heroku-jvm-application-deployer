@@ -3,6 +3,7 @@ package com.heroku.sdk.deploy;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +67,14 @@ public class App implements Logger  {
   }
 
   protected static File createTempDir() throws IOException {
-    return Files.createTempDirectory("heroku-deploy").toFile();
+    File f = Files.createTempDirectory("heroku-deploy").toFile();
+    deleteTemporaryDirectoryOnShutdownHook(f.toPath());
+    return f;
+  }
+
+  private static void deleteTemporaryDirectoryOnShutdownHook(final Path path) {
+    final Runnable runnable = new DeleteDirectoryRunnable(path);
+    Runtime.getRuntime().addShutdownHook(new Thread(runnable));
   }
 
   protected String relativize(File path) {

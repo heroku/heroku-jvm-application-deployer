@@ -97,6 +97,8 @@ This will start the web application in a way that is very similar to how it is r
 +  Maven 3.5.x
 +  Java 8 or higher
 
+NOTE: Java versions < 8u101 might experience difficulties displaying build log output.
+
 ## Configuration
 
 In the `<configuration>` element of the plugin, you can set the app name like this:

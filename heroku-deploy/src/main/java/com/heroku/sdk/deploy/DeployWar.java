@@ -11,13 +11,12 @@ import java.util.Map;
 
 import com.heroku.sdk.deploy.utils.Main;
 import com.heroku.sdk.deploy.utils.Properties;
+import com.heroku.sdk.deploy.utils.WebappRunnerResolver;
 import org.apache.commons.io.FileUtils;
 
 public class DeployWar extends WarApp {
 
   public static final String DEFAULT_WEBAPP_RUNNER_VERSION = Properties.getProperty("webapp-runner.version");
-
-  private static final String WEBAPP_RUNNER_URL_FORMAT="http://central.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar";
 
   public DeployWar(String name, File warFile, URL webappRunnerUrl, List<String> buildpacks) throws IOException {
     super(name, buildpacks);
@@ -76,7 +75,7 @@ public class DeployWar extends WarApp {
     final String webappRunnerVersion = System.getProperty(
             "heroku.webappRunnerVersion", DEFAULT_WEBAPP_RUNNER_VERSION);
     final String webappRunnerUrl = System.getProperty(
-            "heroku.webappRunnerUrl", String.format(WEBAPP_RUNNER_URL_FORMAT, webappRunnerVersion, webappRunnerVersion));
+            "heroku.webappRunnerUrl", WebappRunnerResolver.getUrlForVersion(webappRunnerVersion));
 
     if (warFile == null) {
       throw new IllegalArgumentException("Path to WAR file must be provided with heroku.warFile system property!");

@@ -1,6 +1,7 @@
 package com.heroku.sdk.maven.executor;
 
 import com.heroku.sdk.deploy.DeployWar;
+import com.heroku.sdk.deploy.utils.WebappRunnerResolver;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -20,7 +21,8 @@ public class CopyWebappRunner extends MojoExecutor {
     public static void execute(MavenProject mavenProject,
                                MavenSession mavenSession,
                                BuildPluginManager pluginManager,
-                               String webappRunnerversion) throws MojoExecutionException {
+                               String webappRunnerVersion) throws MojoExecutionException {
+
         executeMojo(
                 plugin(
                         groupId("org.apache.maven.plugins"),
@@ -31,9 +33,9 @@ public class CopyWebappRunner extends MojoExecutor {
                 configuration(
                         element(name("artifactItems"),
                                 element(name("artifactItem"),
-                                        element(name("groupId"), "com.github.jsimone"),
+                                        element(name("groupId"), WebappRunnerResolver.getGroupIdForVersion(webappRunnerVersion)),
                                         element(name("artifactId"), "webapp-runner"),
-                                        element(name("version"), webappRunnerversion),
+                                        element(name("version"), webappRunnerVersion),
                                         element(name("destFileName"), "webapp-runner.jar")))
                 ),
                 executionEnvironment(

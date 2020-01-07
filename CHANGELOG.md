@@ -1,5 +1,8 @@
 # Changelog
 
+## Master
+* Upgrade to Tomcat Webapp Runner 9.0.30.0
+
 ## 2.0.6
 
 * Upgrade to Tomcat Webapp Runner 8.5.33.0

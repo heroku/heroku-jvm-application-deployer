@@ -15,8 +15,8 @@ public class WebappRunnerResolver {
 
     public static String getUrlForVersion(String version) {
         String pattern = isLegacyVersion(version)
-                ? "http://central.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar"
-                : "http://central.maven.org/maven2/com/heroku/webapp-runner/%s/webapp-runner-%s.jar";
+                ? "https://repo1.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar"
+                : "https://repo1.maven.org/maven2/com/heroku/webapp-runner/%s/webapp-runner-%s.jar";
 
         return String.format(pattern, version, version);
     }

@@ -22,7 +22,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
       <configuration>
         <appName>${heroku.appName}</appName>
         <processTypes>
-          <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
+          <web>java $JAVA_OPTS -cp target/classes:target/dependency/* com.example.Main</web>
         </processTypes>
       </configuration>
     </plugin>
@@ -56,6 +56,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
+      <version>X.Y.Z</version>
       <configuration>
         <appName>${heroku.appName}</appName>
       </configuration>

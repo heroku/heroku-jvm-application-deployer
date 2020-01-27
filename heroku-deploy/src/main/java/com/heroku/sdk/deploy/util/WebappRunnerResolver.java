@@ -1,5 +1,6 @@
-package com.heroku.sdk.deploy.utils;
+package com.heroku.sdk.deploy.util;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,12 +14,12 @@ public class WebappRunnerResolver {
         return isLegacyVersion(version) ? "com.github.jsimone" : "com.heroku";
     }
 
-    public static String getUrlForVersion(String version) {
+    public static URI getUrlForVersion(String version) {
         String pattern = isLegacyVersion(version)
                 ? "https://repo1.maven.org/maven2/com/github/jsimone/webapp-runner/%s/webapp-runner-%s.jar"
                 : "https://repo1.maven.org/maven2/com/heroku/webapp-runner/%s/webapp-runner-%s.jar";
 
-        return String.format(pattern, version, version);
+        return URI.create(String.format(pattern, version, version));
     }
 
     private static boolean isLegacyVersion(String version) {

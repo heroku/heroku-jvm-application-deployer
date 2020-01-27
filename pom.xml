@@ -41,7 +41,14 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
   <developers>
+    <developer>
+      <id>malax</id>
+      <name>Manuel Fuchs</name>
+      <email>manuel.fuchs@heroku.com</email>
+      <timezone>CET</timezone>
+    </developer>
     <developer>
       <id>jkutner</id>
       <name>Joe Kutner</name>

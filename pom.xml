@@ -7,8 +7,8 @@
   <version>3.0.0-SNAPSHOT</version>
   <modules>
     <module>heroku-deploy</module>
+    <module>heroku-deploy-complete</module>
     <module>heroku-maven-plugin</module>
-    <module>complete</module>
   </modules>
 
   <packaging>pom</packaging>

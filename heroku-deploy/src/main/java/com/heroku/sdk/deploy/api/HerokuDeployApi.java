@@ -50,7 +50,15 @@ public class HerokuDeployApi {
         sourceBlobObject.put("version", sourceBlobVersion);
 
         ArrayNode buildpacksArray = root.putArray("buildpacks");
-        buildpacks.forEach(buildpacksArray::add);
+        buildpacks.forEach(buildpackString -> {
+            ObjectNode buildpackObjectNode = buildpacksArray.addObject();
+
+            if (buildpackString.startsWith("http")) {
+                buildpackObjectNode.put("url", buildpackString);
+            } else {
+                buildpackObjectNode.put("name", buildpackString);
+            }
+        });
 
         StringEntity apiPayloadEntity = new StringEntity(root.toString());
         apiPayloadEntity.setContentType("application/json");

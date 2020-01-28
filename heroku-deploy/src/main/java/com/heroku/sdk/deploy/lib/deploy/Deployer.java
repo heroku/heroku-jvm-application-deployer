@@ -27,7 +27,7 @@ public final class Deployer {
         Source.Blob sourceBlob = source.getSource_blob();
 
         listener.logInfo("-----> Uploading build...");
-        uploadSourceBlob(deploymentDescriptor.getSlug(), URI.create(sourceBlob.getPut_url()), listener::logUploadProgress);
+        uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPut_url()), listener::logUploadProgress);
         listener.logInfo("       - success");
 
         listener.logInfo("-----> Deploying...");
@@ -38,7 +38,7 @@ public final class Deployer {
                 deploymentDescriptor.getBuildpacks());
 
         herokuDeployApi
-                .followBuildOutputStream(URI.create(buildInfo.outputStreamUrl))
+                .followBuildOutputStream(URI.create(buildInfo.outputStreamUrl)) // TODO: This can be null?!  (id=forbidden)
                 .map(line -> "remote: " + line)
                 .forEachOrdered(listener::logInfo);
 

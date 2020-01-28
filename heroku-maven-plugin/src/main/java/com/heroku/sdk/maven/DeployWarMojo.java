@@ -1,19 +1,21 @@
 package com.heroku.sdk.maven;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Deploys a war file to Heroku
- *
- * @goal deploy-war
- * @execute phase="package"
+ * Deploys a war file to Heroku.
  */
-public class DeployWarMojo extends HerokuWarMojo {
+@Mojo(name="deploy-war", defaultPhase = LifecyclePhase.PACKAGE)
+public class DeployWarMojo extends AbstractHerokuWarMojo {
 
+  @Override
+  public void execute() throws MojoExecutionException, MojoFailureException {
+  }
+
+  /*
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     super.execute();
@@ -24,5 +26,5 @@ public class DeployWarMojo extends HerokuWarMojo {
     } catch (Exception e) {
       throw new MojoFailureException("Failed to deploy application", e);
     }
-  }
+  }*/
 }

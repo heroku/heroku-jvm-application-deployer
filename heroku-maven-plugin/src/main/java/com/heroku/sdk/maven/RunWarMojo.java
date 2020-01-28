@@ -1,11 +1,9 @@
 package com.heroku.sdk.maven;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,7 +13,7 @@ import java.util.List;
  * @execute phase="package"
  * @requiresDependencyResolution
  */
-public class RunWarMojo extends HerokuWarMojo {
+public class RunWarMojo extends AbstractHerokuWarMojo {
 
   @Override
   public void execute() throws MojoFailureException {

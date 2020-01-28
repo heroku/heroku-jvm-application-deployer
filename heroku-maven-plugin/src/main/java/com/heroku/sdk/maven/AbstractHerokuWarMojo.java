@@ -1,48 +1,32 @@
 package com.heroku.sdk.maven;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.Map;
-
-import com.heroku.sdk.deploy.DeployWar;
-import com.heroku.sdk.maven.executor.CopyWebappRunner;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Parameter;
 
-public abstract class HerokuWarMojo extends HerokuMojo {
+import java.io.File;
+
+public abstract class AbstractHerokuWarMojo extends AbstractHerokuMojo {
 
   /**
-   * The path to the war file that will be deployed with the `deploy-war` target.
-   *
-   * @parameter property="heroku.warFile"
+   * The path to the war file that will be deployed with the `deploy-war` target. It is not necessary to set this
+   * parameter when packaging is set to 'war'.
    */
+  @Parameter(name = "warFile")
   protected File warFile = null;
 
   /**
-   * The process types used to run on Heroku (similar to Procfile).
-   *
-   * @parameter property="heroku.processTypes"
-   */
-  protected Map<String,String> processTypes = null;
-
-  /**
    * The version of webapp-runner to use.
-   *
-   * @parameter property="heroku.webappRunnerVersion"
    */
-  protected String webappRunnerVersion = DeployWar.DEFAULT_WEBAPP_RUNNER_VERSION;
+  @Parameter(name="webappRunnerVersion")
+  protected String webappRunnerVersion = "x.x.x"; // TODO: Why? Isn't it resolved by maven itself?
 
   protected MavenWarApp prepareWarFile() throws MojoExecutionException, MojoFailureException {
-    if (null == warFile) {
+    /*if (null == warFile) {
       if (!"war".equals(mavenProject.getPackaging())) {
         throw new MojoExecutionException("Your packaging must be set to 'war' or you must define the '<warFile>' config to use this goal!");
       } else {
-        File[] files = getTargetDir().listFiles(new FilenameFilter() {
-          @Override
-          public boolean accept(File dir, String name) {
-            return name.endsWith(".war");
-          }
-        });
+        File[] files = getTargetDir().listFiles((dir, name) -> name.endsWith(".war"));
         if (files.length == 0) {
           throw new MojoFailureException("Could not find WAR file! Must specify file path in plugin configuration.");
         } else {
@@ -66,7 +50,10 @@ public abstract class HerokuWarMojo extends HerokuMojo {
         getTargetDir().getParentFile(),
         getTargetDir(),
         getLog(),
-        logProgess,
+            logProgress,
         buildpacks);
+
+     */
+    return null;
   }
 }

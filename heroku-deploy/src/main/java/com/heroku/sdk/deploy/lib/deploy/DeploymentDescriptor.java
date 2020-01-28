@@ -8,13 +8,13 @@ public final class DeploymentDescriptor {
     private String appName;
     private Optional<String> version;
     private List<String> buildpacks;
-    private Path slug;
+    private Path sourceBlobPath;
 
-    public DeploymentDescriptor(String appName, List<String> buildpacks, Path slug, Optional<String> version) {
+    public DeploymentDescriptor(String appName, List<String> buildpacks, Path sourceBlobPath, Optional<String> version) {
         this.appName = appName;
         this.version = version;
         this.buildpacks = buildpacks;
-        this.slug = slug;
+        this.sourceBlobPath = sourceBlobPath;
     }
 
     public String getAppName() {
@@ -29,7 +29,7 @@ public final class DeploymentDescriptor {
         return buildpacks;
     }
 
-    public Path getSlug() {
-        return slug;
+    public Path getSourceBlobPath() {
+        return sourceBlobPath;
     }
 }

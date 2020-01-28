@@ -1,6 +1,7 @@
 package com.heroku.sdk.deploy.lib.sourceblob;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class SourceBlobContent {
     private final Path localPath;
@@ -10,6 +11,10 @@ public final class SourceBlobContent {
     public SourceBlobContent(Path localPath, Path sourceBlobPath) {
         this.localPath = localPath;
         this.sourceBlobPath = sourceBlobPath;
+    }
+
+    public SourceBlobContent(Path localPath, String sourceBlobPath) {
+        this(localPath, Paths.get(sourceBlobPath));
     }
 
     public SourceBlobContent(Path localPath, Path sourceBlobPath, boolean hidden) {

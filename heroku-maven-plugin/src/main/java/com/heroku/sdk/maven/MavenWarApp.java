@@ -2,39 +2,32 @@ package com.heroku.sdk.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.heroku.sdk.deploy.WarApp;
-import com.heroku.sdk.maven.executor.ListDependencies;
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
 
-public class MavenWarApp extends WarApp {
+public class MavenWarApp {
   private Log log;
 
   private boolean isUploadProgressEnabled;
 
   public MavenWarApp(String name, File warFile, File webappRunnerJar, File rootDir, File targetDir, Log log, boolean logProgress, String[] buildpacks) {
-    super("heroku-maven-plugin", name, warFile, webappRunnerJar, rootDir, targetDir, Arrays.asList(buildpacks));
+    //super("heroku-maven-plugin", name, warFile, webappRunnerJar, rootDir, targetDir, Arrays.asList(buildpacks));
     this.isUploadProgressEnabled = logProgress;
     this.log = log;
   }
 
-  @Override
   public void logUploadProgress(Long uploaded, Long contentLength) {
     logInfo("[" + uploaded + "/" + contentLength + "]");
   }
 
-  @Override
   public Boolean isUploadProgressEnabled() {
     return isUploadProgressEnabled;
   }
 
-  @Override
   protected void prepare(List<File> includedFiles, Map<String, String> processTypes) throws IOException {
-    super.prepare(includedFiles, processTypes);
+    /*super.prepare(includedFiles, processTypes);
 
     File appTargetDir = new File (getAppDir(), "target");
     FileUtils.forceMkdir(appTargetDir);
@@ -42,6 +35,8 @@ public class MavenWarApp extends WarApp {
             new File(getTargetDir(), ListDependencies.FILENAME),
             new File(appTargetDir, ListDependencies.FILENAME));
     FileUtils.copyFile(new File(getRootDir(), "pom.xml"), new File(getAppDir(), "pom.xml"));
+
+     */
   }
 
   public void logInfo(String message) {

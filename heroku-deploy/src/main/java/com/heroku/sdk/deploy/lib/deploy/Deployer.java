@@ -26,6 +26,16 @@ public final class Deployer {
         Source source = herokuApi.createSource();
         Source.Blob sourceBlob = source.getSource_blob();
 
+        if (!deploymentDescriptor.getConfigVars().isEmpty()) {
+            listener.logInfo("-----> Setting config vars...");
+            try {
+                herokuApi.updateConfig(deploymentDescriptor.getAppName(), deploymentDescriptor.getConfigVars());
+            } catch(Throwable t) {
+                listener.logError("Could not set config vars: " + t.getMessage());
+                return false;
+            }
+        }
+
         listener.logInfo("-----> Uploading build...");
         uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPut_url()), listener::logUploadProgress);
         listener.logInfo("       - success");

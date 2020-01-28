@@ -99,7 +99,7 @@ public class StandaloneDeploy {
         }
 
         Path slugArchive = SourceBlobPackager.pack(includedPaths, outputAdapter);
-        DeploymentDescriptor deploymentDescriptor = new DeploymentDescriptor(appName, buildpacks, slugArchive, Optional.of("1.0.0")); // TODO: Resolve version
+        DeploymentDescriptor deploymentDescriptor = new DeploymentDescriptor(appName, buildpacks, Collections.emptyMap(), slugArchive, Optional.of("1.0.0")); // TODO: Resolve version
         Deployer.deploy(optionalApiKey.get(), deploymentDescriptor, outputAdapter);
     }
 

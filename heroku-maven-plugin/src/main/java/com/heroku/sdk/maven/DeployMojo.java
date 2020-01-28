@@ -58,7 +58,7 @@ public class DeployMojo extends AbstractHerokuMojo {
       Path sourceBlob = SourceBlobPackager.pack(contents, outputAdapter);
 
       DeploymentDescriptor deploymentDescriptor
-              = new DeploymentDescriptor(super.appName, super.buildpacks, sourceBlob, Optional.of(mavenProject.getVersion()));
+              = new DeploymentDescriptor(super.appName, super.buildpacks, super.configVars, sourceBlob, Optional.of(mavenProject.getVersion()));
 
       String apiKey = ApiKeyResolver
               .resolve(Paths.get(mavenSession.getExecutionRootDirectory()))

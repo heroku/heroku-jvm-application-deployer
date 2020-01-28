@@ -1,5 +1,6 @@
-package com.heroku.sdk.maven;
+package com.heroku.sdk.maven.mojo;
 
+import com.heroku.sdk.maven.MavenWarApp;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;

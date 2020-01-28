@@ -1,4 +1,4 @@
-package com.heroku.sdk.maven;
+package com.heroku.sdk.maven.mojo;
 
 import com.heroku.sdk.deploy.api.ApiKeyResolver;
 import com.heroku.sdk.deploy.lib.OutputAdapter;
@@ -8,6 +8,8 @@ import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobContent;
 import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobPackager;
 import com.heroku.sdk.deploy.util.Procfile;
 import com.heroku.sdk.deploy.util.Util;
+import com.heroku.sdk.maven.MavenLogOutputAdapter;
+import com.heroku.sdk.maven.MojoExecutor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -38,8 +40,7 @@ public class DeployMojo extends AbstractHerokuMojo {
       MojoExecutor.copyDependenciesToBuildDirectory(super.mavenProject, super.mavenSession, super.pluginManager);
 
       ArrayList<SourceBlobContent> contents = new ArrayList<>();
-      contents.add(new SourceBlobContent(dependencyList, Paths.get("foo.log")));
-
+      contents.add(new SourceBlobContent(dependencyList, "mvn-dependency-list.log"));
       contents.add(new SourceBlobContent(Util.createTemporaryFileWithStringContents(buildProcfile().asString()), "Procfile"));
       contents.add(new SourceBlobContent(Util.createTemporaryFileWithStringContents("client=heroku-maven-plugin"), ".heroku-deploy"));
       contents.add(new SourceBlobContent(mavenProject.getBasedir().toPath().resolve("pom.xml"), "pom.xml"));
@@ -52,7 +53,7 @@ public class DeployMojo extends AbstractHerokuMojo {
       }
 
       if (super.includeTarget) {
-        contents.add(new SourceBlobContent(mavenProject.getBasedir().toPath().resolve("target"), Paths.get("target")));
+        contents.add(new SourceBlobContent(mavenProject.getBasedir().toPath().resolve("target"), "target"));
       }
 
       Path sourceBlob = SourceBlobPackager.pack(contents, outputAdapter);

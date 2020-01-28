@@ -1,4 +1,4 @@
-package com.heroku.sdk.maven;
+package com.heroku.sdk.maven.mojo;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;

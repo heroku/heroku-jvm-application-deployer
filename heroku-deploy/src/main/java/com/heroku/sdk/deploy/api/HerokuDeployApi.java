@@ -25,14 +25,14 @@ import java.util.stream.Stream;
 public class HerokuDeployApi {
     private Map<String, String> httpHeaders;
 
-    public HerokuDeployApi(String client, String apiKey) {
+    public HerokuDeployApi(String client, String clientVersion, String apiKey) {
         HashMap<String, String> httpHeaders = new HashMap<>();
         httpHeaders.put("Authorization", Base64.encodeBytes((":" + apiKey).getBytes()));
         httpHeaders.put("Content-Type", "application/json");
         httpHeaders.put("Accept", "application/vnd.heroku+json; version=3");
         httpHeaders.put("User-Agent", String.format(
                 "heroku-deploy/%s (%s) Java/%s (%s)",
-                "3.0.0", //TODO: Properties.getProperty("heroku-deploy.version"),
+                clientVersion,
                 client,
                 System.getProperty("java.version"),
                 System.getProperty("java.vendor")));

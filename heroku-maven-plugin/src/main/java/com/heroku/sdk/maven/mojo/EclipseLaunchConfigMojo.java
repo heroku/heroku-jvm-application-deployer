@@ -1,62 +1,63 @@
 package com.heroku.sdk.maven.mojo;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.plugins.annotations.Mojo;
 
-import java.io.*;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-/**
- * Opens the Heroku Dashboard for an application
- *
- * @goal eclipse-launch-config
- */
-public class EclipseLaunchConfigMojo extends AbstractMojo {
-
-  /**
-   * The project currently being build.
-   *
-   * @parameter property="project"
-   * @required
-   * @readonly
-   */
-  protected MavenProject mavenProject;
+@Mojo(name="eclipse-launch-config")
+public class EclipseLaunchConfigMojo extends AbstractHerokuMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     try {
-      if ("war".equals(mavenProject.getPackaging())) {
-        copyFile("heroku-deploy-war.launch", "heroku:deploy-war");
-        copyFile("heroku-run-war.launch", "heroku:run-war");
+      if (mavenProject.getPackaging().equals("war")) {
+        writeLaunchConfig("heroku-deploy-war.launch", "heroku:deploy-war");
+        writeLaunchConfig("heroku-run-war.launch","heroku:run-war");
       } else {
-        copyFile("heroku-deploy.launch", "heroku:deploy");
+        writeLaunchConfig("heroku-deploy.launch", "heroku:deploy");
       }
-      copyFile("heroku-dashboard.launch", "heroku:dashboard");
+
+      writeLaunchConfig("heroku-dashboard.launch", "heroku:dashboard");
     } catch (IOException e) {
       throw new MojoFailureException("Could not create launch configuration files!", e);
     }
   }
 
-  private void copyFile(String filename, String mavenGoal) throws IOException {
-    getLog().info("Generating " + filename + " configuration...");
-    BufferedWriter out = null;
-    try {
-      InputStream is = getClass().getResourceAsStream( "/heroku-eclipse-base-config.launch");
-      BufferedReader br = new BufferedReader(new InputStreamReader(is));
+  private void writeLaunchConfig(String filename, String goal) throws IOException {
+    Files.writeString(Paths.get(filename), generateLaunchConfig(goal), StandardCharsets.UTF_8);
+  }
 
-      FileWriter fw = new FileWriter(filename);
-      out = new BufferedWriter(fw);
+  private String generateLaunchConfig(String goal) {
+    String[] lines = {
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>",
+      "<launchConfiguration type=\"org.eclipse.m2e.Maven2LaunchConfigurationType\">",
+      "<booleanAttribute key=\"M2_DEBUG_OUTPUT\" value=\"false\"/>",
+      "<stringAttribute key=\"M2_GOALS\" value=\"" + goal + "\"/>",
+      "<booleanAttribute key=\"M2_NON_RECURSIVE\" value=\"false\"/>",
+      "<booleanAttribute key=\"M2_OFFLINE\" value=\"false\"/>",
+      "<stringAttribute key=\"M2_PROFILES\" value=\"\"/>",
+      "<listAttribute key=\"M2_PROPERTIES\"/>",
+      "<stringAttribute key=\"M2_RUNTIME\" value=\"EMBEDDED\"/>",
+      "<booleanAttribute key=\"M2_SKIP_TESTS\" value=\"false\"/>",
+      "<intAttribute key=\"M2_THREADS\" value=\"1\"/>",
+      "<booleanAttribute key=\"M2_UPDATE_SNAPSHOTS\" value=\"false\"/>",
+      "<stringAttribute key=\"M2_USER_SETTINGS\" value=\"\"/>",
+      "<booleanAttribute key=\"M2_WORKSPACE_RESOLUTION\" value=\"false\"/>",
+      "<booleanAttribute key=\"org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD\" value=\"true\"/>",
+      "<stringAttribute key=\"org.eclipse.jdt.launching.WORKING_DIRECTORY\" value=\"" + mavenProject.getBasedir() + "\"/>",
+      "</launchConfiguration>"
+    };
 
-      String line;
-      while ((line = br.readLine()) != null) {
-        line = line.replace("%_MAVEN_GOAL_%", mavenGoal);
-        line = line.replace("%_PROJECT_DIR_%", System.getProperty("user.dir"));
-        out.write(line);
-        out.write("\n");
-      }
-    } finally {
-      if (null != out) out.close();
+    StringBuilder builder = new StringBuilder();
+    for (String line : lines) {
+      builder.append(line).append("\n");
     }
+
+    return builder.toString();
   }
 }

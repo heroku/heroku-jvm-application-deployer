@@ -3,6 +3,7 @@ package com.heroku.sdk.deploy.util;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +13,7 @@ public class Procfile {
     private final Map<String, String> entries;
 
     public Procfile(Map<String, String> entries) {
-        this.entries = entries;
+        this.entries = new HashMap<>(entries);
     }
 
     public void add(String processType, String command) {
@@ -40,6 +41,14 @@ public class Procfile {
         });
 
         return stringBuilder.toString();
+    }
+
+    public static Procfile empty() {
+        return new Procfile(Collections.emptyMap());
+    }
+
+    public static Procfile singleton(String processType, String command) {
+        return new Procfile(Collections.singletonMap(processType, command));
     }
 
     /**

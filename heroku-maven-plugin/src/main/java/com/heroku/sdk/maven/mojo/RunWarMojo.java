@@ -1,23 +1,23 @@
 package com.heroku.sdk.maven.mojo;
 
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Opens the Heroku Dashboard for an application
- *
- * @goal run-war
- * @execute phase="package"
- * @requiresDependencyResolution
+ * Starts the web application in a way that is very similar to how it is run on Heroku.
  */
-public class RunWarMojo extends AbstractHerokuWarMojo {
+@Mojo(name = "run-war", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
+public class RunWarMojo extends AbstractHerokuMojo {
 
   @Override
   public void execute() throws MojoFailureException {
-    try {
+    /*try {
       prepareWarFile();
 
       String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
@@ -84,6 +84,6 @@ public class RunWarMojo extends AbstractHerokuWarMojo {
         e.printStackTrace();
         throw new RuntimeException(e);
       }
-    }
+    }*/
   }
 }

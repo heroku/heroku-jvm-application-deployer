@@ -1,4 +1,4 @@
-package com.heroku.sdk.deploy.util;
+package com.heroku.sdk.deploy.lib.resolver;
 
 import java.net.URI;
 import java.util.Arrays;

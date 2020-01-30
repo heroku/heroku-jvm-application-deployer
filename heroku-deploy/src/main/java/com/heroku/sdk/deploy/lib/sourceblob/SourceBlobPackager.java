@@ -7,15 +7,14 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class SourceBlobPackager {
 
-    public static Path pack(List<SourceBlobContent> includedPaths, OutputAdapter outputAdapter) throws IOException {
+    public static Path pack(SourceBlobDescriptor sourceBlobDescriptor, OutputAdapter outputAdapter) throws IOException {
         Path tarFilePath = Files.createTempFile("heroku-deploy", "source-blob.tgz");
 
         TarArchiveOutputStream tarArchiveOutputStream = new TarArchiveOutputStream(
@@ -24,52 +23,44 @@ public final class SourceBlobPackager {
         tarArchiveOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
 
         outputAdapter.logInfo("-----> Packaging application...");
-        for (SourceBlobContent includedPath : includedPaths) {
-            if (includedPath.isHidden()) {
-                outputAdapter.logInfo("       - including: " + includedPath.getSourceBlobPath() + " (hidden)");
+        for (Path sourceBlobPath : sourceBlobDescriptor.getContents().keySet()) {
+            SourceBlobDescriptor.SourceBlobContent content = sourceBlobDescriptor.getContents().get(sourceBlobPath);
+
+            if (content.isHidden()) {
+                outputAdapter.logDebug("       - including: " + sourceBlobPath + " (hidden)");
             } else {
-                outputAdapter.logInfo("       - including: " + includedPath.getSourceBlobPath());
+                outputAdapter.logInfo("       - including: " + sourceBlobPath);
             }
 
-            for (SourceBlobContent expandedIncludedPath : expand(includedPath).collect(Collectors.toList())) {
-                addIncludedPathToArchive(expandedIncludedPath, tarArchiveOutputStream);
-            }
+            addIncludedPathToArchive(sourceBlobPath.toString(), content, tarArchiveOutputStream);
         }
+
+        // TODO: Info about filesize and location?
 
         tarArchiveOutputStream.close();
         return tarFilePath;
     }
 
-    private static Stream<SourceBlobContent> expand(SourceBlobContent includedPath) {
-        if (Files.isDirectory(includedPath.getLocalPath())) {
-            try {
-                return Files.list(includedPath.getLocalPath())
-                        .map(subPath -> {
-                            Path relativeSubPath = includedPath.getLocalPath().relativize(subPath);
-                            Path sourceBlobSubPath = includedPath.getSourceBlobPath().resolve(relativeSubPath);
-
-                            return new SourceBlobContent(subPath, sourceBlobSubPath);
-                        })
-                        .flatMap(SourceBlobPackager::expand);
-
-            } catch (IOException e) {
-                // Ignoring errors while expanding can lead to other errors later in the chain.
-                // In order to be able to use Javas native streaming API I made this trade-off deliberately and
-                // expect errors being caught downstream.
-                return Stream.of(includedPath);
-            }
-        }
-
-        return Stream.of(includedPath);
-    }
-
-    private static void addIncludedPathToArchive(SourceBlobContent includedPath, TarArchiveOutputStream tarArchiveOutputStream) throws IOException {
+    private static void addIncludedPathToArchive(String path, SourceBlobDescriptor.SourceBlobContent content, TarArchiveOutputStream tarArchiveOutputStream) throws IOException {
         // TODO: Symlink handling
-        TarArchiveEntry entry = new TarArchiveEntry(includedPath.getLocalPath().toFile(), includedPath.getSourceBlobPath().toString());
+        if (content.isLocalPath()) {
+            TarArchiveEntry entry = new TarArchiveEntry(content.getLocalPath().toFile(), path);
+            tarArchiveOutputStream.putArchiveEntry(entry);
 
-        tarArchiveOutputStream.putArchiveEntry(entry);
-        Files.copy(includedPath.getLocalPath(), tarArchiveOutputStream);
-        tarArchiveOutputStream.closeArchiveEntry();
+            Files.copy(content.getLocalPath(), tarArchiveOutputStream);
+
+            tarArchiveOutputStream.closeArchiveEntry();
+        } else {
+            TarArchiveEntry entry = new TarArchiveEntry(path);
+            entry.setSize(content.getSyntheticFileContents().getBytes(StandardCharsets.UTF_8).length);
+
+            tarArchiveOutputStream.putArchiveEntry(entry);
+
+            OutputStreamWriter writer = new OutputStreamWriter(tarArchiveOutputStream, StandardCharsets.UTF_8);
+            writer.write(content.getSyntheticFileContents());
+            writer.flush();
+
+            tarArchiveOutputStream.closeArchiveEntry();
+        }
     }
-
 }

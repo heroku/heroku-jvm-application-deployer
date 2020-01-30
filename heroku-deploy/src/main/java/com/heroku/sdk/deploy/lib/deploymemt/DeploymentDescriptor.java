@@ -1,18 +1,17 @@
-package com.heroku.sdk.deploy.lib.deploy;
+package com.heroku.sdk.deploy.lib.deploymemt;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public final class DeploymentDescriptor {
     private String appName;
-    private Optional<String> version;
+    private String version;
     private List<String> buildpacks;
     private Map<String, String> configVars;
     private Path sourceBlobPath;
 
-    public DeploymentDescriptor(String appName, List<String> buildpacks, Map<String, String> configVars, Path sourceBlobPath, Optional<String> version) {
+    public DeploymentDescriptor(String appName, List<String> buildpacks, Map<String, String> configVars, Path sourceBlobPath, String version) {
         this.appName = appName;
         this.version = version;
         this.buildpacks = buildpacks;
@@ -24,7 +23,7 @@ public final class DeploymentDescriptor {
         return appName;
     }
 
-    public Optional<String> getVersion() {
+    public String getVersion() {
         return version;
     }
 

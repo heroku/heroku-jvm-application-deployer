@@ -1,4 +1,4 @@
-package com.heroku.sdk.deploy.lib.deploy;
+package com.heroku.sdk.deploy.lib.deploymemt;
 
 import com.heroku.api.HerokuAPI;
 import com.heroku.api.Source;
@@ -19,49 +19,52 @@ import java.util.function.BiConsumer;
 
 public final class Deployer {
 
-    public static boolean deploy(String apiKey, DeploymentDescriptor deploymentDescriptor, OutputAdapter listener) throws IOException, InterruptedException {
+    public static boolean deploy(String apiKey, DeploymentDescriptor deploymentDescriptor, OutputAdapter outputAdapter) throws IOException, InterruptedException {
         HerokuAPI herokuApi = new HerokuAPI(apiKey);
-        HerokuDeployApi herokuDeployApi = new HerokuDeployApi("client-tbd", apiKey);
+        // TODO: client and version string!?
+        HerokuDeployApi herokuDeployApi = new HerokuDeployApi("client-tbd", "version-tbd", apiKey);
 
         Source source = herokuApi.createSource();
         Source.Blob sourceBlob = source.getSource_blob();
 
         if (!deploymentDescriptor.getConfigVars().isEmpty()) {
-            listener.logInfo("-----> Setting config vars...");
+            outputAdapter.logInfo("-----> Setting config vars...");
             try {
                 herokuApi.updateConfig(deploymentDescriptor.getAppName(), deploymentDescriptor.getConfigVars());
             } catch(Throwable t) {
-                listener.logError("Could not set config vars: " + t.getMessage());
+                outputAdapter.logError("Could not set config vars: " + t.getMessage());
                 return false;
             }
         }
 
-        listener.logInfo("-----> Uploading build...");
-        uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPut_url()), listener::logUploadProgress);
-        listener.logInfo("       - success");
+        outputAdapter.logInfo("-----> Uploading build...");
+        uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPut_url()), outputAdapter::logUploadProgress);
+        outputAdapter.logInfo("       - success");
 
-        listener.logInfo("-----> Deploying...");
+        outputAdapter.logInfo("-----> Deploying...");
         BuildInfo buildInfo = herokuDeployApi.createBuild(
                 deploymentDescriptor.getAppName(),
                 URI.create(sourceBlob.getGet_url()),
-                deploymentDescriptor.getVersion().orElse("unknown"),
+                deploymentDescriptor.getVersion(),
                 deploymentDescriptor.getBuildpacks());
+
+        outputAdapter.logInfo("BUILD INFO: " + buildInfo.toString());
 
         herokuDeployApi
                 .followBuildOutputStream(URI.create(buildInfo.outputStreamUrl)) // TODO: This can be null?!  (id=forbidden)
                 .map(line -> "remote: " + line)
-                .forEachOrdered(listener::logInfo);
+                .forEachOrdered(outputAdapter::logInfo);
 
         buildInfo = pollForNonPendingBuildInfo(deploymentDescriptor.getAppName(), buildInfo.id, herokuDeployApi);
 
         if (!buildInfo.status.equals("succeeded")) {
-            listener.logDebug("Failed Build ID: " + buildInfo.id);
-            listener.logDebug("Failed Build Status: " + buildInfo.status);
-            listener.logDebug("Failed Build UpdatedAt: " + buildInfo.updatedAt);
+            outputAdapter.logDebug("Failed Build ID: " + buildInfo.id);
+            outputAdapter.logDebug("Failed Build Status: " + buildInfo.status);
+            outputAdapter.logDebug("Failed Build UpdatedAt: " + buildInfo.updatedAt);
             return false;
         }
 
-        listener.logInfo("-----> Done");
+        outputAdapter.logInfo("-----> Done");
         return true;
     }
 

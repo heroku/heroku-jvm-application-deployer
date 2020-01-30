@@ -1,6 +1,5 @@
 package com.heroku.sdk.maven;
 
-import com.heroku.sdk.deploy.lib.resolver.WebappRunnerResolver;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -58,33 +57,5 @@ public class MojoExecutor {
         );
 
         return path;
-    }
-
-    public static void copyWebappRunner(MavenProject mavenProject,
-                                        MavenSession mavenSession,
-                                        BuildPluginManager pluginManager,
-                                        String webappRunnerVersion) throws MojoExecutionException {
-
-        executeMojo(
-                plugin(
-                        groupId("org.apache.maven.plugins"),
-                        artifactId("maven-dependency-plugin"),
-                        version("2.4")
-                ),
-                goal("copy"),
-                configuration(
-                        element(name("artifactItems"),
-                                element(name("artifactItem"),
-                                        element(name("groupId"), WebappRunnerResolver.getGroupIdForVersion(webappRunnerVersion)),
-                                        element(name("artifactId"), "webapp-runner"),
-                                        element(name("version"), webappRunnerVersion),
-                                        element(name("destFileName"), "webapp-runner.jar")))
-                ),
-                executionEnvironment(
-                        mavenProject,
-                        mavenSession,
-                        pluginManager
-                )
-        );
     }
 }

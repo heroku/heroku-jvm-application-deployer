@@ -5,9 +5,12 @@ import com.heroku.sdk.deploy.lib.deploymemt.Deployer;
 import com.heroku.sdk.deploy.lib.deploymemt.DeploymentDescriptor;
 import com.heroku.sdk.deploy.lib.resolver.ApiKeyResolver;
 import com.heroku.sdk.deploy.lib.resolver.AppNameResolver;
+import com.heroku.sdk.deploy.lib.resolver.WebappRunnerResolver;
 import com.heroku.sdk.deploy.lib.sourceblob.JvmProjectSourceBlobCreator;
 import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobDescriptor;
 import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobPackager;
+import com.heroku.sdk.deploy.util.FileDownloader;
+import com.heroku.sdk.deploy.util.PathUtils;
 import com.heroku.sdk.deploy.util.Procfile;
 import com.heroku.sdk.maven.MavenLogOutputAdapter;
 import com.heroku.sdk.maven.MojoExecutor;
@@ -18,89 +21,82 @@ import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class AbstractHerokuDeployMojo extends AbstractHerokuMojo {
 
     protected final void deploy(Mode mode) throws MojoExecutionException, MojoFailureException {
-        OutputAdapter outputAdapter = new MavenLogOutputAdapter(getLog(), logProgress);
-
-        Path projectDirectory = super.mavenProject.getBasedir().toPath();
-
-        Path dependencyList;
         try {
-            dependencyList = MojoExecutor.createDependencyListFile(super.mavenProject, super.mavenSession, super.pluginManager);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Could not create dependency list file!", e);
-        }
+            OutputAdapter outputAdapter = new MavenLogOutputAdapter(getLog(), logProgress);
 
-        ArrayList<Path> includedPaths = new ArrayList<>();
+            Path projectDirectory = super.mavenProject.getBasedir().toPath();
 
+            Path dependencyList = MojoExecutor.createDependencyListFile(super.mavenProject, super.mavenSession, super.pluginManager);
 
-        for (String includePattern : super.includes) {
-            includedPaths.addAll(resolveIncludePattern(includePattern));
-        }
+            ArrayList<Path> includedPaths = new ArrayList<>();
 
-        includedPaths.add(Paths.get("pom.xml"));
+            for (String includePattern : super.includes) {
+                includedPaths.addAll(resolveIncludePattern(includePattern));
+            }
 
-        if (super.includeTarget) {
-            includedPaths.add(Paths.get("target"));
-        }
+            includedPaths.add(Paths.get("pom.xml"));
 
-        SourceBlobDescriptor sourceBlobDescriptor;
-        try {
-            sourceBlobDescriptor = JvmProjectSourceBlobCreator.create(
+            if (super.includeTarget) {
+                includedPaths.add(Paths.get("target"));
+            }
+
+            Optional<Path> warFilePath = resolveWarFilePath(mode, projectDirectory);
+
+            Supplier<Procfile> customProcfileResolver = () -> new Procfile(super.processTypes);
+            if (mode == Mode.WAR) {
+                if (!super.processTypes.isEmpty()) {
+                    outputAdapter.logWarn("The processTypes property will be ignored when deploying a WAR file. Use `heroku:deploy` goal for custom processes.");
+                }
+
+                customProcfileResolver = () ->
+                        Procfile.singleton("web", "java $JAVA_OPTS -jar webapp-runner.jar $WEBAPP_RUNNER_OPTS --port $PORT " + warFilePath.get().toString());
+            }
+
+            SourceBlobDescriptor sourceBlobDescriptor = JvmProjectSourceBlobCreator.create(
                     projectDirectory,
                     "heroku-maven-plugin",
                     includedPaths,
-                    () -> new Procfile(super.processTypes),
+                    customProcfileResolver,
                     Procfile.empty(),
                     () -> Optional.ofNullable(super.jdkVersion),
                     outputAdapter
             );
-        } catch (IOException e) {
-            throw new MojoExecutionException("Could not create source blob descriptor!", e);
-        }
 
-        sourceBlobDescriptor.addLocalPath("mvn-dependency-list.log", dependencyList, true);
+            sourceBlobDescriptor.addLocalPath("mvn-dependency-list.log", dependencyList, true);
 
-        Path sourceBlob;
-        try {
-            sourceBlob = SourceBlobPackager.pack(sourceBlobDescriptor, outputAdapter);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Could not package source blob!", e);
-        }
+            if (mode == Mode.WAR) {
+                Path webappRunnerPath = FileDownloader.download(WebappRunnerResolver.getUrlForVersion(super.webappRunnerVersion));
+                sourceBlobDescriptor.addLocalPath("webapp-runner.jar", webappRunnerPath, false);
+            }
 
-        String appName;
-        try {
-            appName = AppNameResolver.resolve(projectDirectory, () -> Optional.ofNullable(super.appName))
+            Path sourceBlob = SourceBlobPackager.pack(sourceBlobDescriptor, outputAdapter);
+
+            String appName = AppNameResolver.resolve(projectDirectory, () -> Optional.ofNullable(super.appName))
                     .orElseThrow(() -> new MojoExecutionException("Could not determine app name, please configure it explicitly!"));
-        } catch (IOException e) {
-            throw new MojoExecutionException("Could not determine app name!", e);
-        }
 
-        DeploymentDescriptor deploymentDescriptor
-                = new DeploymentDescriptor(appName, super.buildpacks, super.configVars, sourceBlob, mavenProject.getVersion());
+            DeploymentDescriptor deploymentDescriptor
+                    = new DeploymentDescriptor(appName, super.buildpacks, super.configVars, sourceBlob, mavenProject.getVersion());
 
-        String apiKey;
-        try {
-            apiKey = ApiKeyResolver
+            String apiKey = ApiKeyResolver
                     .resolve(projectDirectory)
                     .orElseThrow(() -> new MojoExecutionException("Could not resolve API key."));
-        } catch (IOException e) {
-            throw new MojoExecutionException("Could not resolve API key!", e);
-        }
 
-        try {
             Deployer.deploy(apiKey, deploymentDescriptor, outputAdapter);
         } catch (IOException | InterruptedException e) {
-            throw new MojoExecutionException("Could not deploy source blob!", e);
+            throw new MojoExecutionException("Unexpected error!", e);
         }
     }
 
@@ -118,6 +114,26 @@ public abstract class AbstractHerokuDeployMojo extends AbstractHerokuMojo {
         } else {
             return Collections.singletonList(mavenProject.getBasedir().toPath().resolve(includePattern));
         }
+    }
+
+    private Optional<Path> resolveWarFilePath(Mode mode, Path projectDirectory) throws MojoExecutionException, IOException {
+        if (mode == Mode.WAR) {
+            if (super.warFile == null) {
+                if (!super.mavenProject.getPackaging().equals("war")) {
+                    throw new MojoExecutionException("Your packaging must be set to 'war' or you must define the '<warFile>' config to use this goal!");
+                }
+
+                return Files
+                        .find(Paths.get(mavenProject.getBuild().getDirectory()), Integer.MAX_VALUE, (path, attributes) -> path.toString().endsWith(".war"))
+                        .findFirst()
+                        .flatMap(path -> PathUtils.normalize(projectDirectory, path));
+            } else {
+                return PathUtils
+                        .normalize(projectDirectory, Paths.get(super.warFile));
+            }
+        }
+
+        return Optional.empty();
     }
 
     protected enum Mode {

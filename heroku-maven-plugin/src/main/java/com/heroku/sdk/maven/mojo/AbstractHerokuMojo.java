@@ -1,5 +1,6 @@
 package com.heroku.sdk.maven.mojo;
 
+import com.heroku.sdk.deploy.Constants;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -70,4 +71,16 @@ public abstract class AbstractHerokuMojo extends AbstractMojo {
    */
   @Parameter(name="processTypes", required = true)
   protected Map<String, String> processTypes = Collections.emptyMap();
+
+  /**
+   * The path to the war file that will be deployed with the `deploy-war` target.
+   */
+  @Parameter(name="warFile")
+  protected String warFile = null;
+
+  /**
+   * The version of webapp-runner to use.
+   */
+  @Parameter(name="webappRunnerVersion")
+  protected String webappRunnerVersion = Constants.DEFAULT_WEBAPP_RUNNER_VERSION;
 }

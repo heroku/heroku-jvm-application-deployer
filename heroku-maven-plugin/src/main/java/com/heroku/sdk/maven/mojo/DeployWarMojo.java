@@ -9,22 +9,10 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Deploys a war file to Heroku.
  */
 @Mojo(name="deploy-war", defaultPhase = LifecyclePhase.PACKAGE)
-public class DeployWarMojo extends AbstractHerokuMojo {
+public class DeployWarMojo extends AbstractHerokuDeployMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    deploy(Mode.WAR);
   }
-
-  /*
-  @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
-    super.execute();
-    try {
-      (prepareWarFile()).deploy(
-          new ArrayList<>(getIncludes()), getConfigVars(), jdkVersion, new HashMap<String,String>(), buildFilename
-      );
-    } catch (Exception e) {
-      throw new MojoFailureException("Failed to deploy application", e);
-    }
-  }*/
 }

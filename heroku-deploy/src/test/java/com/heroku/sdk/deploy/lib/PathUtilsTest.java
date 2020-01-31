@@ -1,7 +1,9 @@
 package com.heroku.sdk.deploy.lib;
 
 import com.heroku.sdk.deploy.util.PathUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,10 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class PathUtilsTest {
     private Path basePath = Paths.get("/home/user/projects/project");
@@ -96,17 +97,18 @@ public class PathUtilsTest {
         expectedForAll.add(Paths.get("foo"));
         expectedForAll.add(Paths.get("bar"));
 
-        assertEquals(expectedForAll, PathUtils.expandDirectory(existingBasePath, Paths.get(".")));
-
         ArrayList<Path> expectedForTarget = new ArrayList<>();
         expectedForTarget.add(Paths.get("target/app.jar"));
         expectedForTarget.add(Paths.get("target/dependencies/junit.jar"));
         expectedForTarget.add(Paths.get("target/app.war"));
 
-        assertEquals(expectedForTarget, PathUtils.expandDirectory(existingBasePath, Paths.get("target")));
+        assertEquals(sort(expectedForAll), sort(PathUtils.expandDirectory(existingBasePath, Paths.get("."))));
+        assertEquals(sort(expectedForTarget), sort(PathUtils.expandDirectory(existingBasePath, Paths.get("target"))));
+        assertEquals(sort(expectedForTarget), sort(PathUtils.expandDirectory(existingBasePath, Paths.get("././/weird/../target"))));
+        assertEquals(Collections.singletonList(Paths.get("foo")), sort(PathUtils.expandDirectory(existingBasePath, Paths.get("foo"))));
+    }
 
-        assertEquals(expectedForTarget, PathUtils.expandDirectory(existingBasePath, Paths.get("././/weird/../target")));
-
-        assertEquals(Collections.singletonList(Paths.get("foo")), PathUtils.expandDirectory(existingBasePath, Paths.get("foo")));
+    private List<Path> sort(List<Path> items) {
+        return items.stream().sorted().collect(Collectors.toList());
     }
 }

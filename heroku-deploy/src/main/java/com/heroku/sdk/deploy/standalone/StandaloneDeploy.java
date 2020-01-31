@@ -11,6 +11,7 @@ import com.heroku.sdk.deploy.lib.sourceblob.JvmProjectSourceBlobCreator;
 import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobDescriptor;
 import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobPackager;
 import com.heroku.sdk.deploy.util.FileDownloader;
+import com.heroku.sdk.deploy.util.GitUtils;
 import com.heroku.sdk.deploy.util.PathUtils;
 import com.heroku.sdk.deploy.util.Procfile;
 
@@ -117,7 +118,7 @@ public class StandaloneDeploy {
                 getBuildpacksFromProperties(),
                 Collections.emptyMap(),
                 sourceBlobArchive,
-                "1.0.0"); // TODO: Resolve version
+                GitUtils.getHeadCommitHash(projectDirectory).orElse("unknown"));
 
         Deployer.deploy(apiKey.get(), deploymentDescriptor, outputAdapter);
     }

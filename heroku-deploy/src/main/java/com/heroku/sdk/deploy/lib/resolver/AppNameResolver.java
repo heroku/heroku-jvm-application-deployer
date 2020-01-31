@@ -1,6 +1,7 @@
 package com.heroku.sdk.deploy.lib.resolver;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Config;
 
 import java.io.FileInputStream;
@@ -48,18 +49,22 @@ public class AppNameResolver {
     }
 
     private static Optional<String> resolveViaHerokuGitRemote(Path rootDirectory) throws IOException {
-        Git gitRepo = Git.open(rootDirectory.toFile());
-        Config config = gitRepo.getRepository().getConfig();
+        try {
+            Git gitRepo = Git.open(rootDirectory.toFile());
+            Config config = gitRepo.getRepository().getConfig();
 
-        for (String remoteName : config.getSubsections("remote")) {
-            String remoteUrl = config.getString("remote", remoteName, "url");
+            for (String remoteName : config.getSubsections("remote")) {
+                String remoteUrl = config.getString("remote", remoteName, "url");
 
-            for (Pattern gitRemoteUrlAppNamePattern : GIT_REMOTE_URL_APP_NAME_PATTERNS) {
-                Matcher matcher = gitRemoteUrlAppNamePattern.matcher(remoteUrl);
-                if (matcher.matches()) {
-                    return Optional.of(matcher.group(1));
+                for (Pattern gitRemoteUrlAppNamePattern : GIT_REMOTE_URL_APP_NAME_PATTERNS) {
+                    Matcher matcher = gitRemoteUrlAppNamePattern.matcher(remoteUrl);
+                    if (matcher.matches()) {
+                        return Optional.of(matcher.group(1));
+                    }
                 }
             }
+        } catch (RepositoryNotFoundException e) {
+            return Optional.empty();
         }
 
         return Optional.empty();

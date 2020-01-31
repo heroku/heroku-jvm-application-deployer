@@ -15,14 +15,4 @@ public class Util {
             throw e.getCause();
         }
     }
-
-    public static Path createTemporaryFileWithStringContents(String content) throws IOException {
-        Path temporaryFile = Files.createTempFile("heroku-deploy", "");
-
-        try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile)) {
-            writer.write(content);
-        }
-
-        return temporaryFile;
-    }
 }

@@ -35,9 +35,12 @@ public final class SourceBlobPackager {
             addIncludedPathToArchive(sourceBlobPath.toString(), content, tarArchiveOutputStream);
         }
 
-        // TODO: Info about filesize and location?
-
         tarArchiveOutputStream.close();
+
+        outputAdapter.logInfo("-----> Creating build...");
+        outputAdapter.logInfo("       - file: " + tarFilePath);
+        outputAdapter.logInfo(String.format("       - size: %dMB", Files.size(tarFilePath) / 1024 / 1024));
+
         return tarFilePath;
     }
 

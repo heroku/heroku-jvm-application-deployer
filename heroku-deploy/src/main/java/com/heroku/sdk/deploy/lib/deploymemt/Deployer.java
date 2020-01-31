@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public final class Deployer {
@@ -41,12 +43,17 @@ public final class Deployer {
         uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPut_url()), outputAdapter::logUploadProgress);
         outputAdapter.logInfo("       - success");
 
+        List<String> buildpacks = deploymentDescriptor.getBuildpacks();
+        if (buildpacks.isEmpty()) {
+            buildpacks = Collections.singletonList("heroku/jvm");
+        }
+
         outputAdapter.logInfo("-----> Deploying...");
         BuildInfo buildInfo = herokuDeployApi.createBuild(
                 deploymentDescriptor.getAppName(),
                 URI.create(sourceBlob.getGet_url()),
                 deploymentDescriptor.getVersion(),
-                deploymentDescriptor.getBuildpacks());
+                buildpacks);
 
         outputAdapter.logInfo("BUILD INFO: " + buildInfo.toString());
 

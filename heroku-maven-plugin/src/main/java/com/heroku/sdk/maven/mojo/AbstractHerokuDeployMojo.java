@@ -75,7 +75,7 @@ public abstract class AbstractHerokuDeployMojo extends AbstractHerokuMojo {
                     outputAdapter
             );
 
-            sourceBlobDescriptor.addLocalPath("mvn-dependency-list.log", dependencyList, true);
+            sourceBlobDescriptor.addLocalPath("target/mvn-dependency-list.log", dependencyList, true);
 
             if (mode == Mode.WAR) {
                 Path webappRunnerPath = FileDownloader.download(WebappRunnerResolver.getUrlForVersion(super.webappRunnerVersion));

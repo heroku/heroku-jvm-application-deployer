@@ -4,10 +4,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Mojo(name="eclipse-launch-config")
 public class EclipseLaunchConfigMojo extends AbstractHerokuMojo {
@@ -29,7 +28,11 @@ public class EclipseLaunchConfigMojo extends AbstractHerokuMojo {
   }
 
   private void writeLaunchConfig(String filename, String goal) throws IOException {
-    Files.writeString(Paths.get(filename), generateLaunchConfig(goal), StandardCharsets.UTF_8);
+    FileOutputStream outputStream = new FileOutputStream(filename);
+
+    byte[] bytes = generateLaunchConfig(goal).getBytes(StandardCharsets.UTF_8);
+    outputStream.write(bytes);
+    outputStream.close();
   }
 
   private String generateLaunchConfig(String goal) {

@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -59,9 +56,9 @@ public class PathUtilsTest {
 
     @Test
     public void testNormalize() {
-        assertEquals(Paths.get("foo.sh"), PathUtils.normalize(basePath, Paths.get("foo.sh")));
-        assertEquals(Paths.get("target/webapp.war"), PathUtils.normalize(basePath, Paths.get("target//./webapp.war")));
-        assertEquals(Paths.get("bar.jar"), PathUtils.normalize(basePath, Paths.get("../project/bar.jar")));
+        assertEquals(Optional.of(Paths.get("foo.sh")), PathUtils.normalize(basePath, Paths.get("foo.sh")));
+        assertEquals(Optional.of(Paths.get("target/webapp.war")), PathUtils.normalize(basePath, Paths.get("target//./webapp.war")));
+        assertEquals(Optional.of(Paths.get("bar.jar")), PathUtils.normalize(basePath, Paths.get("../project/bar.jar")));
     }
 
     @Before

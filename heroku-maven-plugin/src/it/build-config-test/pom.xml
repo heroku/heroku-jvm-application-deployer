@@ -39,7 +39,7 @@
           </processTypes>
           <buildpacks>
             <buildpack>https://github.com/ryandotsmith/null-buildpack</buildpack>
-            <buildpack>jvm-common</buildpack>
+            <buildpack>heroku/jvm</buildpack>
           </buildpacks>
         </configuration>
       </plugin>

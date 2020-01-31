@@ -9,7 +9,6 @@ String appName = props["heroku.appName"]
 
 try {
     def log = FileUtils.fileRead(new File(basedir, "build.log"));
-    assert log.contains("including JDK overlay"), "the jdk-overlay was not included in the slug"
     assert log.contains("Creating build"), "the build was not created"
     assert log.contains("Uploading build"), "the build was not uploaded"
     assert log.contains("BUILD SUCCESS"), "the build was not successful"

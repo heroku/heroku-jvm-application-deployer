@@ -88,7 +88,9 @@ public class JvmProjectSourceBlobCreator {
 
         Path jdkOverlayPath = projectDirectory.resolve(".jdk-overlay");
         if (Files.isDirectory(jdkOverlayPath)) {
-            sourceBlobDescriptor.addLocalPath(".jdk-overlay", jdkOverlayPath, false);
+            for (Path normalizedSubPath : PathUtils.expandDirectory(projectDirectory, jdkOverlayPath)) {
+                sourceBlobDescriptor.addLocalPath(normalizedSubPath, projectDirectory.resolve(normalizedSubPath),false);
+            }
         }
 
         // TODO: Log included project files that are fucked.

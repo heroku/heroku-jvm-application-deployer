@@ -69,7 +69,7 @@ public abstract class AbstractHerokuMojo extends AbstractMojo {
   /**
    * The process types used to run on Heroku (similar to Procfile).
    */
-  @Parameter(name="processTypes", required = true)
+  @Parameter(name="processTypes")
   protected Map<String, String> processTypes = Collections.emptyMap();
 
   /**

@@ -3,6 +3,7 @@ package com.heroku.sdk.maven.mojo;
 import com.heroku.sdk.maven.MojoExecutor;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -10,7 +11,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 /**
  * Deploys an application to Heroku.
  */
-@Mojo(name="deploy", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
+@Mojo(name="deploy", requiresDependencyResolution = ResolutionScope.RUNTIME)
+@Execute(phase = LifecyclePhase.PACKAGE)
 public class DeployMojo extends AbstractHerokuDeployMojo {
 
   @Override

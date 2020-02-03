@@ -10,6 +10,7 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -61,15 +62,19 @@ public final class Deployer {
         }  catch (InsufficientAppPermissionsException e) {
             outputAdapter.logError("Insufficient permissions to deploy to application! Make sure you configured your application name correctly.");
             return false;
-        }  catch (HerokuDeployApiException e) {
+        } catch (HerokuDeployApiException e) {
             outputAdapter.logError("Unknown error while deploying: " + e.getMessage(), e);
             return false;
         }
 
-        herokuDeployApi
-                .followBuildOutputStream(URI.create(buildInfo.outputStreamUrl))
-                .map(line -> "remote: " + line)
-                .forEachOrdered(outputAdapter::logInfo);
+        try {
+            herokuDeployApi
+                    .followBuildOutputStream(URI.create(buildInfo.outputStreamUrl))
+                    .map(line -> "remote: " + line)
+                    .forEachOrdered(outputAdapter::logInfo);
+        } catch (SSLHandshakeException e) {
+            outputAdapter.logWarn("Could not get remote output. You might run an older Java version without Let's Encrypt support. Your build will continue to run, stand by.");
+        }
 
         try {
             buildInfo = pollForNonPendingBuildInfo(deploymentDescriptor.getAppName(), buildInfo.id, herokuDeployApi);

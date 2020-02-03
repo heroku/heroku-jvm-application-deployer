@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class JvmProjectSourceBlobCreator {
-
     /**
      * Creates a SourceBlobDescriptor based on a given project directory and custom resolvers. It assumes a JVM
      * application.
@@ -93,19 +92,13 @@ public class JvmProjectSourceBlobCreator {
             }
         }
 
-        // TODO: Log included project files that are fucked.
-
         for (Path normalized : PathUtils.normalizeAll(projectDirectory, includedProjectFiles)) {
             if (normalized.equals(Paths.get("Procfile"))) {
-                outputAdapter.logWarn("Procfile was explicitly included!");
+                outputAdapter.logWarn("Procfile was explicitly included! It will take precedence over any other configured process types.");
             }
 
             if (normalized.equals(Paths.get("system.properties"))) {
-                outputAdapter.logWarn("system.properties explicitly included!");
-            }
-
-            if (normalized.equals(Paths.get(".jdk-overlay"))) {
-                outputAdapter.logWarn(".jdk-overlay explicitly included!");
+                outputAdapter.logWarn("system.properties explicitly included! It will take precedence over any other JDK version configuration.");
             }
 
             for (Path normalizedSubPath : PathUtils.expandDirectory(projectDirectory, normalized)) {

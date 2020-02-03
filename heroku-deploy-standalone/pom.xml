@@ -7,15 +7,15 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Heroku Deployer</name>
+  <name>Heroku Deploy Standalone</name>
   <description>
-    Fat JAR version of heroku-deploy
+    Application for deploying Java applications to Heroku
   </description>
 
-  <artifactId>heroku-deploy-complete</artifactId>
+  <artifactId>heroku-deploy-standalone</artifactId>
 
   <build>
-    <finalName>heroku-deploy-complete</finalName>
+    <finalName>heroku-deploy-standalone</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>

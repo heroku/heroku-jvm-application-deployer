@@ -7,7 +7,7 @@
   <version>3.0.0-SNAPSHOT</version>
   <modules>
     <module>heroku-deploy</module>
-    <module>heroku-deploy-complete</module>
+    <module>heroku-deploy-standalone</module>
     <module>heroku-maven-plugin</module>
   </modules>
 

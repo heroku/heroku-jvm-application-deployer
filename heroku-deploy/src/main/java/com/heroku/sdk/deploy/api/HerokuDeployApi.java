@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.heroku.sdk.deploy.util.Util;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -40,7 +41,7 @@ public class HerokuDeployApi {
         this.httpHeaders = httpHeaders;
     }
 
-    public BuildInfo createBuild(String appName, URI sourceBlob, String sourceBlobVersion, List<String> buildpacks) throws IOException {
+    public BuildInfo createBuild(String appName, URI sourceBlob, String sourceBlobVersion, List<String> buildpacks) throws IOException, HerokuDeployApiException {
         // Create API payload
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
@@ -72,15 +73,20 @@ public class HerokuDeployApi {
         request.setEntity(apiPayloadEntity);
 
         CloseableHttpResponse response = client.execute(request);
-        HttpEntity responseEntity = response.getEntity();
 
-        if (responseEntity == null) {
-            return null; // TODO: OMG!
-        }
+        return handleBuildInfoResponse(appName, mapper, response);
+    }
 
-        String responseStringBody = Util.readLinesFromInputStream(responseEntity.getContent()).collect(Collectors.joining());
+    public BuildInfo getBuildInfo(String appName, String buildId) throws IOException, HerokuDeployApiException {
+        ObjectMapper mapper = new ObjectMapper();
+        CloseableHttpClient client = HttpClients.createDefault();
 
-        return mapper.readValue(responseStringBody, BuildInfo.class);
+        HttpUriRequest request = new HttpGet("https://api.heroku.com/apps/" + appName + "/builds/" + buildId);
+        httpHeaders.forEach(request::setHeader);
+
+        CloseableHttpResponse response = client.execute(request);
+
+        return handleBuildInfoResponse(appName, mapper, response);
     }
 
     public Stream<String> followBuildOutputStream(URI buildOutputStreamUri) throws IOException {
@@ -95,21 +101,23 @@ public class HerokuDeployApi {
         return Util.readLinesFromInputStream(responseEntity.getContent());
     }
 
-    public BuildInfo getBuildInfo(String appName, String buildId) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        CloseableHttpClient client = HttpClients.createDefault();
+    private BuildInfo handleBuildInfoResponse(String appName, ObjectMapper mapper, CloseableHttpResponse response) throws IOException, HerokuDeployApiException {
+        switch (response.getStatusLine().getStatusCode()) {
+            case HttpStatus.SC_NOT_FOUND:
+                throw new AppNotFoundException(String.format("App %s could not be found!", appName));
 
-        HttpUriRequest request = new HttpGet("https://api.heroku.com/apps/" + appName + "/builds/" + buildId);
-        httpHeaders.forEach(request::setHeader);
+            case HttpStatus.SC_FORBIDDEN:
+                throw new InsufficientAppPermissionsException(String.format("Could not access app %s: insufficient permissions", appName));
 
-        CloseableHttpResponse response = client.execute(request);
-        HttpEntity responseEntity = response.getEntity();
+            case HttpStatus.SC_OK:
+            case HttpStatus.SC_CREATED:
+                HttpEntity responseEntity = response.getEntity();
+                String responseStringBody = Util.readLinesFromInputStream(responseEntity.getContent()).collect(Collectors.joining());
 
-        if (responseEntity == null) {
-            return null; // TODO: OMG!
+                return mapper.readValue(responseStringBody, BuildInfo.class);
+
+            default:
+                throw new HerokuDeployApiException(String.format("Unexpected status code: %d!", response.getStatusLine().getStatusCode()));
         }
-
-        String responseStringBody = Util.readLinesFromInputStream(responseEntity.getContent()).collect(Collectors.joining());
-        return mapper.readValue(responseStringBody, BuildInfo.class);
     }
 }

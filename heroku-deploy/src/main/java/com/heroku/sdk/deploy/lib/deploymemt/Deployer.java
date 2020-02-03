@@ -2,9 +2,8 @@ package com.heroku.sdk.deploy.lib.deploymemt;
 
 import com.heroku.api.HerokuAPI;
 import com.heroku.api.Source;
+import com.heroku.sdk.deploy.api.*;
 import com.heroku.sdk.deploy.lib.OutputAdapter;
-import com.heroku.sdk.deploy.api.BuildInfo;
-import com.heroku.sdk.deploy.api.HerokuDeployApi;
 import com.heroku.sdk.deploy.util.io.UploadProgressHttpEntity;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.FileEntity;
@@ -49,20 +48,34 @@ public final class Deployer {
         }
 
         outputAdapter.logInfo("-----> Deploying...");
-        BuildInfo buildInfo = herokuDeployApi.createBuild(
-                deploymentDescriptor.getAppName(),
-                URI.create(sourceBlob.getGet_url()),
-                deploymentDescriptor.getVersion(),
-                buildpacks);
-
-        outputAdapter.logInfo("BUILD INFO: " + buildInfo.toString());
+        BuildInfo buildInfo;
+        try {
+            buildInfo = herokuDeployApi.createBuild(
+                    deploymentDescriptor.getAppName(),
+                    URI.create(sourceBlob.getGet_url()),
+                    deploymentDescriptor.getVersion(),
+                    buildpacks);
+        } catch (AppNotFoundException e) {
+            outputAdapter.logError("Could not find application! Make sure you configured your application name correctly.");
+            return false;
+        }  catch (InsufficientAppPermissionsException e) {
+            outputAdapter.logError("Insufficient permissions to deploy to application! Make sure you configured your application name correctly.");
+            return false;
+        }  catch (HerokuDeployApiException e) {
+            outputAdapter.logError("Unknown error while deploying: " + e.getMessage(), e);
+            return false;
+        }
 
         herokuDeployApi
-                .followBuildOutputStream(URI.create(buildInfo.outputStreamUrl)) // TODO: This can be null?!  (id=forbidden)
+                .followBuildOutputStream(URI.create(buildInfo.outputStreamUrl))
                 .map(line -> "remote: " + line)
                 .forEachOrdered(outputAdapter::logInfo);
 
-        buildInfo = pollForNonPendingBuildInfo(deploymentDescriptor.getAppName(), buildInfo.id, herokuDeployApi);
+        try {
+            buildInfo = pollForNonPendingBuildInfo(deploymentDescriptor.getAppName(), buildInfo.id, herokuDeployApi);
+        } catch (HerokuDeployApiException e) {
+            outputAdapter.logWarn(String.format("Could not get updated build information. Will try again for some time... (%s)", e.getMessage()));
+        }
 
         if (!buildInfo.status.equals("succeeded")) {
             outputAdapter.logDebug("Failed Build ID: " + buildInfo.id);
@@ -75,7 +88,7 @@ public final class Deployer {
         return true;
     }
 
-    private static BuildInfo pollForNonPendingBuildInfo(String appName, String buildId, HerokuDeployApi herokuDeployApi) throws IOException, InterruptedException {
+    private static BuildInfo pollForNonPendingBuildInfo(String appName, String buildId, HerokuDeployApi herokuDeployApi) throws IOException, InterruptedException, HerokuDeployApiException {
         for (int i = 0; i < 15; i++) {
             BuildInfo latestBuildInfo = herokuDeployApi.getBuildInfo(appName, buildId);
             if (!latestBuildInfo.status.equals("pending")) {

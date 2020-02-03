@@ -43,7 +43,8 @@ public class JvmProjectSourceBlobCreator {
      *                                 customProcfileResolver, this procfile will be included in the source blob.
      * @param customJdkVersionResolver A supplier that is called to get the customers desired JDK version.
      *                                 Used for JdkVersionResolver.
-     * @param outputAdapter            TODO
+     * @param outputAdapter            This class will output messages meant for the user and uses the given
+     *                                 OutputAdapter for that.
      * @return A SourceBlobDescriptor valid for any JVM project that can be extended with actual jar/war files later.
      * @throws IOException Resolving metadata involves IO. In case those operations fail, an IOException will be thrown.
      * @throws IllegalArgumentException If the given projectDirectory is not an absolute path.

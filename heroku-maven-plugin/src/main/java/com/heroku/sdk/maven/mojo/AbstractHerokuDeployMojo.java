@@ -118,19 +118,7 @@ public abstract class AbstractHerokuDeployMojo extends AbstractHerokuMojo {
 
     private Optional<Path> resolveWarFilePath(Mode mode, Path projectDirectory) throws MojoExecutionException, IOException {
         if (mode == Mode.WAR) {
-            if (super.warFile == null) {
-                if (!super.mavenProject.getPackaging().equals("war")) {
-                    throw new MojoExecutionException("Your packaging must be set to 'war' or you must define the '<warFile>' config to use this goal!");
-                }
-
-                return Files
-                        .find(Paths.get(mavenProject.getBuild().getDirectory()), Integer.MAX_VALUE, (path, attributes) -> path.toString().endsWith(".war"))
-                        .findFirst()
-                        .flatMap(path -> PathUtils.normalize(projectDirectory, path));
-            } else {
-                return PathUtils
-                        .normalize(projectDirectory, Paths.get(super.warFile));
-            }
+            return super.findWarFilePath(projectDirectory);
         }
 
         return Optional.empty();

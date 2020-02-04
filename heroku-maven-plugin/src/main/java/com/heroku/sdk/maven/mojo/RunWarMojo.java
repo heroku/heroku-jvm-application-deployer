@@ -1,89 +1,57 @@
 package com.heroku.sdk.maven.mojo;
 
+import com.heroku.sdk.deploy.lib.OutputAdapter;
+import com.heroku.sdk.deploy.lib.running.RunWebApp;
+import com.heroku.sdk.maven.MavenLogOutputAdapter;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
- * Starts the web application in a way that is very similar to how it is run on Heroku.
+ * Starts the web application in a way that is very similar to how it is run on Heroku. JAVA_OPTS and WEBAPP_RUNNER_OPTS
+ * specified in configVars will also be picked up by this goal and used to run your application.
  */
-@Mojo(name = "run-war", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
+@Mojo(name = "run-war", requiresDependencyResolution = ResolutionScope.RUNTIME)
+@Execute(phase = LifecyclePhase.PACKAGE)
 public class RunWarMojo extends AbstractHerokuMojo {
 
   @Override
-  public void execute() throws MojoFailureException {
-    /*try {
-      prepareWarFile();
+  public void execute() throws MojoExecutionException {
+    OutputAdapter outputAdapter = new MavenLogOutputAdapter(getLog(), logProgress);
 
-      String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+    Path projectDirectory = super.mavenProject.getBasedir().toPath();
 
-      String javaOpts = configVars.get("JAVA_OPTS");
-      String webappRunnerOpts = configVars.get("WEBAPP_RUNNER_OPTS");
+    List<String> javaOptions = splitOptions(configVars.getOrDefault("JAVA_OPTS", ""));
+    List<String> webappRunnerOptions = splitOptions(configVars.getOrDefault("WEBAPP_RUNNER_OPTS", ""));
 
-      List<String> fullCommand = new ArrayList<String>();
-      fullCommand.add(javaCommand);
-      if (null != javaOpts) {
-        for (String javaOpt : javaOpts.split(" ")) {
-          if (!javaOpt.isEmpty()) fullCommand.add(javaOpt);
-        }
-      }
+    Path warFilePath = null;
+    try {
+      warFilePath = findWarFilePath(projectDirectory).orElseThrow(() -> new MojoExecutionException("Could not find WAR file to run!"));
+    } catch (IOException e) {
+      throw new MojoExecutionException("Could not find WAR file to run!", e);
+    }
 
-      fullCommand.add("-jar");
-      fullCommand.add("target" + File.separator + "dependency" + File.separator + "webapp-runner.jar");
-      if (null != webappRunnerOpts) {
-        for (String webappRunnerOpt : webappRunnerOpts.split(" ")) {
-          if (!webappRunnerOpt.isEmpty()) fullCommand.add(webappRunnerOpt);
-        }
-      }
-
-      fullCommand.add(warFile.getAbsolutePath());
-
-      ProcessBuilder pb = new ProcessBuilder().command(fullCommand.toArray(new String[fullCommand.size()]));
-
-      String fullCommandLine = javaCommand;
-      for (String s : fullCommand) {
-        fullCommandLine += " " + s;
-      }
-      getLog().debug("Executing: " + fullCommandLine);
-
-      Process p = pb.start();
-
-      StreamGobbler inputGobbler = new StreamGobbler(p.getInputStream());
-      inputGobbler.start();
-
-      StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream());
-      errorGobbler.start();
-
-      p.waitFor();
-    } catch (Exception e) {
-      throw new MojoFailureException("Failed to deploy application", e);
+    try {
+      RunWebApp.run(warFilePath, javaOptions, webappRunnerOptions, webappRunnerVersion, outputAdapter);
+    } catch (IOException | InterruptedException e) {
+      throw new MojoExecutionException("Exception while running webapp-runner!", e);
     }
   }
 
-  private class StreamGobbler extends Thread {
-    InputStream is;
-
-    StreamGobbler(InputStream is) {
-      this.is = is;
-    }
-
-    public void run() {
-      try {
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        String line;
-        while ((line = br.readLine()) != null)
-          getLog().info(line);
-      } catch (IOException e) {
-        getLog().error(e.getMessage());
-        e.printStackTrace();
-        throw new RuntimeException(e);
-      }
-    }*/
+  private List<String> splitOptions(String optionString) {
+    return Arrays.stream(optionString.split(" "))
+            .filter(string -> !string.trim().isEmpty())
+            .collect(Collectors.toList());
   }
 }

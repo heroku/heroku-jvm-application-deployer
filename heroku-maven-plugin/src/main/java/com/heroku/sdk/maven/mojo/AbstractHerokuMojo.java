@@ -1,17 +1,21 @@
 package com.heroku.sdk.maven.mojo;
 
 import com.heroku.sdk.deploy.Constants;
+import com.heroku.sdk.deploy.util.PathUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.Mojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public abstract class AbstractHerokuMojo extends AbstractMojo {
 
@@ -83,4 +87,30 @@ public abstract class AbstractHerokuMojo extends AbstractMojo {
    */
   @Parameter(name="webappRunnerVersion")
   protected String webappRunnerVersion = Constants.DEFAULT_WEBAPP_RUNNER_VERSION;
+
+  /**
+   * Common helper to find the projects WAR file either by referencing the explicitly configured WAR file or searching
+   * the build directory for a WAR file. This implementation assumes it is run as part of a goal and will throw
+   * MojoExecutionExceptions with user-facing error messages.
+   *
+   * @param projectDirectory The root directory of the project
+   * @return An optional Path to the WAR file if one could be found
+   * @throws MojoExecutionException If there is no explicitly configured WAR file path or the projects packaged as a WAR
+   * @throws IOException If an IO error occurred during WAR file search
+   */
+  protected Optional<Path> findWarFilePath(Path projectDirectory) throws MojoExecutionException, IOException {
+    if (warFile == null) {
+      if (!mavenProject.getPackaging().equals("war")) {
+        throw new MojoExecutionException("Your packaging must be set to 'war' or you must define the '<warFile>' config to use this goal!");
+      }
+
+      return Files
+              .find(Paths.get(mavenProject.getBuild().getDirectory()), Integer.MAX_VALUE, (path, attributes) -> path.toString().endsWith(".war"))
+              .findFirst()
+              .flatMap(path -> PathUtils.normalize(projectDirectory, path));
+    } else {
+      return PathUtils
+              .normalize(projectDirectory, Paths.get(warFile));
+    }
+  }
 }

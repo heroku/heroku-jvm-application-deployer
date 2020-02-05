@@ -109,7 +109,7 @@ public final class Deployer {
     private static void uploadSourceBlob(Path path, URI destination, BiConsumer<Long, Long> progressConsumer) throws IOException {
         long fileSize = Files.size(path);
 
-        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpClient client = HttpClients.createSystem();
 
         HttpPut request = new HttpPut(destination);
         request.setEntity(new UploadProgressHttpEntity(new FileEntity(path.toFile()), bytes -> progressConsumer.accept(bytes, fileSize)));

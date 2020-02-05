@@ -66,7 +66,7 @@ public class HerokuDeployApi {
         apiPayloadEntity.setContentEncoding("UTF-8");
 
         // Send request
-        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpClient client = HttpClients.createSystem();
 
         HttpPost request = new HttpPost("https://api.heroku.com/apps/" + appName + "/builds");
         httpHeaders.forEach(request::setHeader);
@@ -79,7 +79,7 @@ public class HerokuDeployApi {
 
     public BuildInfo getBuildInfo(String appName, String buildId) throws IOException, HerokuDeployApiException {
         ObjectMapper mapper = new ObjectMapper();
-        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpClient client = HttpClients.createSystem();
 
         HttpUriRequest request = new HttpGet("https://api.heroku.com/apps/" + appName + "/builds/" + buildId);
         httpHeaders.forEach(request::setHeader);
@@ -90,7 +90,7 @@ public class HerokuDeployApi {
     }
 
     public Stream<String> followBuildOutputStream(URI buildOutputStreamUri) throws IOException {
-        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpClient client = HttpClients.createSystem();
 
         HttpGet request = new HttpGet(buildOutputStreamUri);
         httpHeaders.forEach(request::setHeader);

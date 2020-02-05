@@ -14,6 +14,19 @@
 
   <artifactId>heroku-deploy-standalone</artifactId>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.heroku.sdk</groupId>
+      <artifactId>heroku-deploy</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>1.7.25</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <finalName>heroku-deploy-standalone</finalName>
     <plugins>

@@ -25,7 +25,7 @@ In addition to those two main goals, three additional goals are available:
 * [Cookbook](#cookbook)
     * [Deploying a Standalone Application](#deploying-a-standalone-application)
     * [Deploying a WAR File](#deploying-a-war-file)
-    * [Running a WAR File Locally]()
+    * [Running a WAR File Locally](#running-a-war-file-locally)
     * [Deploying to Multiple Apps](#deploying-to-multiple-apps) (i.e.: staging/production setups)
 * [Plugin Configuration](#plugin-configuration)
     * [appName](#appname)

@@ -53,31 +53,6 @@
     </profile>
 
     <profile>
-      <id>fatjar</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-        <file>
-          <!--
-            This will ensure the profile is always active, but Maven/Gradle won't resolve and install the
-            module dependencies when adding heroku-deploy-complete as a dependency to another project.
-          -->
-          <missing>bogus-file-87fwqy8efadhda</missing>
-        </file>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.heroku.sdk</groupId>
-          <artifactId>heroku-deploy</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-nop</artifactId>
-          <version>1.7.25</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>release</id>
       <activation>
         <activeByDefault>false</activeByDefault>
@@ -90,7 +65,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-source-plugin</artifactId>
-            <version>${source.plugin.version}</version>
+            <version>3.2.1</version>
             <executions>
               <execution>
                 <id>attach-source</id>
@@ -106,7 +81,7 @@
           </plugin>
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${javadoc.plugin.version}</version>
+            <version>3.1.1</version>
             <executions>
               <execution>
                 <id>attach-javadoc</id>

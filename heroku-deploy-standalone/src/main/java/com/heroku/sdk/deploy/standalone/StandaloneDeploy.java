@@ -10,10 +10,7 @@ import com.heroku.sdk.deploy.lib.resolver.WebappRunnerResolver;
 import com.heroku.sdk.deploy.lib.sourceblob.JvmProjectSourceBlobCreator;
 import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobDescriptor;
 import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobPackager;
-import com.heroku.sdk.deploy.util.FileDownloader;
-import com.heroku.sdk.deploy.util.GitUtils;
-import com.heroku.sdk.deploy.util.PathUtils;
-import com.heroku.sdk.deploy.util.Procfile;
+import com.heroku.sdk.deploy.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -120,7 +117,14 @@ public class StandaloneDeploy {
                 sourceBlobArchive,
                 GitUtils.getHeadCommitHash(projectDirectory).orElse("unknown"));
 
-        Deployer.deploy(apiKey.get(), deploymentDescriptor, outputAdapter);
+        Properties pomProperties = PropertiesUtils.loadPomPropertiesOrEmptyFromClasspath(StandaloneDeploy.class, "com.heroku.sdk", "heroku-deploy-standalone");
+
+        Deployer.deploy(
+                apiKey.get(),
+                "heroku-deploy-standalone",
+                pomProperties.getProperty("version", "unknown"),
+                deploymentDescriptor,
+                outputAdapter);
     }
 
     private static List<Path> getIncludedPathsFromProperties() {

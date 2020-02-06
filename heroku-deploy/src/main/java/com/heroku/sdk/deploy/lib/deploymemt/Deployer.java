@@ -21,10 +21,9 @@ import java.util.function.BiConsumer;
 
 public final class Deployer {
 
-    public static boolean deploy(String apiKey, DeploymentDescriptor deploymentDescriptor, OutputAdapter outputAdapter) throws IOException, InterruptedException {
+    public static boolean deploy(String apiKey, String clientName, String clientVersion, DeploymentDescriptor deploymentDescriptor, OutputAdapter outputAdapter) throws IOException, InterruptedException {
         HerokuAPI herokuApi = new HerokuAPI(apiKey);
-        // TODO: client and version string!?
-        HerokuDeployApi herokuDeployApi = new HerokuDeployApi("client-tbd", "version-tbd", apiKey);
+        HerokuDeployApi herokuDeployApi = new HerokuDeployApi(clientName, clientVersion, apiKey);
 
         Source source = herokuApi.createSource();
         Source.Blob sourceBlob = source.getSource_blob();

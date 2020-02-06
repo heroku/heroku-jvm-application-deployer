@@ -3,6 +3,7 @@ package com.heroku.sdk.deploy.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.heroku.sdk.deploy.util.PropertiesUtils;
 import com.heroku.sdk.deploy.util.Util;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,14 +29,18 @@ public class HerokuDeployApi {
     private Map<String, String> httpHeaders;
 
     public HerokuDeployApi(String client, String clientVersion, String apiKey) {
+        Properties pomProperties
+                = PropertiesUtils.loadPomPropertiesOrEmptyFromClasspath(this.getClass(), "com.heroku.sdk", "heroku-deploy");
+
         HashMap<String, String> httpHeaders = new HashMap<>();
         httpHeaders.put("Authorization", Base64.encodeBytes((":" + apiKey).getBytes()));
         httpHeaders.put("Content-Type", "application/json");
         httpHeaders.put("Accept", "application/vnd.heroku+json; version=3");
         httpHeaders.put("User-Agent", String.format(
-                "heroku-deploy/%s (%s) Java/%s (%s)",
-                clientVersion,
+                "heroku-deploy/%s (%s/%s) Java/%s (%s)",
+                pomProperties.getProperty("version", "unknown"),
                 client,
+                clientVersion,
                 System.getProperty("java.version"),
                 System.getProperty("java.vendor")));
 

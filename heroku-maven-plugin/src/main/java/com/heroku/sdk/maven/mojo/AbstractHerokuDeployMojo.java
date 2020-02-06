@@ -12,6 +12,7 @@ import com.heroku.sdk.deploy.lib.sourceblob.SourceBlobPackager;
 import com.heroku.sdk.deploy.util.FileDownloader;
 import com.heroku.sdk.deploy.util.PathUtils;
 import com.heroku.sdk.deploy.util.Procfile;
+import com.heroku.sdk.deploy.util.PropertiesUtils;
 import com.heroku.sdk.maven.MavenLogOutputAdapter;
 import com.heroku.sdk.maven.MojoExecutor;
 import org.apache.commons.io.FileUtils;
@@ -24,10 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -94,7 +92,15 @@ public abstract class AbstractHerokuDeployMojo extends AbstractHerokuMojo {
                     .resolve(projectDirectory)
                     .orElseThrow(() -> new MojoExecutionException("Could not resolve API key."));
 
-            Deployer.deploy(apiKey, deploymentDescriptor, outputAdapter);
+            Properties pomProperties = PropertiesUtils.loadPomPropertiesOrEmptyFromClasspath(AbstractHerokuDeployMojo.class, "com.heroku.sdk", "heroku-deploy-standalone");
+
+            Deployer.deploy(
+                    apiKey,
+                    "heroku-maven-plugin",
+                    pomProperties.getProperty("version", "unknown"),
+                    deploymentDescriptor,
+                    outputAdapter);
+
         } catch (IOException | InterruptedException e) {
             throw new MojoExecutionException("Unexpected error!", e);
         }

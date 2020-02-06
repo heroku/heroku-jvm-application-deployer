@@ -17,7 +17,7 @@ public class HerokuCli {
 
     private static List<String> runRaw(Path workingDirectory, String... command) throws IOException {
         List<String> fullCommand = Arrays.asList(command);
-        fullCommand.add(0, "heroku"); // TODO: What about legacy CLI heroku.bat?
+        fullCommand.add(0, "heroku");
 
         ProcessBuilder processBuilder = new ProcessBuilder(fullCommand);
         processBuilder.directory(workingDirectory.toFile());

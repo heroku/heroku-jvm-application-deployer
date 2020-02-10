@@ -45,14 +45,26 @@ public final class SourceBlobPackager {
     }
 
     private static void addIncludedPathToArchive(String path, SourceBlobDescriptor.SourceBlobContent content, TarArchiveOutputStream tarArchiveOutputStream) throws IOException {
-        // TODO: Symlink handling
         if (content.isLocalPath()) {
             TarArchiveEntry entry = new TarArchiveEntry(content.getLocalPath().toFile(), path);
-            tarArchiveOutputStream.putArchiveEntry(entry);
 
-            Files.copy(content.getLocalPath(), tarArchiveOutputStream);
+            if (Files.isSymbolicLink(content.getLocalPath())) {
+                Path symbolicLink = Files.readSymbolicLink(content.getLocalPath());
+                entry.setLinkName(symbolicLink.toString());
 
-            tarArchiveOutputStream.closeArchiveEntry();
+                tarArchiveOutputStream.putArchiveEntry(entry);
+                tarArchiveOutputStream.closeArchiveEntry();
+
+            } else {
+                if (Files.isExecutable(content.getLocalPath())) {
+                    entry.setMode(493);
+                }
+
+                tarArchiveOutputStream.putArchiveEntry(entry);
+                Files.copy(content.getLocalPath(), tarArchiveOutputStream);
+                tarArchiveOutputStream.closeArchiveEntry();
+
+            }
         } else {
             TarArchiveEntry entry = new TarArchiveEntry(path);
             entry.setSize(content.getSyntheticFileContents().getBytes(StandardCharsets.UTF_8).length);

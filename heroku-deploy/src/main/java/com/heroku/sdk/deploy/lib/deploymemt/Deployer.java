@@ -72,7 +72,7 @@ public final class Deployer {
                     .map(line -> "remote: " + line)
                     .forEachOrdered(outputAdapter::logInfo);
         } catch (SSLHandshakeException e) {
-            outputAdapter.logWarn("Could not get remote output. You might run an older Java version without Let's Encrypt support. Your build will continue to run, stand by.");
+            outputAdapter.logWarn("Could not get remote output. You could be running an older Java version without Let's Encrypt support. Your build will continue to run, stand by.");
         }
 
         try {

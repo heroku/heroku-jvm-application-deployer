@@ -1,6 +1,16 @@
 # Changelog
 
-## Master
+## 3.0.0
+* Extended documentation
+* Extensive refactoring, but mostly compatible with 2.x. See below for breaking changes.
+* BREAKING CHANGE: HTTP_PROXY and HTTPS_PROXY environment variables are no longer respected. Use [standard JVM proxy
+properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.html) to configure HTTP proxies.
+* BREAKING CHANGE: System property `heroku.curl.enabled` removed.
+* BREAKING CHANGE: Dropped support for Heroku Toolbelt on Windows. Use Heroku CLI instead.
+* BREAKING CHANGE: Support for `jvm-common` buildpack alias removed. Use standard `heroku/jvm` instead.
+
+
+## 2.0.16
 * Upgrade to Tomcat Webapp Runner 9.0.30.0
 
 ## 2.0.6

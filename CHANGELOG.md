@@ -1,6 +1,6 @@
 # Changelog
 
-## master
+## 3.0.0
 * Extended documentation
 * Extensive refactoring, but mostly compatible with 2.x. See below for breaking changes.
 * BREAKING CHANGE: HTTP_PROXY and HTTPS_PROXY environment variables are no longer respected. Use [standard JVM proxy

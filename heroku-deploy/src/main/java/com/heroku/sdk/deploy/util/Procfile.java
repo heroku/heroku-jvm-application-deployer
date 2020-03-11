@@ -53,6 +53,9 @@ public class Procfile {
 
     /**
      * Reads Profile from a file. If the file cannot be found, an empty Procfile is returned.
+     * @param path The path of the file to read
+     * @return A Procfile with the entries from the given path
+     * @throws IOException If an IOExecption occurs while reading the file
      */
     public static Procfile fromFile(Path path) throws IOException {
         if (!Files.isRegularFile(path)) {

@@ -54,7 +54,8 @@ public class PathUtils {
                 .collect(Collectors.toList());
     }
 
-    public static Path separatorsToUnix(Path path) {
-        return Paths.get(path.toString().replace('\\', '/'));
+    public static String separatorsToUnix(Path path) {
+        // Path will normalize separators back to Windows when run on Windows. We have to fall back to a String here.
+        return path.toString().replace('\\', '/');
     }
 }

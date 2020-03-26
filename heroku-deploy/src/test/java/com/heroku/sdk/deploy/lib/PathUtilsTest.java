@@ -111,7 +111,7 @@ public class PathUtilsTest {
     @Test
     public void testSeparatorsToUnix() {
         Path windowsPath = Paths.get("projects\\foobar\\target\\app.jar");
-        Path unixPath = Paths.get("projects/foobar/target/app.jar");
+        String unixPath = "projects/foobar/target/app.jar";
 
         assertEquals(unixPath, PathUtils.separatorsToUnix(windowsPath));
     }
@@ -119,11 +119,10 @@ public class PathUtilsTest {
     @Test
     public void testSeparatorsToUnixWithAbsolute() {
         Path windowsPath = Paths.get("C:\\projects\\foobar\\target\\app.jar");
-        Path unixPath = Paths.get("C:/projects/foobar/target/app.jar");
+        String unixPath = "C:/projects/foobar/target/app.jar";
 
         assertEquals(unixPath, PathUtils.separatorsToUnix(windowsPath));
     }
-
 
     private List<Path> sort(List<Path> items) {
         return items.stream().sorted().collect(Collectors.toList());

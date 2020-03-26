@@ -61,7 +61,6 @@ public class StandaloneDeploy {
                         // user-readable error from JvmProjectSourceBlobCreator and the Procfile will never be deployed.
                         PathUtils.normalize(projectDirectory, localJarFilePath)
                                 .map(PathUtils::separatorsToUnix)
-                                .map(Path::toString)
                                 .orElse(""),
                         herokuJarOptsSystemProperty);
 
@@ -84,7 +83,6 @@ public class StandaloneDeploy {
                         // user-readable error from JvmProjectSourceBlobCreator and the Procfile will never be deployed.
                         PathUtils.normalize(projectDirectory, localWarFilePath)
                                 .map(PathUtils::separatorsToUnix)
-                                .map(Path::toString)
                                 .orElse(""));
 
                 defaultProcfile = Procfile.singleton("web", warCommand);

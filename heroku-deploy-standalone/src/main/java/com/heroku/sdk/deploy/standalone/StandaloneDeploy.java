@@ -59,7 +59,10 @@ public class StandaloneDeploy {
                         "java $JAVA_OPTS -jar %s %s $JAR_OPTS",
                         // We fall back to an empty string if the path cannot be normalized. This will result in an
                         // user-readable error from JvmProjectSourceBlobCreator and the Procfile will never be deployed.
-                        PathUtils.normalize(projectDirectory, localJarFilePath).map(Path::toString).orElse(""),
+                        PathUtils.normalize(projectDirectory, localJarFilePath)
+                                .map(PathUtils::separatorsToUnix)
+                                .map(Path::toString)
+                                .orElse(""),
                         herokuJarOptsSystemProperty);
 
                 defaultProcfile = Procfile.singleton("web", jarCommand);
@@ -79,7 +82,10 @@ public class StandaloneDeploy {
                         "java $JAVA_OPTS -jar webapp-runner.jar $WEBAPP_RUNNER_OPTS --port $PORT ./ %s",
                         // We fall back to an empty string if the path cannot be normalized. This will result in an
                         // user-readable error from JvmProjectSourceBlobCreator and the Procfile will never be deployed.
-                        PathUtils.normalize(projectDirectory, localWarFilePath).map(Path::toString).orElse(""));
+                        PathUtils.normalize(projectDirectory, localWarFilePath)
+                                .map(PathUtils::separatorsToUnix)
+                                .map(Path::toString)
+                                .orElse(""));
 
                 defaultProcfile = Procfile.singleton("web", warCommand);
                 break;

@@ -60,7 +60,7 @@ public abstract class AbstractHerokuDeployMojo extends AbstractHerokuMojo {
                 }
 
                 customProcfileResolver = () ->
-                        Procfile.singleton("web", "java $JAVA_OPTS -jar webapp-runner.jar $WEBAPP_RUNNER_OPTS --port $PORT " + warFilePath.get().toString());
+                    Procfile.singleton("web", "java $JAVA_OPTS -jar webapp-runner.jar $WEBAPP_RUNNER_OPTS --port $PORT " + warFilePath.map(PathUtils::separatorsToUnix).get().toString());
             }
 
             SourceBlobDescriptor sourceBlobDescriptor = JvmProjectSourceBlobCreator.create(

@@ -3,7 +3,7 @@
   <parent>
     <artifactId>heroku-sdk-parent</artifactId>
     <groupId>com.heroku.sdk</groupId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

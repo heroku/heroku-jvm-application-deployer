@@ -108,6 +108,22 @@ public class PathUtilsTest {
         assertEquals(Collections.singletonList(Paths.get("foo")), sort(PathUtils.expandDirectory(existingBasePath, Paths.get("foo"))));
     }
 
+    @Test
+    public void testSeparatorsToUnix() {
+        Path windowsPath = Paths.get("projects\\foobar\\target\\app.jar");
+        String unixPath = "projects/foobar/target/app.jar";
+
+        assertEquals(unixPath, PathUtils.separatorsToUnix(windowsPath));
+    }
+
+    @Test
+    public void testSeparatorsToUnixWithAbsolute() {
+        Path windowsPath = Paths.get("C:\\projects\\foobar\\target\\app.jar");
+        String unixPath = "C:/projects/foobar/target/app.jar";
+
+        assertEquals(unixPath, PathUtils.separatorsToUnix(windowsPath));
+    }
+
     private List<Path> sort(List<Path> items) {
         return items.stream().sorted().collect(Collectors.toList());
     }

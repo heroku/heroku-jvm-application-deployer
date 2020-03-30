@@ -3,6 +3,7 @@ package com.heroku.sdk.deploy.util;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,5 +52,10 @@ public class PathUtils {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+
+    public static String separatorsToUnix(Path path) {
+        // Path will normalize separators back to Windows when run on Windows. We have to fall back to a String here.
+        return path.toString().replace('\\', '/');
     }
 }

@@ -1,11 +1,12 @@
 language: java
-dist: trusty
-install: "./etc/ci-setup.sh"
+dist: bionic
 script: ./mvnw clean install -Pit
-after_script: heroku keys:remove $USER@`hostname`
-
 matrix:
   fast_finish: true
   include:
-    - jdk: oraclejdk8
-    - jdk: oraclejdk11
+    - jdk: openjdk8
+    - before_install:
+        - wget https://github.com/malax/bach/raw/master/install-jdk.sh
+        # Manually install JDK 11 to get a newer version than travis' default to work around a JDK bug in 11.0.2:
+        # https://bugs.openjdk.java.net/browse/JDK-8220723
+        - source ./install-jdk.sh --feature 11 --url "https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz"

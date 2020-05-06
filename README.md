@@ -44,7 +44,7 @@ In addition to those two main goals, three additional goals are available:
 ## Global Configuration
 
 ### Heroku API Key
-This plugin uses Heroku's Platform API and thus requires an API to function. If you have the 
+This plugin uses Heroku's Platform API and thus requires an API key to function. If you have the 
 [Heroku CLI](https://cli.heroku.com/) installed and logged in with `heroku login`, the plugin will automatically
 pick up your API key. Alternatively, you can use the `HEROKU_API_KEY` environment variable to set your API key:
 

@@ -19,24 +19,32 @@ try {
     def process = "heroku run java -version -a${appName}".execute()
     process.waitFor()
     output = process.text
-    assert output.contains("1.8"), "Wrong version of JDK packages into slug"
+    assert output.contains("1.8"), "Wrong version of JDK packages into slug: '${output}'"
 
     Thread.sleep(3000)
     process = "heroku run cat target/mvn-dependency-list.log -a${appName}".execute()
     process.waitFor()
     output = process.text
-    assert output.contains("The following files have been resolved"), "Dependencies not listed: ${output}"
+    assert output.contains("The following files have been resolved"), "Dependencies not listed: '${output}'"
 
-    process = "heroku logs -n 1000 -a${appName}".execute()
+    Thread.sleep(3000)
+    process = "heroku run echo \$WEBAPP_RUNNER_OPTS -a${appName}".execute()
     process.waitFor()
     output = process.text
-    assert output.contains("--expand-war"), "Did not pick up WEBAPP_RUNNER_OPTS: ${output}"
+    assert output.contains("--expand-war"), "WEBAPP_RUNNER_OPTS not correctly set: '${output}'"
 
+    Thread.sleep(3000)
+    process = "heroku run cat Procfile -a${appName}".execute()
+    process.waitFor()
+    output = process.text
+    assert output.contains("\$WEBAPP_RUNNER_OPTS"), "WEBAPP_RUNNER_OPTS not present in Procfile: '${output}'"
+
+    Thread.sleep(3000)
     process = "curl https://${appName}.herokuapp.com".execute()
     process.waitFor()
     output = process.text
     if (!output.contains("Hello from Java!")) {
-        throw new RuntimeException("app is not running: ${output}")
+        throw new RuntimeException("app is not running: '${output}'")
     }
 } finally {
    ("heroku destroy " + appName + " --confirm " + appName).execute().waitFor();

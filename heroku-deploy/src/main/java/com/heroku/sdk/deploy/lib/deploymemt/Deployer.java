@@ -4,11 +4,11 @@ import com.heroku.api.HerokuAPI;
 import com.heroku.api.Source;
 import com.heroku.sdk.deploy.api.*;
 import com.heroku.sdk.deploy.lib.OutputAdapter;
+import com.heroku.sdk.deploy.util.CustomHttpClientBuilder;
 import com.heroku.sdk.deploy.util.io.UploadProgressHttpEntity;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
@@ -108,7 +108,7 @@ public final class Deployer {
     private static void uploadSourceBlob(Path path, URI destination, BiConsumer<Long, Long> progressConsumer) throws IOException {
         long fileSize = Files.size(path);
 
-        CloseableHttpClient client = HttpClients.createSystem();
+        CloseableHttpClient client = CustomHttpClientBuilder.build();
 
         HttpPut request = new HttpPut(destination);
         request.setEntity(new UploadProgressHttpEntity(new FileEntity(path.toFile()), bytes -> progressConsumer.accept(bytes, fileSize)));

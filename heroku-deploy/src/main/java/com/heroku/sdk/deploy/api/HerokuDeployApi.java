@@ -3,6 +3,7 @@ package com.heroku.sdk.deploy.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.heroku.sdk.deploy.util.CustomHttpClientBuilder;
 import com.heroku.sdk.deploy.util.PropertiesUtils;
 import com.heroku.sdk.deploy.util.Util;
 import org.apache.http.HttpEntity;
@@ -13,15 +14,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.eclipse.jgit.util.Base64;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,7 +69,7 @@ public class HerokuDeployApi {
         apiPayloadEntity.setContentEncoding("UTF-8");
 
         // Send request
-        CloseableHttpClient client = HttpClients.createSystem();
+        CloseableHttpClient client = CustomHttpClientBuilder.build();
 
         HttpPost request = new HttpPost("https://api.heroku.com/apps/" + appName + "/builds");
         httpHeaders.forEach(request::setHeader);
@@ -85,7 +82,7 @@ public class HerokuDeployApi {
 
     public BuildInfo getBuildInfo(String appName, String buildId) throws IOException, HerokuDeployApiException {
         ObjectMapper mapper = new ObjectMapper();
-        CloseableHttpClient client = HttpClients.createSystem();
+        CloseableHttpClient client = CustomHttpClientBuilder.build();
 
         HttpUriRequest request = new HttpGet("https://api.heroku.com/apps/" + appName + "/builds/" + buildId);
         httpHeaders.forEach(request::setHeader);
@@ -96,7 +93,7 @@ public class HerokuDeployApi {
     }
 
     public Stream<String> followBuildOutputStream(URI buildOutputStreamUri) throws IOException {
-        CloseableHttpClient client = HttpClients.createSystem();
+        CloseableHttpClient client = CustomHttpClientBuilder.build();
 
         HttpGet request = new HttpGet(buildOutputStreamUri);
         httpHeaders.forEach(request::setHeader);

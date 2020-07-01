@@ -103,7 +103,7 @@
                   <goal>jar</goal>
                 </goals>
                 <configuration>
-                  <additionalparam>-Xdoclint:none</additionalparam>
+                  <doclint>none</doclint>
                   <sourcepath>
                     ${project.parent.basedir}/heroku-deploy/src/main/java
                   </sourcepath>

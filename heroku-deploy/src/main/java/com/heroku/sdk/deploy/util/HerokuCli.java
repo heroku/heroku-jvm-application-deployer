@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public class HerokuCli {
     }
 
     private static List<String> runRaw(Path workingDirectory, String... command) throws IOException {
-        List<String> fullCommand = Arrays.asList(command);
+        List<String> fullCommand =  new ArrayList<>(Arrays.asList(command));
         fullCommand.add(0, "heroku");
 
         ProcessBuilder processBuilder = new ProcessBuilder(fullCommand);

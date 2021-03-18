@@ -86,7 +86,7 @@ public abstract class AbstractHerokuDeployMojo extends AbstractHerokuMojo {
                     .orElseThrow(() -> new MojoExecutionException("Could not determine app name, please configure it explicitly!"));
 
             DeploymentDescriptor deploymentDescriptor
-                    = new DeploymentDescriptor(appName, super.buildpacks, super.configVars, sourceBlob, mavenProject.getVersion());
+                    = new DeploymentDescriptor(appName, super.buildpacks, super.configVars, sourceBlob, super.buildVersion);
 
             String apiKey = ApiKeyResolver
                     .resolve(projectDirectory)

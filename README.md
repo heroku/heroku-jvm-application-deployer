@@ -222,6 +222,20 @@ The plugin will detect the appName from the following places in this order:
 For example, if you specify the `heroku.appName` system property, the Maven configuration shown above will have
 no effect. This is useful for [deploying multiple apps](#deploying-to-multiple-apps).
 
+### buildVersion
+
+The build version of the application to deploy.
+
+```xml
+<buildVersion>v1.0.0</buildVersion>
+```
+
+The plugin will detect the buildVersion from the following places in this order:
+
+* The `heroku.buildVersion` system property
+* The Maven configuration (shown above)
+* The Maven project version (`${project.version}`)
+
 ### jdkVersion
 
 The JDK version to use for your application.

@@ -35,6 +35,12 @@ public abstract class AbstractHerokuMojo extends AbstractMojo {
   protected String appName = null;
 
   /**
+   * The build version of the application to deploy.
+   */
+  @Parameter(name="buildVersion", property="heroku.buildVersion", defaultValue = "${project.version}")
+  protected String buildVersion = null;
+
+  /**
    * The version of the JDK Heroku with run the app with.
    */
   @Parameter(name="jdkVersion", property="heroku.jdkVersion")

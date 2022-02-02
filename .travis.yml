@@ -1,8 +1,0 @@
-language: java
-dist: bionic
-script: ./mvnw clean install -Pit
-matrix:
-  fast_finish: true
-  include:
-    - jdk: openjdk8
-    - jdk: openjdk11

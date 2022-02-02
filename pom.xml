@@ -58,7 +58,7 @@
     <heroku-deploy.version>${project.version}</heroku-deploy.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <invoker.skip>true</invoker.skip>
-    <maven.version>3.5.0</maven.version>
+    <maven.version>3.8.3</maven.version>
   </properties>
 
   <dependencyManagement>
@@ -66,37 +66,37 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.10.2</version>
+        <version>2.13.0</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.10.2</version>
+        <version>2.13.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.19</version>
+        <version>1.21</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.6</version>
+        <version>2.7</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.8</version>
+        <version>1.9</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>
-        <version>5.6.0.201912101111-r</version>
+        <version>5.13.0.202109080827-r</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.5.11</version>
+        <version>4.5.13</version>
       </dependency>
       <dependency>
         <groupId>com.heroku.api</groupId>
@@ -106,7 +106,7 @@
       <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-json-jackson</artifactId>
-        <version>0.43</version>
+        <version>0.45</version>
       </dependency>
       <dependency>
         <groupId>com.heroku.api</groupId>
@@ -149,7 +149,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.3.1</version>
         <executions>
           <execution>
             <id>attach-javadoc</id>
@@ -166,7 +166,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.6</version>
+        <version>3.0.1</version>
         <executions>
           <execution>
             <id>sign-artifacts</id>

@@ -1,4 +1,8 @@
-# heroku-maven-plugin [![Build Status](https://travis-ci.org/heroku/heroku-maven-plugin.svg?branch=main)](https://travis-ci.org/heroku/heroku-maven-plugin) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.heroku.sdk/heroku-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.heroku.sdk/heroku-maven-plugin)
+# heroku-maven-plugin
+
+[![](https://badgen.net/github/license/heroku/heroku-maven-plugin)](LICENSE)
+[![](https://badgen.net/maven/v/maven-central/com.heroku.sdk/heroku-maven-plugin)](https://search.maven.org/artifact/com.heroku.sdk/heroku-maven-plugin)
+[![](https://badgen.net/circleci/github/heroku/heroku-maven-plugin/main)](https://circleci.com/gh/heroku/heroku-maven-plugin/tree/main)
 
 This plugin is used to deploy Java applications directly to Heroku without pushing to a Git repository. It uses 
 [Heroku's Platform API](https://devcenter.heroku.com/articles/platform-api-quickstart). 

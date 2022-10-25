@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.0.4
+
+* Fix `heroku:deploy-war` goal. ([#77](https://github.com/heroku/heroku-maven-plugin/pull/77))
+
+## 3.0.3
+
+* Add TLS workaround for OpenJDK 11.0.2. ([#72](https://github.com/heroku/heroku-maven-plugin/pull/72))
+
+## 3.0.2
+
+* Fix Microsoft Windows support. ([#62](https://github.com/heroku/heroku-maven-plugin/pull/62))
+
+## 3.0.1
+
+* Fix missing javadoc. ([#59](https://github.com/heroku/heroku-maven-plugin/pull/59))
+
 ## 3.0.0
 * Extended documentation
 * Extensive refactoring, but mostly compatible with 2.x. See below for breaking changes.
@@ -8,7 +24,6 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 * BREAKING CHANGE: System property `heroku.curl.enabled` removed.
 * BREAKING CHANGE: Dropped support for Heroku Toolbelt on Windows. Use Heroku CLI instead.
 * BREAKING CHANGE: Support for `jvm-common` buildpack alias removed. Use standard `heroku/jvm` instead.
-
 
 ## 2.0.16
 * Upgrade to Tomcat Webapp Runner 9.0.30.0

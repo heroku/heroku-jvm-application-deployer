@@ -15,7 +15,7 @@
 
   <name>Heroku SDK Parent</name>
   <description>Parent project for Heroku SDK tools and libraries.</description>
-  <url>http://github.com/heroku/heroku-maven-plugin</url>
+  <url>https://github.com/heroku/heroku-maven-plugin</url>
 
   <scm>
     <connection>scm:git:git://github.com/heroku/heroku-maven-plugin.git</connection>

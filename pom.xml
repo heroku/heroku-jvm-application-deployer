@@ -71,7 +71,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.13.4</version>
+        <version>2.13.4.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -86,12 +86,13 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.9</version>
+        <version>1.10.0</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>
-        <version>5.13.0.202109080827-r</version>
+        <!-- Starting with 6.*, Java 11 is the minimum version which we can't use yet. -->
+        <version>5.13.1.202206130422-r</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>

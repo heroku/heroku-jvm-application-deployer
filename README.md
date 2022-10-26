@@ -1,12 +1,12 @@
 # heroku-maven-plugin
 
-[![](https://badgen.net/github/license/heroku/heroku-maven-plugin)](LICENSE)
-[![](https://badgen.net/maven/v/maven-central/com.heroku.sdk/heroku-maven-plugin)](https://search.maven.org/artifact/com.heroku.sdk/heroku-maven-plugin)
-[![](https://badgen.net/circleci/github/heroku/heroku-maven-plugin/main)](https://circleci.com/gh/heroku/heroku-maven-plugin/tree/main)
+![License](https://img.shields.io/github/license/heroku/heroku-maven-plugin)
+![Maven Central](https://img.shields.io/maven-central/v/com.heroku.sdk/heroku-sdk-parent)
+[![CI](https://github.com/heroku/heroku-maven-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku-maven-plugin/actions/workflows/ci.yml)
 
 This plugin is used to deploy Java applications directly to Heroku without pushing to a Git repository. It uses 
 [Heroku's Platform API](https://devcenter.heroku.com/articles/platform-api-quickstart). 
-This is can be useful when deploying from a CI server, deploying pre-built JAR or WAR files.
+This can be useful when deploying from a CI server, deploying pre-built JAR or WAR files.
 
 The plugin has two main goals:
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.5
+
+* Update dependencies. ([#142](https://github.com/heroku/heroku-maven-plugin/pull/142))
+
 ## 3.0.4
 
 * Fix `heroku:deploy-war` goal. ([#77](https://github.com/heroku/heroku-maven-plugin/pull/77))

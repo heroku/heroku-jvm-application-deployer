@@ -6,7 +6,7 @@
 
 This plugin is used to deploy Java applications directly to Heroku without pushing to a Git repository. It uses 
 [Heroku's Platform API](https://devcenter.heroku.com/articles/platform-api-quickstart). 
-This is can be useful when deploying from a CI server, deploying pre-built JAR or WAR files.
+This can be useful when deploying from a CI server, deploying pre-built JAR or WAR files.
 
 The plugin has two main goals:
 

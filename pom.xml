@@ -15,7 +15,7 @@
 
   <name>Heroku SDK Parent</name>
   <description>Parent project for Heroku SDK tools and libraries.</description>
-  <url>http://github.com/heroku/heroku-maven-plugin</url>
+  <url>https://github.com/heroku/heroku-maven-plugin</url>
 
   <scm>
     <connection>scm:git:git://github.com/heroku/heroku-maven-plugin.git</connection>
@@ -34,7 +34,7 @@
   <licenses>
     <license>
       <name>MIT</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <url>https://www.opensource.org/licenses/mit-license.php</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -71,7 +71,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.13.4</version>
+        <version>2.13.4.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -86,12 +86,13 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.9</version>
+        <version>1.10.0</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>
-        <version>5.13.0.202109080827-r</version>
+        <!-- Starting with jgit 6.*, Java 11 is the minimum required version. Since we still support Java 8, we stick to jgit 5.*. -->
+        <version>5.13.1.202206130422-r</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>

@@ -58,7 +58,7 @@
     <heroku-deploy.version>${project.version}</heroku-deploy.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <invoker.skip>true</invoker.skip>
-    <maven.version>3.8.4</maven.version>
+    <maven.version>3.8.6</maven.version>
   </properties>
 
   <dependencyManagement>

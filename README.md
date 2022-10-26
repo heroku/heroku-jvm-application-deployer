@@ -68,7 +68,7 @@ Add the following to your `pom.xml`, but replace the `<web>` element with the co
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>3.0.4</version>
+      <version>3.0.5</version>
       <configuration>
         <appName>${heroku.appName}</appName>
         <processTypes>
@@ -98,7 +98,7 @@ Add the following to your `pom.xml`.
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>3.0.4</version>
+      <version>3.0.5</version>
       <configuration>
         <appName>${heroku.appName}</appName>
       </configuration>
@@ -143,7 +143,7 @@ Use a profile for each app, and configure the plugin accordingly. For example:
     <plugin>
       <groupId>com.heroku.sdk</groupId>
       <artifactId>heroku-maven-plugin</artifactId>
-      <version>3.0.4</version>
+      <version>3.0.5</version>
       <configuration>
         <processTypes>
           <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>

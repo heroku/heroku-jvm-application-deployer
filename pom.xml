@@ -112,7 +112,7 @@
       <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-http-apache</artifactId>
-        <version>0.45</version>
+        <version>0.46</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>

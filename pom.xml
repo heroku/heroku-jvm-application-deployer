@@ -59,6 +59,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <invoker.skip>true</invoker.skip>
     <maven.version>3.8.6</maven.version>
+    <heroku.jar.version>0.46</heroku.jar.version>
   </properties>
 
   <dependencyManagement>
@@ -102,17 +103,17 @@
       <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-api</artifactId>
-        <version>0.45</version>
+        <version>${heroku.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-json-jackson</artifactId>
-        <version>0.45</version>
+        <version>${heroku.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-http-apache</artifactId>
-        <version>0.45</version>
+        <version>${heroku.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>

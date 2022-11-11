@@ -13,7 +13,13 @@ import java.util.stream.Collectors;
 public class HerokuCli {
 
     public static Optional<String> runAuthToken(Path workingDirectory) throws IOException {
-        return Optional.ofNullable(runRaw(workingDirectory,"auth:token").get(0));
+        List<String> lines = runRaw(workingDirectory,"auth:token");
+
+        if (lines.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(lines.get(0));
+        }
     }
 
     private static List<String> runRaw(Path workingDirectory, String... command) throws IOException {

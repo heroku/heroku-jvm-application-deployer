@@ -14,6 +14,7 @@ jobs:
     name: "Execute build, run tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
         java-version:
           - 8

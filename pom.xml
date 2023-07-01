@@ -93,7 +93,7 @@
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>
         <!-- Starting with jgit 6.*, Java 11 is the minimum required version. Since we still support Java 8, we stick to jgit 5.*. -->
-        <version>5.13.1.202206130422-r</version>
+        <version>5.13.2.202306221912-r</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>

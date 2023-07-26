@@ -40,7 +40,12 @@ try {
     output = process.text
     assert output.contains("1.8"), "with_jmap failed: ${output}"
 
-    process = "curl https://${appName}.herokuapp.com".execute()
+    def appInfoCommand = ("heroku apps:info -a " + appName + " --json").execute()
+    appInfoCommand.waitFor()
+
+    String appWebUrl = new groovy.json.JsonSlurper().parseText(appInfoCommand.text).app.web_url
+
+    process = "curl ${appWebUrl}".execute()
     process.waitFor()
     output = process.text
     if (!output.contains("Hello from Java!")) {

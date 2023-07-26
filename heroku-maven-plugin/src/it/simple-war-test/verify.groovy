@@ -40,7 +40,12 @@ try {
     assert output.contains("\$WEBAPP_RUNNER_OPTS"), "WEBAPP_RUNNER_OPTS not present in Procfile: '${output}'"
 
     Thread.sleep(3000)
-    process = "curl https://${appName}.herokuapp.com".execute()
+    def appInfoCommand = ("heroku apps:info -a " + appName + " --json").execute()
+    appInfoCommand.waitFor()
+
+    String appWebUrl = new groovy.json.JsonSlurper().parseText(appInfoCommand.text).app.web_url
+
+    process = "curl ${appWebUrl}".execute()
     process.waitFor()
     output = process.text
     if (!output.contains("Hello from Java!")) {

@@ -23,7 +23,12 @@ try {
 
     Thread.sleep(5000)
 
-    process = "curl https://${appName}.herokuapp.com".execute()
+    def appInfoCommand = ("heroku apps:info -a " + appName + " --json").execute()
+    appInfoCommand.waitFor()
+
+    String appWebUrl = new groovy.json.JsonSlurper().parseText(appInfoCommand.text).app.web_url
+
+    process = "curl ${appWebUrl}".execute()
     process.waitFor()
     output = process.text
     assert output.contains("Hello from Java!"), "app is not running: ${output}"

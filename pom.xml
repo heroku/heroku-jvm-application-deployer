@@ -58,7 +58,7 @@
     <heroku-deploy.version>${project.version}</heroku-deploy.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <invoker.skip>true</invoker.skip>
-    <maven.version>3.9.2</maven.version>
+    <maven.version>3.9.3</maven.version>
     <heroku.jar.version>0.46</heroku.jar.version>
   </properties>
 
@@ -67,7 +67,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.14.2</version>
+        <version>2.15.2</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -82,7 +82,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.11.0</version>
+        <version>2.13.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -93,7 +93,7 @@
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>
         <!-- Starting with jgit 6.*, Java 11 is the minimum required version. Since we still support Java 8, we stick to jgit 5.*. -->
-        <version>5.13.1.202206130422-r</version>
+        <version>5.13.2.202306221912-r</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>

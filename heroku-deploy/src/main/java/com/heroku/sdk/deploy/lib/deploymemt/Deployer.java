@@ -1,7 +1,5 @@
 package com.heroku.sdk.deploy.lib.deploymemt;
 
-import com.heroku.api.HerokuAPI;
-import com.heroku.api.Source;
 import com.heroku.sdk.deploy.api.*;
 import com.heroku.sdk.deploy.lib.OutputAdapter;
 import com.heroku.sdk.deploy.util.CustomHttpClientBuilder;
@@ -22,16 +20,20 @@ import java.util.function.BiConsumer;
 public final class Deployer {
 
     public static boolean deploy(String apiKey, String clientName, String clientVersion, DeploymentDescriptor deploymentDescriptor, OutputAdapter outputAdapter) throws IOException, InterruptedException {
-        HerokuAPI herokuApi = new HerokuAPI(apiKey);
         HerokuDeployApi herokuDeployApi = new HerokuDeployApi(clientName, clientVersion, apiKey);
 
-        Source source = herokuApi.createSource();
-        Source.Blob sourceBlob = source.getSource_blob();
+        SourceBlob sourceBlob;
+        try {
+            sourceBlob = herokuDeployApi.createSourceBlob();
+        } catch (HerokuDeployApiException e) {
+            outputAdapter.logError("Could create source blob: " + e.getMessage());
+            return false;
+        }
 
         if (!deploymentDescriptor.getConfigVars().isEmpty()) {
             outputAdapter.logInfo("-----> Setting config vars...");
             try {
-                herokuApi.updateConfig(deploymentDescriptor.getAppName(), deploymentDescriptor.getConfigVars());
+                herokuDeployApi.updateAppConfig(deploymentDescriptor.getAppName(), deploymentDescriptor.getConfigVars());
             } catch(Throwable t) {
                 outputAdapter.logError("Could not set config vars: " + t.getMessage());
                 return false;
@@ -39,7 +41,7 @@ public final class Deployer {
         }
 
         outputAdapter.logInfo("-----> Uploading build...");
-        uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPut_url()), outputAdapter::logUploadProgress);
+        uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPutUrl()), outputAdapter::logUploadProgress);
         outputAdapter.logInfo("       - success");
 
         List<String> buildpacks = deploymentDescriptor.getBuildpacks();
@@ -52,7 +54,7 @@ public final class Deployer {
         try {
             buildInfo = herokuDeployApi.createBuild(
                     deploymentDescriptor.getAppName(),
-                    URI.create(sourceBlob.getGet_url()),
+                    URI.create(sourceBlob.getGetUrl()),
                     deploymentDescriptor.getVersion(),
                     buildpacks);
         } catch (AppNotFoundException e) {

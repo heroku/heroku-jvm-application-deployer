@@ -46,18 +46,6 @@
       <artifactId>httpclient</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.heroku.api</groupId>
-      <artifactId>heroku-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.heroku.api</groupId>
-      <artifactId>heroku-json-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.heroku.api</groupId>
-      <artifactId>heroku-http-apache</artifactId>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>

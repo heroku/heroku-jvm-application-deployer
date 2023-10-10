@@ -1,5 +1,6 @@
 package com.heroku.sdk.deploy.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -8,10 +9,7 @@ import com.heroku.sdk.deploy.util.PropertiesUtils;
 import com.heroku.sdk.deploy.util.Util;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.eclipse.jgit.util.Base64;
@@ -42,6 +40,60 @@ public class HerokuDeployApi {
                 System.getProperty("java.vendor")));
 
         this.httpHeaders = httpHeaders;
+    }
+
+    public SourceBlob createSourceBlob() throws IOException, HerokuDeployApiException {
+        CloseableHttpClient client = CustomHttpClientBuilder.build();
+
+        HttpPost request = new HttpPost("https://api.heroku.com/sources");
+        httpHeaders.forEach(request::setHeader);
+
+        CloseableHttpResponse response = client.execute(request);
+
+        switch (response.getStatusLine().getStatusCode()) {
+            case HttpStatus.SC_ACCEPTED:
+            case HttpStatus.SC_CREATED:
+                HttpEntity responseEntity = response.getEntity();
+                String responseStringBody = Util.readLinesFromInputStream(responseEntity.getContent()).collect(Collectors.joining());
+
+                JsonNode node = new ObjectMapper().readTree(responseStringBody);
+                String putUrl = node.get("source_blob").get("put_url").asText();
+                String getUrl = node.get("source_blob").get("get_url").asText();
+
+                return new SourceBlob(putUrl, getUrl);
+
+            default:
+                throw new HerokuDeployApiException(String.format("Unexpected status code: %d!", response.getStatusLine().getStatusCode()));
+        }
+    }
+
+    public void updateAppConfig(String appName, Map<String, String> config) throws IOException, HerokuDeployApiException {
+        // Create API payload
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode root = mapper.createObjectNode();
+
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            root.put(entry.getKey(), entry.getValue());
+        }
+
+        StringEntity apiPayloadEntity = new StringEntity(root.toString());
+        apiPayloadEntity.setContentType("application/json");
+        apiPayloadEntity.setContentEncoding("UTF-8");
+
+        // Send request
+        CloseableHttpClient client = CustomHttpClientBuilder.build();
+
+        HttpPatch request = new HttpPatch("https://api.heroku.com/apps/" + appName + "/config-vars");
+        httpHeaders.forEach(request::setHeader);
+        CloseableHttpResponse response = client.execute(request);
+
+        switch (response.getStatusLine().getStatusCode()) {
+            case HttpStatus.SC_OK:
+                return;
+
+            default:
+                throw new HerokuDeployApiException(String.format("Unexpected status code: %d!", response.getStatusLine().getStatusCode()));
+        }
     }
 
     public BuildInfo createBuild(String appName, URI sourceBlob, String sourceBlobVersion, List<String> buildpacks) throws IOException, HerokuDeployApiException {

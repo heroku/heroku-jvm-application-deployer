@@ -85,6 +85,8 @@ public class HerokuDeployApi {
 
         HttpPatch request = new HttpPatch("https://api.heroku.com/apps/" + appName + "/config-vars");
         httpHeaders.forEach(request::setHeader);
+        request.setEntity(apiPayloadEntity);
+
         CloseableHttpResponse response = client.execute(request);
 
         switch (response.getStatusLine().getStatusCode()) {

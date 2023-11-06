@@ -59,7 +59,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <invoker.skip>true</invoker.skip>
     <maven.version>3.9.4</maven.version>
-    <heroku.jar.version>0.46</heroku.jar.version>
   </properties>
 
   <dependencyManagement>
@@ -99,21 +98,6 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>4.5.14</version>
-      </dependency>
-      <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-api</artifactId>
-        <version>${heroku.jar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-json-jackson</artifactId>
-        <version>${heroku.jar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-http-apache</artifactId>
-        <version>${heroku.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>

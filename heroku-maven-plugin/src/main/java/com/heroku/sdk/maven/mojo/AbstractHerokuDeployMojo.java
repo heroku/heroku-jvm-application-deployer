@@ -1,5 +1,6 @@
 package com.heroku.sdk.maven.mojo;
 
+import com.heroku.sdk.deploy.api.HerokuDeployApiException;
 import com.heroku.sdk.deploy.lib.OutputAdapter;
 import com.heroku.sdk.deploy.lib.deploymemt.Deployer;
 import com.heroku.sdk.deploy.lib.deploymemt.DeploymentDescriptor;

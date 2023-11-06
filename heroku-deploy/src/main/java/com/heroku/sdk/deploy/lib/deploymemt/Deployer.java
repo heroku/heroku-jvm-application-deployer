@@ -26,7 +26,7 @@ public final class Deployer {
         try {
             sourceBlob = herokuDeployApi.createSourceBlob();
         } catch (HerokuDeployApiException e) {
-            outputAdapter.logError("Could create source blob: " + e.getMessage());
+            outputAdapter.logError("Could not create source blob: " + e.getMessage());
             return false;
         }
 

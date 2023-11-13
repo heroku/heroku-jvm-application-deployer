@@ -3,7 +3,7 @@ package com.heroku.sdk.deploy.standalone;
 import com.heroku.sdk.deploy.lib.OutputAdapter;
 
 public class StdOutOutputAdapter implements OutputAdapter {
-    private boolean suppressUploadProgress;
+    private final boolean suppressUploadProgress;
 
     public StdOutOutputAdapter(boolean suppressUploadProgress) {
         this.suppressUploadProgress = suppressUploadProgress;
@@ -11,22 +11,22 @@ public class StdOutOutputAdapter implements OutputAdapter {
 
     @Override
     public void logInfo(String message) {
-        System.out.println("INFO: " + message);
+        System.out.println(message);
     }
 
     @Override
     public void logDebug(String message) {
-        System.out.println("DEBUG: " + message);
+        System.out.println(message);
     }
 
     @Override
     public void logWarn(String message) {
-        System.out.println("WARN: " + message);
+        System.out.println(message);
     }
 
     @Override
     public void logError(String message) {
-        System.out.println("ERROR: " + message);
+        System.out.println(message);
     }
 
     @Override

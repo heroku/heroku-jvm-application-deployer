@@ -48,7 +48,7 @@ public class AppNameResolver {
         return resolveViaHerokuGitRemote(projectDirectory);
     }
 
-    private static Optional<String> resolveViaHerokuGitRemote(Path rootDirectory) throws IOException {
+    public static Optional<String> resolveViaHerokuGitRemote(Path rootDirectory) throws IOException {
         try {
             Git gitRepo = Git.open(rootDirectory.toFile());
             Config config = gitRepo.getRepository().getConfig();

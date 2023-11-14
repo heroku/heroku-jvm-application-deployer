@@ -23,11 +23,11 @@ public final class SourceBlobPackager {
         tarArchiveOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
 
         outputAdapter.logInfo("-----> Packaging application...");
-        for (Path sourceBlobPath : sourceBlobDescriptor.getContents().keySet()) {
+        for (Path sourceBlobPath : sourceBlobDescriptor.getContents().keySet())  {
             SourceBlobDescriptor.SourceBlobContent content = sourceBlobDescriptor.getContents().get(sourceBlobPath);
 
             if (content.isHidden()) {
-                outputAdapter.logDebug("       - including: " + sourceBlobPath + " (hidden)");
+                outputAdapter.logInfo("       - including: " + sourceBlobPath + " (hidden)");
             } else {
                 outputAdapter.logInfo("       - including: " + sourceBlobPath);
             }

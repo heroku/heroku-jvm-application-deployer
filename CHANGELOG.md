@@ -1,5 +1,13 @@
 # Changelog
 
+## main
+
+### heroku-deploy-standalone
+
+* Add proper CLI to configure all aspects of app deployment. Previously used Java properties are no longer supported. See `--help` for usage. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
+* Unify usage between WAR and JAR files. heroku-deploy-standalone will now automatically use the correct mode based on file extension. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
+* Default `webapp-runner` version is now always the most recently released version. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
+
 ## 3.0.5
 
 * Update dependencies. ([#142](https://github.com/heroku/heroku-maven-plugin/pull/142))

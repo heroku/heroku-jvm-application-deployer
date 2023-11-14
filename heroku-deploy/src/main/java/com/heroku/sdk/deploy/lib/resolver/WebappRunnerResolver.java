@@ -1,14 +1,53 @@
 package com.heroku.sdk.deploy.lib.resolver;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.heroku.sdk.deploy.api.HerokuDeployApiException;
+import com.heroku.sdk.deploy.api.SourceBlob;
+import com.heroku.sdk.deploy.util.CustomHttpClientBuilder;
+import com.heroku.sdk.deploy.util.Util;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Resolves group id and download URLs for webapp-runner. At one point its group id changed, creating the need
  * to discern which version uses which group id and download URL.
  */
 public class WebappRunnerResolver {
+
+    public static String getLatestVersion() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
+        CloseableHttpClient client = CustomHttpClientBuilder.build();
+
+        HttpGet request = new HttpGet("https://repo1.maven.org/maven2/com/heroku/webapp-runner/maven-metadata.xml");
+        CloseableHttpResponse response = client.execute(request);
+
+        switch (response.getStatusLine().getStatusCode()) {
+            case HttpStatus.SC_OK:
+                Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(response.getEntity().getContent());
+                XPath xpath = XPathFactory.newInstance().newXPath();
+                return xpath.compile("/metadata/versioning/latest/text()").evaluate(document);
+
+            default:
+                throw new RuntimeException("");
+        }
+    }
 
     public static String getGroupIdForVersion(String version) {
         return isLegacyVersion(version) ? "com.github.jsimone" : "com.heroku";

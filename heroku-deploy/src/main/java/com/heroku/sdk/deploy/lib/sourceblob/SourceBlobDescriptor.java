@@ -15,6 +15,10 @@ public class SourceBlobDescriptor {
         this.contents = contents;
     }
 
+    public boolean containsPath(Path sourceBlobPath) {
+        return contents.keySet().contains(sourceBlobPath);
+    }
+
     public void addLocalPath(Path sourceBlobPath, Path localPath, boolean hidden) {
         contents.put(sourceBlobPath, SourceBlobContent.fromLocalPath(localPath, hidden));
     }

@@ -21,14 +21,36 @@ public class PathUtils {
     }
 
     public static Optional<Path> normalize(Path basePath, Path path) {
-        Path absoluteBasePath = basePath.toAbsolutePath();
+        Path absoluteBasePath = basePath.toAbsolutePath().normalize();
         Path normalizedAbsolutePath = absoluteBasePath.resolve(path).normalize();
+
+        // Resolve to actual paths on disk to ensure normalization works correctly when symlinks are in play.
+        // This issue was uncovered via Rust integration tests where the temporary path for the app fixture was
+        // placed in a path that contained a symlink. See: https://github.com/rust-lang/rust/issues/99608
+        // Do not remove this when the Rust issue has been fixed - it's just an example failure.
+        try {
+            if (Files.exists(absoluteBasePath)) {
+                absoluteBasePath = absoluteBasePath.toRealPath();
+            }
+
+            if (Files.exists(normalizedAbsolutePath)) {
+                normalizedAbsolutePath = normalizedAbsolutePath.toRealPath();
+            }
+        } catch (IOException e) {
+            return Optional.empty();
+        }
 
         if (normalizedAbsolutePath.startsWith(absoluteBasePath)) {
             return Optional.of(absoluteBasePath.relativize(normalizedAbsolutePath));
         }
 
         return Optional.empty();
+    }
+
+    public static Optional<String> getFileExtension(Path path) {
+        return Optional.ofNullable(path.getFileName())
+                .map(Path::toString).filter(fileName -> fileName.contains("."))
+                .map(fileName -> fileName.substring(fileName.lastIndexOf('.') + 1));
     }
 
     public static boolean isValidPath(Path basePath, Path path) {

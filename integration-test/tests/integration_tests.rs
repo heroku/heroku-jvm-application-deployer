@@ -4,6 +4,8 @@ use std::process::Command;
 #[test]
 fn basic_war_app() {
     prepare_test("war-app", |context| {
+        println!(">> {:?}", heroku_deploy_standalone_path());
+
         run_command(
             Command::new("java")
                 .args([

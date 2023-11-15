@@ -70,7 +70,7 @@ pub fn http_get_expect_200(url: &str) -> String {
 #[must_use]
 pub fn create_heroku_app(path: &Path) -> HerokuAppCreateResult {
     let output = run_command(
-        Command::new("heroku")
+        Command::new(HEROKU_CLI_COMMAND)
             .args(["create", "--json"])
             .current_dir(path),
         &format!("Could not create Heroku app in {path:?}"),
@@ -88,7 +88,7 @@ pub struct HerokuAppCreateResult {
 
 pub fn destroy_heroku_app(app_name: &str) {
     run_command(
-        Command::new("heroku").args(["destroy", app_name, "--confirm", app_name]),
+        Command::new(HEROKU_CLI_COMMAND).args(["destroy", app_name, "--confirm", app_name]),
         &format!("Could not destroy Heroku app {app_name}"),
         true,
     );
@@ -179,3 +179,9 @@ where
         }
     }
 }
+
+#[cfg(target_family = "unix")]
+const HEROKU_CLI_COMMAND: &str = "heroku";
+
+#[cfg(target_family = "windows")]
+const HEROKU_CLI_COMMAND: &str = "heroku.cmd";

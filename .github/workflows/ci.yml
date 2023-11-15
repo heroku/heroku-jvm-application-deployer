@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   integration-linux:
-    name: "Integration Tests"
+    name: "Integration Tests (Linux)"
     runs-on: ubuntu-22.04
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -40,6 +40,47 @@ jobs:
         run: "./mvnw --batch-mode package"
       - name: Run integration tests
         working-directory: "integration-test"
+        run: "cargo test"
+
+  integration-windows:
+    name: "Integration Tests (Windows)"
+    runs-on: windows-latest
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_API_USER: ${{ secrets.HEROKU_API_USER }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: "21"
+      - name: Setup Git
+        run: |
+          git config --global user.email "example@example.com"
+          git config --global user.name "Example"
+      - name: Update Rust toolchain
+        run: rustup update
+      - name: Install Heroku CLI
+        run: |
+          curl -O https://cli-assets.heroku.com/channels/stable/heroku-win32-x64.tar.gz
+          tar -xzf heroku-win32-x64.tar.gz
+          echo "${{ github.workspace }}/heroku/bin/" | Out-File -FilePath $env:GITHUB_PATH -Append
+      - name: Package heroku-deploy-standalone
+        run: "./mvnw --batch-mode package"
+      - run: |
+          7z x D:\a\heroku-maven-plugin\heroku-maven-plugin\heroku-deploy-standalone\target\heroku-deploy-standalone.jar
+          cd D:\a\heroku-maven-plugin\heroku-maven-plugin\heroku-deploy-standalone\target
+          tree /f /a
+      - name: Package integration test fixtures
+        working-directory: "integration-test/fixtures/war-app"
+        run: "./mvnw --batch-mode package"
+      - name: Package integration test fixtures
+        working-directory: "integration-test/fixtures/jar-app"
+        run: "./mvnw --batch-mode package"
+      - name: Run integration tests
+        working-directory: "integration-test"
+        env:
+          RUST_BACKTRACE: 1
         run: "cargo test"
 
   maven:

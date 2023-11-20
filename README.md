@@ -5,6 +5,14 @@ Command line tool to deploy JVM applications directly to Heroku without pushing 
 
 It will automatically include and configure a Tomcat server via [webapp-runner](https://github.com/heroku/webapp-runner) if a WAR file is deployed.
 
+> [!IMPORTANT]
+> This repository previously contained Heroku's Maven Plugin for deploying JVM applications. This plugin will be sunset
+> soon. Customers currently using the Maven Plugin can then use the new Heroku JVM application deployer CLI to deploy
+> JAR and WAR files to Heroku without using Git.
+>
+> The code of the last Heroku Maven plugin release can be found here:
+> https://github.com/heroku/heroku-maven-plugin/tree/3.0.7
+
 ## Table of Contents
 * [Installation](#installation)
 * [Usage](#usage)

@@ -50,9 +50,8 @@ impl Drop for TestContext {
 pub fn heroku_deploy_standalone_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("..")
-        .join("heroku-deploy-standalone")
         .join("target")
-        .join("heroku-deploy-standalone.jar")
+        .join("heroku-jvm-application-deployer.jar")
         .canonicalize()
         .unwrap()
 }

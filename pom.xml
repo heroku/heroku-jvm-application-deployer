@@ -152,7 +152,7 @@
           <appendAssemblyId>false</appendAssemblyId>
           <archive>
             <manifest>
-              <mainClass>com.heroku.sdk.deploy.standalone.Main</mainClass>
+              <mainClass>com.heroku.deployer.Main</mainClass>
             </manifest>
           </archive>
         </configuration>

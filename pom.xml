@@ -2,19 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.heroku.sdk</groupId>
-  <artifactId>heroku-sdk-parent</artifactId>
-  <version>3.0.7-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <groupId>com.heroku</groupId>
+  <artifactId>heroku-jvm-application-deployer</artifactId>
+  <version>4.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>heroku-deploy</module>
-    <module>heroku-deploy-standalone</module>
-    <module>heroku-maven-plugin</module>
-  </modules>
-
-  <name>Heroku SDK Parent</name>
-  <description>Parent project for Heroku SDK tools and libraries.</description>
+  <name>Heroku JVM Application Deployer</name>
+  <description>Allows deployment of JAR or WAR files to Heroku without using Git and Heroku's build process.</description>
   <url>https://github.com/heroku/heroku-maven-plugin</url>
 
   <scm>
@@ -46,68 +40,66 @@
       <email>manuel.fuchs@heroku.com</email>
       <timezone>CET</timezone>
     </developer>
-    <developer>
-      <id>jkutner</id>
-      <name>Joe Kutner</name>
-      <email>joe@heroku.com</email>
-      <timezone>CST</timezone>
-    </developer>
   </developers>
 
   <properties>
-    <heroku-deploy.version>${project.version}</heroku-deploy.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <invoker.skip>true</invoker.skip>
-    <maven.version>3.9.4</maven.version>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>2.15.3</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>2.15.2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>1.24.0</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>2.15.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-text</artifactId>
-        <version>1.11.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit</artifactId>
-        <!-- Starting with jgit 6.*, Java 11 is the minimum required version. Since we still support Java 8, we stick to jgit 5.*. -->
-        <version>5.13.2.202306221912-r</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>4.5.14</version>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.2</version>
-        <scope>test</scope>
-      </dependency>
-
-    </dependencies>
-  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>2.0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>4.7.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.15.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.15.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.24.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.15.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>1.11.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit</artifactId>
+      <!-- Starting with jgit 6.*, Java 11 is the minimum required version. Since we still support Java 8, we stick to jgit 5.*. -->
+      <version>5.13.2.202306221912-r</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.14</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -147,6 +139,30 @@
               <source>1.8</source>
               <doclint>none</doclint>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <appendAssemblyId>false</appendAssemblyId>
+          <archive>
+            <manifest>
+              <mainClass>com.heroku.sdk.deploy.standalone.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>build-jar-with-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

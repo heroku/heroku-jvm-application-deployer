@@ -20,7 +20,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "heroku-deploy-standalone", mixinStandardHelpOptions = true,
+@Command(name = "heroku-jvm-application-deployer", mixinStandardHelpOptions = true,
         description = "Application for deploying Java applications to Heroku.",
         defaultValueProvider = DefaultValueProvider.class)
 public class Main implements Callable<Integer> {
@@ -50,7 +50,7 @@ public class Main implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        System.out.println("Heroku Deploy (standalone)");
+        System.out.println("Heroku JVM Application Deployer");
         System.out.println();
 
         if (!appName.isPresent()) {
@@ -165,12 +165,12 @@ public class Main implements Callable<Integer> {
 
 
         String version = PropertiesUtils
-                .loadPomPropertiesOrEmptyFromClasspath(Main.class, "com.heroku.sdk", "heroku-deploy-standalone")
+                .loadPomPropertiesOrEmptyFromClasspath(Main.class, "com.heroku", "heroku-jvm-application-deployer")
                 .getProperty("version", "unknown");
 
         boolean deploySuccessful = Deployer.deploy(
                 apiKey.get(),
-                "heroku-deploy-standalone",
+                "heroku-jvm-application-deployer",
                 version,
                 deploymentDescriptor,
                 OUTPUT_ADAPTER);

@@ -8,7 +8,7 @@ fn basic_war_app() {
             Command::new("java")
                 .args([
                     "-jar",
-                    &heroku_deploy_standalone_path().to_string_lossy(),
+                    &heroku_jvm_application_deployer_jar_path().to_string_lossy(),
                     &context
                         .app_dir
                         .join("target/test-1.0-SNAPSHOT.war")
@@ -17,7 +17,7 @@ fn basic_war_app() {
                     "21",
                 ])
                 .current_dir(&context.app_dir),
-            "Running heroku-deploy-standalone failed.",
+            "Running heroku-jvm-application-deployer failed.",
             false,
         );
 
@@ -33,7 +33,7 @@ fn basic_jar_app() {
             Command::new("java")
                 .args([
                     "-jar",
-                    &heroku_deploy_standalone_path().to_string_lossy(),
+                    &heroku_jvm_application_deployer_jar_path().to_string_lossy(),
                     &context
                         .app_dir
                         .join("target/test-1.0-SNAPSHOT-jar-with-dependencies.jar")
@@ -42,7 +42,7 @@ fn basic_jar_app() {
                     "21",
                 ])
                 .current_dir(&context.app_dir),
-            "Running heroku-deploy-standalone failed.",
+            "Running heroku-jvm-application-deployer failed.",
             false,
         );
 

@@ -1,1 +1,0 @@
-web: java $JAVA_OPTS -Dmy.var=foobar -cp target/classes:target/dependency/* Main

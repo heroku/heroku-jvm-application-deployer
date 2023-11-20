@@ -47,7 +47,7 @@ impl Drop for TestContext {
 }
 
 #[must_use]
-pub fn heroku_deploy_standalone_path() -> PathBuf {
+pub fn heroku_jvm_application_deployer_jar_path() -> PathBuf {
     let maven_target_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("..")
         .join("target");

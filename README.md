@@ -1,4 +1,4 @@
-# Heroku JVM Application Deployer &emsp; ![License](https://img.shields.io/github/license/heroku/heroku-maven-plugin) ![Maven Central](https://img.shields.io/maven-central/v/com.heroku.sdk/heroku-sdk-parent) [![CI](https://github.com/heroku/heroku-maven-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku-maven-plugin/actions/workflows/ci.yml)
+# Heroku JVM Application Deployer &emsp; ![License](https://img.shields.io/github/license/heroku/heroku-maven-plugin) ![Maven Central](https://img.shields.io/maven-central/v/com.heroku/heroku-jvm-application-deployer) [![CI](https://github.com/heroku/heroku-maven-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku-maven-plugin/actions/workflows/ci.yml)
 
 Command line tool to deploy JVM applications directly to Heroku without pushing to a Git repository. It uses 
 [Heroku's Platform API](https://devcenter.heroku.com/articles/platform-api-quickstart). This can be useful when deploying from a CI server, deploying pre-built JAR or WAR files.
@@ -22,21 +22,22 @@ It will automatically include and configure a Tomcat server via [webapp-runner](
 
 ## Installation
 
-Download the latest release from [Maven Central](https://repo1.maven.org/maven2/com/heroku/sdk/heroku-deploy-standalone/).
+Download the latest release from [Maven Central](https://repo1.maven.org/maven2/com/heroku/heroku-jvm-application-deployer/).
 The JAR file contains all required dependencies.
 
 ## Usage
 
 ```shell
-java -jar heroku-deploy-standalone-0.0.0.jar --help
+java -jar heroku-jvm-application-deployer.jar --help
 ```
 
 ```
-Usage: heroku-deploy-standalone [-hV] [--disable-auto-includes] [-a=<appName>]
-                                [-j=<jdkString>] [--jar-opts=<jarFileOpts>]
-                                [--webapp-runner-version=<webappRunnerVersion>]
-                                [-b[=<buildpacks>...]]... [-i
-                                [=<includedPaths>...]]... <mainFile>
+Usage: heroku-jvm-application-deployer [-hV] [--disable-auto-includes]
+                                       [-a=<appName>] [-j=<jdkString>]
+                                       [--jar-opts=<jarFileOpts>]
+                                       [--webapp-runner-version=<webappRunnerVer
+                                       sion>] [-b[=<buildpacks>...]]... [-i
+                                       [=<includedPaths>...]]... <mainFile>
 Application for deploying Java applications to Heroku.
       <mainFile>          The JAR or WAR file to deploy.
   -a, --app=<appName>     The name of the Heroku app to deploy to.
@@ -53,7 +54,7 @@ Application for deploying Java applications to Heroku.
   -V, --version           Print version information and exit.
       --webapp-runner-version=<webappRunnerVersion>
                           The version of webapp-runner to use. Defaults to the
-                            most recent version (9.0.80.0).
+                            most recent version (9.0.83.0).
 ```
 
 

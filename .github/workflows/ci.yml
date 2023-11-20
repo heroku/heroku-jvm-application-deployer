@@ -30,7 +30,7 @@ jobs:
         run: rustup update
       - name: Install Heroku CLI
         run: curl https://cli-assets.heroku.com/install.sh | sh
-      - name: Package heroku-deploy-standalone
+      - name: Package heroku-jvm-application-deployer
         run: "./mvnw --batch-mode package"
       - name: Package integration test fixtures
         working-directory: "integration-test/fixtures/war-app"

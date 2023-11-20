@@ -48,12 +48,20 @@ impl Drop for TestContext {
 
 #[must_use]
 pub fn heroku_deploy_standalone_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+    let maven_target_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("..")
-        .join("target")
-        .join("heroku-jvm-application-deployer.jar")
-        .canonicalize()
-        .unwrap()
+        .join("target");
+
+    for dir_entry in std::fs::read_dir(maven_target_dir).unwrap() {
+        let dir_entry = dir_entry.unwrap();
+        let file_name = dir_entry.file_name().to_string_lossy().into_owned();
+
+        if file_name.starts_with("heroku-jvm-application-deployer") && file_name.ends_with(".jar") {
+            return dir_entry.path();
+        }
+    }
+
+    panic!("Could not find heroku-jvm-application-deployer JAR file!");
 }
 
 #[must_use]

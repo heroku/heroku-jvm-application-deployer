@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.0-RC1] - 2023-11-21
+
 * Add proper CLI to configure all aspects of app deployment. Previously used Java properties are no longer supported. See `--help` for usage. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
 * Unify usage between WAR and JAR files. heroku-jvm-application-deployer will now automatically use the correct mode based on file extension. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
 * Default `webapp-runner` version is now always the most recently released version. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
@@ -183,7 +186,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.7...HEAD
+[unreleased]: https://github.com/heroku/heroku-maven-plugin/compare/v4.0.0-RC1...HEAD
+[4.0.0-RC1]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.7...v4.0.0-RC1
 [3.0.7]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.5...v3.0.6
 [3.0.5]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.4...v3.0.5

@@ -22,8 +22,7 @@ It will automatically include and configure a Tomcat server via [webapp-runner](
 
 ## Installation
 
-Download the latest release from [Maven Central](https://repo1.maven.org/maven2/com/heroku/heroku-jvm-application-deployer/).
-The JAR file contains all required dependencies.
+Download the JAR file from the [latest release on GitHub](https://github.com/heroku/heroku-maven-plugin/releases/latest). Older releases can be downloaded from the [GitHub releases](https://github.com/heroku/heroku-maven-plugin/releases) list.
 
 ## Usage
 

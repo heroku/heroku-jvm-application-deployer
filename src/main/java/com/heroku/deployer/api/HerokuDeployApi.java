@@ -126,6 +126,8 @@ public class HerokuDeployApi {
         CloseableHttpClient client = CustomHttpClientBuilder.build();
 
         HttpPost request = new HttpPost("https://api.heroku.com/apps/" + appName + "/builds");
+        request.setHeader("Heroku-Deploy-Type", "jvm-application-deployer");
+
         httpHeaders.forEach(request::setHeader);
         request.setEntity(apiPayloadEntity);
 

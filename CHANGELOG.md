@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Use correct `Heroku-Deploy-Type` header when deploying. ([#247](https://github.com/heroku/heroku-maven-plugin/pull/247))
 
 ## [4.0.0-RC2] - 2023-11-27
 

@@ -23,28 +23,28 @@ import picocli.CommandLine.Parameters;
         description = "Application for deploying Java applications to Heroku.",
         defaultValueProvider = DefaultValueProvider.class)
 public class Main implements Callable<Integer> {
-    @Parameters(index = "0", description = "The JAR or WAR file to deploy.")
+    @Parameters(index = "0", paramLabel = "file", description = "The JAR or WAR file to deploy.")
     private Path mainFile;
 
-    @Option(names = {"-a", "--app"}, description = "The name of the Heroku app to deploy to.")
+    @Option(names = {"-a", "--app"}, paramLabel = "name", description = "The name of the Heroku app to deploy to. Defaults to app name from git remote.")
     private Optional<String> appName = Optional.empty();
 
-    @Option(names = {"-b", "--buildpack"}, arity = "*", defaultValue = "heroku/jvm", description = "")
+    @Option(names = {"-b", "--buildpack"}, arity = "*", paramLabel = "buildpack", defaultValue = "heroku/jvm", description = "Defaults to ${DEFAULT-VALUE}.")
     private List<String> buildpacks = new ArrayList<>();
 
-    @Option(names = {"--webapp-runner-version"}, description = "The version of webapp-runner to use. Defaults to the most recent version (${DEFAULT-VALUE}).")
+    @Option(names = {"--webapp-runner-version"}, paramLabel = "version", description = "The version of webapp-runner to use. Defaults to the most recent version (${DEFAULT-VALUE}).")
     private String webappRunnerVersion;
 
-    @Option(names = {"--jar-opts"}, description = "")
+    @Option(names = {"--jar-opts"}, paramLabel = "options", description = "Add command line options for when the JAR is run.")
     private Optional<String> jarFileOpts = Optional.empty();
 
-    @Option(names = {"-j", "--jdk"}, description = "")
+    @Option(names = {"-j", "--jdk"}, paramLabel = "string", description = "Set the Heroku JDK selection string for the app (i.e. 17, 21.0.1).")
     private Optional<String> jdkString = Optional.empty();
 
-    @Option(names = {"--disable-auto-includes"}, description = "", defaultValue = "false")
+    @Option(names = {"-d", "--disable-auto-includes"}, description = "Disable automatic inclusion of certain files.", defaultValue = "false")
     private boolean disableAutoIncludes = false;
 
-    @Option(names = {"-i", "--include"}, arity = "*", description = "Additional files or directories to include.")
+    @Option(names = {"-i", "--include"}, arity = "*", paramLabel = "path", description = "Additional files or directories to include.")
     private List<Path> includedPaths = new ArrayList<>();
 
     @Override

@@ -7,10 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+This project used to contain both a Maven Plugin and a CLI tool for deploying Java applications to Heroku without using Git.
+
+Starting with this version, it no longer contains the Maven Plugin. Users are expected to migrate to the improved command line tool (formerly known as `heroku-deploy-standalone`). Previously, the Maven plugin and CLI supported different features and were maintained at different levels. This release unifies everything into a new CLI. This allows customers to use the same tool for a variety of JVM languages, independent of their build tool of choice.
+
+See the [README](README.md) for a brief overview or refer to the `--help` output of the CLI for usage info.
+
+Historic changelog entries are preserved below for completeness. But be aware that this release substantially changed the
+nature of this project.
+
+### Changed
+
 * Use correct `Heroku-Deploy-Type` header when deploying. ([#247](https://github.com/heroku/heroku-maven-plugin/pull/247))
-
-## [4.0.0-RC2] - 2023-11-27
-
 * Update release process to add the JAR file to GitHub releases. ([#240](https://github.com/heroku/heroku-maven-plugin/pull/240))
 * Add proper CLI to configure all aspects of app deployment. Previously used Java properties are no longer supported. See `--help` for usage. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
 * Unify usage between WAR and JAR files. heroku-jvm-application-deployer will now automatically use the correct mode based on file extension. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
@@ -188,9 +196,7 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-maven-plugin/compare/v4.0.0-RC2...HEAD
-[4.0.0-RC2]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.7...v4.0.0-RC2
-[4.0.0-RC1]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.7...v4.0.0-RC1
+[unreleased]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.7...HEAD
 [3.0.7]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.5...v3.0.6
 [3.0.5]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.4...v3.0.5

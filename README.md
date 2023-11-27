@@ -31,31 +31,29 @@ java -jar heroku-jvm-application-deployer.jar --help
 ```
 
 ```
-Usage: heroku-jvm-application-deployer [-hV] [--disable-auto-includes]
-                                       [-a=<appName>] [-j=<jdkString>]
-                                       [--jar-opts=<jarFileOpts>]
-                                       [--webapp-runner-version=<webappRunnerVer
-                                       sion>] [-b[=<buildpacks>...]]... [-i
-                                       [=<includedPaths>...]]... <mainFile>
+Usage: heroku-jvm-application-deployer [-dhV] [-a=name] [-j=string]
+                                       [--jar-opts=options]
+                                       [--webapp-runner-version=version] [-b
+                                       [=buildpack...]]... [-i[=path...]]...
+                                       file
 Application for deploying Java applications to Heroku.
-      <mainFile>          The JAR or WAR file to deploy.
-  -a, --app=<appName>     The name of the Heroku app to deploy to.
-  -b, --buildpack[=<buildpacks>...]
-
-      --disable-auto-includes
-
-  -h, --help              Show this help message and exit.
-  -i, --include[=<includedPaths>...]
-                          Additional files or directories to include.
-  -j, --jdk=<jdkString>
-      --jar-opts=<jarFileOpts>
-
-  -V, --version           Print version information and exit.
-      --webapp-runner-version=<webappRunnerVersion>
-                          The version of webapp-runner to use. Defaults to the
-                            most recent version (9.0.83.0).
+      file                  The JAR or WAR file to deploy.
+  -a, --app=name            The name of the Heroku app to deploy to. Defaults
+                              to app name from git remote.
+  -b, --buildpack[=buildpack...]
+                            Defaults to heroku/jvm.
+  -d, --disable-auto-includes
+                            Disable automatic inclusion of certain files.
+  -h, --help                Show this help message and exit.
+  -i, --include[=path...]   Additional files or directories to include.
+  -j, --jdk=string          Set the Heroku JDK selection string for the app (i.
+                              e. 17, 21.0.1).
+      --jar-opts=options    Add command line options for when the JAR is run.
+  -V, --version             Print version information and exit.
+      --webapp-runner-version=version
+                            The version of webapp-runner to use. Defaults to
+                              the most recent version (9.0.83.0).
 ```
-
 
 ## Requirements
 

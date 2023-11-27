@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.0] - 2023-11-27
+
 This project used to contain both a Maven Plugin and a CLI tool for deploying Java applications to Heroku without using Git.
 
 Starting with this version, it no longer contains the Maven Plugin. Users are expected to migrate to the improved command line tool (formerly known as `heroku-deploy-standalone`). Previously, the Maven plugin and CLI supported different features and were maintained at different levels. This release unifies everything into a new CLI. This allows customers to use the same tool for a variety of JVM languages, independent of their build tool of choice.
@@ -196,7 +199,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.7...HEAD
+[unreleased]: https://github.com/heroku/heroku-maven-plugin/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.7...v4.0.0
 [3.0.7]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.5...v3.0.6
 [3.0.5]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.4...v3.0.5

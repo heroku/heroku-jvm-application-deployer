@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+* Specifying a main JAR or WAR file is no longer required. This allows easy deployment in cases where application startup is managed by a shell script, such as when using [`sbt-native-packager`](https://github.com/sbt/sbt-native-packager). ([#258](https://github.com/heroku/heroku-jvm-application-deployer/pull/258))
 
 ## [4.0.0] - 2023-11-27
 

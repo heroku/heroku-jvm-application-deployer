@@ -77,6 +77,8 @@ public class Main implements Callable<Integer> {
                 Path webappRunnerPath = FileDownloader.download(WebappRunnerResolver.getUrlForVersion(webappRunnerVersion));
                 sourceBlobDescriptor.addLocalPath(WEBAPP_RUNNER_SOURCE_BLOB_PATH, webappRunnerPath, false);
             }
+        } else {
+            System.out.printf("-----> No main JAR/WAR file specified, skipping Procfile generation and webapp-runner...\n", webappRunnerVersion);
         }
 
         if (!disableAutoIncludes) {

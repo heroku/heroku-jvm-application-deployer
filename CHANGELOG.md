@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.1] - 2023-12-05
+
 ### Changed
 
 * Specifying a main JAR or WAR file is no longer required. This allows easy deployment in cases where application startup is managed by a shell script, such as when using [`sbt-native-packager`](https://github.com/sbt/sbt-native-packager). ([#258](https://github.com/heroku/heroku-jvm-application-deployer/pull/258))
@@ -206,7 +209,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.0...HEAD
+[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.1...HEAD
+[4.0.1]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.7...v4.0.0
 [3.0.7]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.5...v3.0.6

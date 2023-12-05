@@ -24,11 +24,11 @@ nature of this project.
 
 ### Changed
 
-* Use correct `Heroku-Deploy-Type` header when deploying. ([#247](https://github.com/heroku/heroku-maven-plugin/pull/247))
-* Update release process to add the JAR file to GitHub releases. ([#240](https://github.com/heroku/heroku-maven-plugin/pull/240))
-* Add proper CLI to configure all aspects of app deployment. Previously used Java properties are no longer supported. See `--help` for usage. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
-* Unify usage between WAR and JAR files. heroku-jvm-application-deployer will now automatically use the correct mode based on file extension. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
-* Default `webapp-runner` version is now always the most recently released version. ([#232](https://github.com/heroku/heroku-maven-plugin/pull/232))
+* Use correct `Heroku-Deploy-Type` header when deploying. ([#247](https://github.com/heroku/heroku-jvm-application-deployer/pull/247))
+* Update release process to add the JAR file to GitHub releases. ([#240](https://github.com/heroku/heroku-jvm-application-deployer/pull/240))
+* Add proper CLI to configure all aspects of app deployment. Previously used Java properties are no longer supported. See `--help` for usage. ([#232](https://github.com/heroku/heroku-jvm-application-deployer/pull/232))
+* Unify usage between WAR and JAR files. heroku-jvm-application-deployer will now automatically use the correct mode based on file extension. ([#232](https://github.com/heroku/heroku-jvm-application-deployer/pull/232))
+* Default `webapp-runner` version is now always the most recently released version. ([#232](https://github.com/heroku/heroku-jvm-application-deployer/pull/232))
 
 ## [3.0.7] - 2023-02-06
 
@@ -46,31 +46,31 @@ nature of this project.
 
 ### Changed
 
-* Update dependencies. ([#142](https://github.com/heroku/heroku-maven-plugin/pull/142))
+* Update dependencies. ([#142](https://github.com/heroku/heroku-jvm-application-deployer/pull/142))
 
 ## [3.0.4] - 2020-08-11
 
 ### Fixed
 
-* Fix `heroku:deploy-war` goal. ([#77](https://github.com/heroku/heroku-maven-plugin/pull/77))
+* Fix `heroku:deploy-war` goal. ([#77](https://github.com/heroku/heroku-jvm-application-deployer/pull/77))
 
 ## [3.0.3] - 2020-07-09
 
 ### Fixed
 
-* Add TLS workaround for OpenJDK 11.0.2. ([#72](https://github.com/heroku/heroku-maven-plugin/pull/72))
+* Add TLS workaround for OpenJDK 11.0.2. ([#72](https://github.com/heroku/heroku-jvm-application-deployer/pull/72))
 
 ## [3.0.2] - 2020-03-30
 
 ### Fixed
 
-* Fix Microsoft Windows support. ([#62](https://github.com/heroku/heroku-maven-plugin/pull/62))
+* Fix Microsoft Windows support. ([#62](https://github.com/heroku/heroku-jvm-application-deployer/pull/62))
 
 ## [3.0.1] - 2020-03-11
 
 ### Fixed
 
-* Fix missing javadoc. ([#59](https://github.com/heroku/heroku-maven-plugin/pull/59))
+* Fix missing javadoc. ([#59](https://github.com/heroku/heroku-jvm-application-deployer/pull/59))
 
 ## [3.0.0] - 2020-03-11
 
@@ -202,29 +202,29 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-maven-plugin/compare/v4.0.0...HEAD
-[4.0.0]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.7...v4.0.0
-[3.0.7]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.6...v3.0.7
-[3.0.6]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.5...v3.0.6
-[3.0.5]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.4...v3.0.5
-[3.0.4]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.3...v3.0.4
-[3.0.3]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.2...v3.0.3
-[3.0.2]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.1...v3.0.2
-[3.0.1]: https://github.com/heroku/heroku-maven-plugin/compare/v3.0.0...v3.0.1
-[3.0.0]: https://github.com/heroku/heroku-maven-plugin/compare/v2.0.16...v3.0.0
-[2.0.16]: https://github.com/heroku/heroku-maven-plugin/compare/v2.0.6...v2.0.16
-[2.0.6]: https://github.com/heroku/heroku-maven-plugin/compare/v0.6.0...v2.0.6
-[0.5.0]: https://github.com/heroku/heroku-maven-plugin/compare/v0.4.4...v0.5.0
-[0.4.4]: https://github.com/heroku/heroku-maven-plugin/compare/v0.4.3...v0.4.4
-[0.4.3]: https://github.com/heroku/heroku-maven-plugin/compare/v0.4.2...v0.4.3
-[0.4.2]: https://github.com/heroku/heroku-maven-plugin/compare/v0.4.1...v0.4.2
-[0.4.1]: https://github.com/heroku/heroku-maven-plugin/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/heroku/heroku-maven-plugin/compare/v0.3.6...v0.4.0
-[0.3.6]: https://github.com/heroku/heroku-maven-plugin/compare/v0.3.5...v0.3.6
-[0.3.5]: https://github.com/heroku/heroku-maven-plugin/compare/v0.3.3...v0.3.5
-[0.3.4]: https://github.com/heroku/heroku-maven-plugin/compare/v0.3.2...v0.3.4
-[0.3.3]: https://github.com/heroku/heroku-maven-plugin/compare/v0.3.2...v0.3.3
-[0.3.2]: https://github.com/heroku/heroku-maven-plugin/compare/v0.3.1...v0.3.2
-[0.3.1]: https://github.com/heroku/heroku-maven-plugin/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/heroku/heroku-maven-plugin/compare/v0.1.9...v0.3.0
-[0.1.9]: https://github.com/heroku/heroku-maven-plugin/compare/v0.1.8...v0.1.9
+[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.7...v4.0.0
+[3.0.7]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.6...v3.0.7
+[3.0.6]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.5...v3.0.6
+[3.0.5]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.4...v3.0.5
+[3.0.4]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.3...v3.0.4
+[3.0.3]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.2...v3.0.3
+[3.0.2]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.1...v3.0.2
+[3.0.1]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v2.0.16...v3.0.0
+[2.0.16]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v2.0.6...v2.0.16
+[2.0.6]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.6.0...v2.0.6
+[0.5.0]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.4.4...v0.5.0
+[0.4.4]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.4.3...v0.4.4
+[0.4.3]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.4.2...v0.4.3
+[0.4.2]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.4.1...v0.4.2
+[0.4.1]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.3.6...v0.4.0
+[0.3.6]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.3.5...v0.3.6
+[0.3.5]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.3.3...v0.3.5
+[0.3.4]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.3.2...v0.3.4
+[0.3.3]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.1.9...v0.3.0
+[0.1.9]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v0.1.8...v0.1.9

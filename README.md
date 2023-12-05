@@ -1,4 +1,4 @@
-# Heroku JVM Application Deployer &emsp; ![License](https://img.shields.io/github/license/heroku/heroku-maven-plugin) ![Maven Central](https://img.shields.io/maven-central/v/com.heroku/heroku-jvm-application-deployer) [![CI](https://github.com/heroku/heroku-maven-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku-maven-plugin/actions/workflows/ci.yml)
+# Heroku JVM Application Deployer &emsp; ![License](https://img.shields.io/github/license/heroku/heroku-jvm-application-deployer) ![Maven Central](https://img.shields.io/maven-central/v/com.heroku/heroku-jvm-application-deployer) [![CI](https://github.com/heroku/heroku-jvm-application-deployer/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku-jvm-application-deployer/actions/workflows/ci.yml)
 
 Command line tool to deploy JVM applications directly to Heroku without pushing to a Git repository. It uses 
 [Heroku's Platform API](https://devcenter.heroku.com/articles/platform-api-quickstart). This can be useful when deploying from a CI server, deploying pre-built JAR or WAR files.
@@ -11,7 +11,7 @@ It will automatically include and configure a Tomcat server via [webapp-runner](
 > JAR and WAR files to Heroku without using Git.
 >
 > The code of the last Heroku Maven plugin release can be found here:
-> https://github.com/heroku/heroku-maven-plugin/tree/3.0.7
+> https://github.com/heroku/heroku-jvm-application-deployer/tree/3.0.7
 
 ## Table of Contents
 * [Installation](#installation)
@@ -22,7 +22,7 @@ It will automatically include and configure a Tomcat server via [webapp-runner](
 
 ## Installation
 
-Download the JAR file from the [latest release on GitHub](https://github.com/heroku/heroku-maven-plugin/releases/latest). Older releases can be downloaded from the [GitHub releases](https://github.com/heroku/heroku-maven-plugin/releases) list.
+Download the JAR file from the [latest release on GitHub](https://github.com/heroku/heroku-jvm-application-deployer/releases/latest). Older releases can be downloaded from the [GitHub releases](https://github.com/heroku/heroku-jvm-application-deployer/releases) list.
 
 ## Usage
 
@@ -67,5 +67,5 @@ This plugin uses Heroku's Platform API and thus requires an API key to function.
 pick up your API key. Alternatively, you can use the `HEROKU_API_KEY` environment variable to set your API key:
 
 ```shell
-$ HEROKU_API_KEY="xxx-xxx-xxxx" java -jar heroku-deploy-standalone-0.0.0.jar ...
+$ HEROKU_API_KEY="xxx-xxx-xxxx" java -jar heroku-jvm-application-deployer.jar ...
 ```

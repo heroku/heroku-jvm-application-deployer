@@ -9,12 +9,12 @@
 
   <name>Heroku JVM Application Deployer</name>
   <description>Allows deployment of JAR or WAR files to Heroku without using Git and Heroku's build process.</description>
-  <url>https://github.com/heroku/heroku-maven-plugin</url>
+  <url>https://github.com/heroku/heroku-jvm-application-deployer</url>
 
   <scm>
-    <connection>scm:git:git://github.com/heroku/heroku-maven-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/heroku/heroku-maven-plugin.git</developerConnection>
-    <url>https://github.com/heroku/heroku-maven-plugin</url>
+    <connection>scm:git:git://github.com/heroku/heroku-jvm-application-deployer.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/heroku/heroku-jvm-application-deployer.git</developerConnection>
+    <url>https://github.com/heroku/heroku-jvm-application-deployer</url>
     <tag>HEAD</tag>
   </scm>
 

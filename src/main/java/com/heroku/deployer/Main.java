@@ -23,8 +23,8 @@ import picocli.CommandLine.Parameters;
         description = "Application for deploying Java applications to Heroku.",
         defaultValueProvider = DefaultValueProvider.class)
 public class Main implements Callable<Integer> {
-    @Parameters(index = "0", paramLabel = "file", description = "The JAR or WAR file to deploy.")
-    private Path mainFile;
+    @Parameters(index = "0", arity = "0..1", paramLabel = "file", description = "The JAR or WAR file to deploy.")
+    private Optional<Path> mainFile = Optional.empty();
 
     @Option(names = {"-a", "--app"}, paramLabel = "name", description = "The name of the Heroku app to deploy to. Defaults to app name from git remote.")
     private Optional<String> appName = Optional.empty();
@@ -67,13 +67,18 @@ public class Main implements Callable<Integer> {
         }
 
         SourceBlobDescriptor sourceBlobDescriptor = new SourceBlobDescriptor();
-        includedPaths.add(projectDirectory.resolve(mainFile).normalize());
 
-        Optional<String> mainFileExtension = PathUtils.getFileExtension(mainFile);
-        if (mainFileExtension.isPresent() && mainFileExtension.get().equalsIgnoreCase("war")) {
-            System.out.printf("-----> Downloading webapp-runner %s...\n", webappRunnerVersion);
-            Path webappRunnerPath = FileDownloader.download(WebappRunnerResolver.getUrlForVersion(webappRunnerVersion));
-            sourceBlobDescriptor.addLocalPath(WEBAPP_RUNNER_SOURCE_BLOB_PATH, webappRunnerPath, false);
+        if (mainFile.isPresent()) {
+            includedPaths.add(projectDirectory.resolve(mainFile.get()).normalize());
+
+            Optional<String> mainFileExtension = PathUtils.getFileExtension(mainFile.get());
+            if (mainFileExtension.isPresent() && mainFileExtension.get().equalsIgnoreCase("war")) {
+                System.out.printf("-----> Downloading webapp-runner %s...\n", webappRunnerVersion);
+                Path webappRunnerPath = FileDownloader.download(WebappRunnerResolver.getUrlForVersion(webappRunnerVersion));
+                sourceBlobDescriptor.addLocalPath(WEBAPP_RUNNER_SOURCE_BLOB_PATH, webappRunnerPath, false);
+            }
+        } else {
+            System.out.printf("-----> No main JAR/WAR file specified, skipping Procfile generation and webapp-runner...\n", webappRunnerVersion);
         }
 
         if (!disableAutoIncludes) {
@@ -181,12 +186,16 @@ public class Main implements Callable<Integer> {
     }
 
     private Optional<Procfile> generateProcfile() {
+        if (!mainFile.isPresent()) {
+            return Optional.empty();
+        }
+
         final Path projectDirectory = Paths.get(System.getProperty("user.dir"));
 
-        return PathUtils.getFileExtension(mainFile).flatMap(extension -> {
+        return PathUtils.getFileExtension(mainFile.get()).flatMap(extension -> {
             // We fall back to an empty string if the path cannot be normalized. This will result in a
             // user-readable error from JvmProjectSourceBlobCreator and the Procfile will never be deployed.
-            String normalizedMainFile = PathUtils.normalize(projectDirectory, mainFile)
+            String normalizedMainFile = PathUtils.normalize(projectDirectory, mainFile.get())
                     .map(PathUtils::separatorsToUnix)
                     .orElse("");
 

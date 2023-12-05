@@ -35,9 +35,9 @@ Usage: heroku-jvm-application-deployer [-dhV] [-a=name] [-j=string]
                                        [--jar-opts=options]
                                        [--webapp-runner-version=version] [-b
                                        [=buildpack...]]... [-i[=path...]]...
-                                       file
+                                       [file]
 Application for deploying Java applications to Heroku.
-      file                  The JAR or WAR file to deploy.
+      [file]                The JAR or WAR file to deploy.
   -a, --app=name            The name of the Heroku app to deploy to. Defaults
                               to app name from git remote.
   -b, --buildpack[=buildpack...]

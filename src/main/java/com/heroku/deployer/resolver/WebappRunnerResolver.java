@@ -1,10 +1,10 @@
 package com.heroku.deployer.resolver;
 
-import com.heroku.deployer.util.CustomHttpClientBuilder;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -25,7 +25,7 @@ import java.util.List;
 public class WebappRunnerResolver {
 
     public static String getLatestVersion() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
-        CloseableHttpClient client = CustomHttpClientBuilder.build();
+        CloseableHttpClient client = HttpClients.createSystem();
 
         HttpGet request = new HttpGet("https://repo1.maven.org/maven2/com/heroku/webapp-runner/maven-metadata.xml");
         CloseableHttpResponse response = client.execute(request);

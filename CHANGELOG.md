@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Specifying a main JAR or WAR file is no longer required. This allows easy deployment in cases where application startup is managed by a shell script, such as when using [`sbt-native-packager`](https://github.com/sbt/sbt-native-packager). ([#258](https://github.com/heroku/heroku-jvm-application-deployer/pull/258))
 
+### Removed
+
+* Workaround for [JDK-8220723](https://bugs.openjdk.java.net/browse/JDK-8220723) that affected older (2019) OpenJDK versions. ([#260](https://github.com/heroku/heroku-jvm-application-deployer/pull/260))
+
 ## [4.0.0] - 2023-11-27
 
 This project used to contain both a Maven Plugin and a CLI tool for deploying Java applications to Heroku without using Git.

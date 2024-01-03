@@ -4,7 +4,33 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    labels:
+      - "java"
+      - "dependencies"
+      - "skip changelog"
+    groups:
+      maven-plugins:
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "org.apache.maven.plugins:*"
+  - package-ecosystem: "cargo"
+    directory: "/integration-test"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+      - "skip changelog"
+    groups:
+      rust-dependencies:
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
+    labels:
+      - "dependencies"
+      - "skip changelog"

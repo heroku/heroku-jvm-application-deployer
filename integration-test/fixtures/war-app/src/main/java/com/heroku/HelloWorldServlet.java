@@ -1,7 +1,7 @@
 package com.heroku;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 
 public class HelloWorldServlet extends HttpServlet {

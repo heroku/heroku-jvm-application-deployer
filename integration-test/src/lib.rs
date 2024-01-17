@@ -1,15 +1,3 @@
-// Enable rustc and Clippy lints that are disabled by default.
-// https://doc.rust-lang.org/rustc/lints/listing/allowed-by-default.html#unused-crate-dependencies
-#![warn(unused_crate_dependencies)]
-// https://rust-lang.github.io/rust-clippy/stable/index.html
-#![warn(clippy::pedantic)]
-// This lint is too noisy and enforces a style that reduces readability in many cases.
-#![allow(clippy::module_name_repetitions)]
-// This lint doesn't make sense in this testing library that is expected to panic as early as
-// possible. Functions are designed to always panic since we don't want to add proper error handling
-// to our tests.
-#![allow(clippy::missing_panics_doc)]
-
 use fs_extra::dir::CopyOptions;
 use libherokubuildpack::command::CommandExt;
 use serde::Deserialize;

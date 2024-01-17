@@ -3,6 +3,13 @@ name = "integration-test"
 edition = "2021"
 rust-version = "1.75"
 
+[lints.rust]
+unreachable_pub = "warn"
+unused_crate_dependencies = "warn"
+
+[lints.clippy]
+pedantic = "warn"
+
 [dependencies]
 exponential-backoff = "1"
 fs_extra = "1"

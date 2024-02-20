@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Fixed
+
+* When no Git commit hash is available, the SHA256 sum of the packaged tarball will now be used in its place. Previously, the string `unknown` was used and prevented pipeline promotions due to the same string being used for different versions. ([#281](https://github.com/heroku/heroku-jvm-application-deployer/pull/281))
 
 ## [4.0.1] - 2023-12-05
 

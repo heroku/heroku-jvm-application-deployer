@@ -3,6 +3,7 @@ package com.heroku.deployer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
@@ -14,6 +15,7 @@ import com.heroku.deployer.deployment.DeploymentDescriptor;
 import com.heroku.deployer.resolver.WebappRunnerResolver;
 import com.heroku.deployer.sourceblob.SourceBlobDescriptor;
 import com.heroku.deployer.sourceblob.SourceBlobPackager;
+import org.apache.commons.codec.digest.DigestUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -159,13 +161,14 @@ public class Main implements Callable<Integer> {
         }
 
         Path sourceBlobArchive = SourceBlobPackager.pack(sourceBlobDescriptor);
+        String sourceBlobArchiveSha256 = DigestUtils.sha256Hex(Files.newInputStream(sourceBlobArchive));
 
         DeploymentDescriptor deploymentDescriptor = new DeploymentDescriptor(
                 appName.get(),
                 buildpacks,
                 Collections.emptyMap(),
                 sourceBlobArchive,
-                GitUtils.getHeadCommitHash(projectDirectory).orElse("unknown"));
+                GitUtils.getHeadCommitHash(projectDirectory).orElse("nogit-" + sourceBlobArchiveSha256));
 
 
         String version = PropertiesUtils

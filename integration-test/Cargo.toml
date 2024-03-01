@@ -13,7 +13,7 @@ pedantic = "warn"
 [dependencies]
 exponential-backoff = "1"
 fs_extra = "1"
-libherokubuildpack = { version = "0.17", default-features = false, features = ["command"] }
+libherokubuildpack = { version = "0.19", default-features = false, features = ["command"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tempfile = "3"

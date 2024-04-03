@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.4] - 2024-04-03
+
 * Updated dependencies
 
 ## [4.0.3] - 2024-02-26
@@ -220,7 +223,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.3...HEAD
+[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.4...HEAD
+[4.0.4]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.3...v4.0.4
 [4.0.3]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.0...v4.0.1

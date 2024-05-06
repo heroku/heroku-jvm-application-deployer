@@ -40,8 +40,9 @@ public final class Deployer {
         }
 
         System.out.println("-----> Uploading build...");
-        uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPutUrl()), (currentBytes, totalBytes) -> {});
-        System.out.println("       - success");
+        long uploadStartMillis = System.currentTimeMillis();
+        uploadSourceBlob(deploymentDescriptor.getSourceBlobPath(), URI.create(sourceBlob.getPutUrl()), new UploadProgressReporter());
+        System.out.printf("       - success (%.1f seconds)\n", (float) (System.currentTimeMillis() - uploadStartMillis) / 1000.0f);
 
         List<String> buildpacks = deploymentDescriptor.getBuildpacks();
         if (buildpacks.isEmpty()) {

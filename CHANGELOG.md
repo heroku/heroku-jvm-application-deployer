@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Upload progress reporting ([#313](https://github.com/heroku/heroku-jvm-application-deployer/pull/313))
 
 ## [4.0.4] - 2024-04-03
 

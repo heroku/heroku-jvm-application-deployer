@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.6] - 2024-05-07
+
 ### Fixed
 
 * Previously, when the working directory contains a Git repository without any commits, `heroku-jvm-application-deployer` crashed with a `NullPointerException`. This case is now handled gracefully. ([#319](https://github.com/heroku/heroku-jvm-application-deployer/pull/319))
@@ -240,7 +243,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.5...HEAD
+[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.6...HEAD
+[4.0.6]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.5...v4.0.6
 [4.0.5]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.4...v4.0.5
 [4.0.4]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.3...v4.0.4
 [4.0.3]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.2...v4.0.3

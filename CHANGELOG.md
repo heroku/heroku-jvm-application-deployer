@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Previously, when the working directory contains a Git repository without any commits, `heroku-jvm-application-deployer` crashed with a `NullPointerException`. This case is now handled gracefully. ([#319](https://github.com/heroku/heroku-jvm-application-deployer/pull/319))
 
 ## [4.0.5] - 2024-05-06
 

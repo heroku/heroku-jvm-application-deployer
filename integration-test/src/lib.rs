@@ -12,7 +12,6 @@ where
 {
     let app_dir = prepare_fixture(fixture_dir);
     initialize_git_repository(&app_dir);
-    create_empty_git_commit(&app_dir);
     let app_create_result = create_heroku_app(&app_dir);
 
     f(TestContext {

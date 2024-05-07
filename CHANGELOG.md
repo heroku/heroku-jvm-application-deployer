@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Previously, when the working directory contains a Git repository without any commits, `heroku-jvm-application-deployer` crashed with a `NullPointerException`. This case is now handled gracefully. ([#319](https://github.com/heroku/heroku-jvm-application-deployer/pull/319))
 
+### Changed
+
+* Updated dependencies
+
 ## [4.0.5] - 2024-05-06
 
 ### Added
@@ -19,15 +23,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.4] - 2024-04-03
 
+### Changed
+
 * Updated dependencies
 
 ## [4.0.3] - 2024-02-26
+
+### Changed
 
 * Updated dependencies
 
 ## [4.0.2] - 2024-02-20
 
-## Fixed
+### Fixed
 
 * When no Git commit hash is available, the SHA256 sum of the packaged tarball will now be used in its place. Previously, the string `unknown` was used and prevented pipeline promotions due to the same string being used for different versions. ([#281](https://github.com/heroku/heroku-jvm-application-deployer/pull/281))
 

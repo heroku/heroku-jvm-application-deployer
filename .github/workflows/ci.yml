@@ -12,7 +12,7 @@ permissions:
 jobs:
   integration-linux:
     name: "Integration Tests (Java ${{ matrix.java-version }})"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -49,7 +49,7 @@ jobs:
 
   maven:
     name: "Unit Tests (Java ${{ matrix.java-version }})"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:

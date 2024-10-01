@@ -11,7 +11,7 @@ unused_crate_dependencies = "warn"
 pedantic = "warn"
 
 [dependencies]
-exponential-backoff = "1"
+exponential-backoff = "2"
 fs_extra = "1"
 libherokubuildpack = { version = "0.23", default-features = false, features = ["command"] }
 serde = { version = "1", features = ["derive"] }

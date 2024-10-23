@@ -164,11 +164,11 @@ where
         match request_fn() {
             result @ Ok(_) => return result,
             result @ Err(_) => match backoff_durations.next() {
-                None => return result,
-                Some(backoff_duration) => {
+                Some(Some(backoff_duration)) => {
                     std::thread::sleep(backoff_duration);
                     continue;
                 }
+                _ => return result,
             },
         }
     }

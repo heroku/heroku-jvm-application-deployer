@@ -6,13 +6,13 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 use std::time::Duration;
 
-pub fn prepare_test<F>(fixture_dir: &str, f: F)
+pub fn prepare_test<F>(fixture_dir: &str, space: Option<&str>, f: F)
 where
     F: Fn(TestContext),
 {
     let app_dir = prepare_fixture(fixture_dir);
     initialize_git_repository(&app_dir);
-    let app_create_result = create_heroku_app(&app_dir);
+    let app_create_result = create_heroku_app(&app_dir, space);
 
     f(TestContext {
         app_name: app_create_result.name,
@@ -62,11 +62,16 @@ pub fn http_get_expect_200(url: &str) -> String {
 }
 
 #[must_use]
-pub fn create_heroku_app(path: &Path) -> HerokuAppCreateResult {
+pub fn create_heroku_app(path: &Path, space: Option<&str>) -> HerokuAppCreateResult {
+    let mut args = vec!["create", "--json"];
+
+    if let Some(space) = space {
+        args.push("--space");
+        args.push(space);
+    }
+
     let output = run_command(
-        Command::new("heroku")
-            .args(["create", "--json"])
-            .current_dir(path),
+        Command::new("heroku").args(args).current_dir(path),
         &format!("Could not create Heroku app in {path:?}"),
         true,
     );

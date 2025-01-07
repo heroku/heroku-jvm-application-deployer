@@ -1,5 +1,6 @@
 package com.heroku.deployer;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +17,7 @@ import com.heroku.deployer.resolver.WebappRunnerResolver;
 import com.heroku.deployer.sourceblob.SourceBlobDescriptor;
 import com.heroku.deployer.sourceblob.SourceBlobPackager;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -87,7 +89,8 @@ public class Main implements Callable<Integer> {
             List<Path> defaultPaths = Arrays.asList(
                 Paths.get("Procfile"),
                 Paths.get("system.properties"),
-                Paths.get(".jdk-overlay")
+                Paths.get(".jdk-overlay"),
+                Paths.get("project.toml")
             );
 
             for (Path defaultPath : defaultPaths) {
@@ -144,6 +147,13 @@ public class Main implements Callable<Integer> {
         } else {
             Procfile defaultProcfile = generateProcfile().orElse(Procfile.empty());
             sourceBlobDescriptor.addSyntheticFile(procfilePath, defaultProcfile.asString(), true);
+        }
+
+        // Add an auto-generated project-toml to the source blob if no project.toml has been added yet.
+        Path projectTomlPath = Paths.get("project.toml");
+        if (!sourceBlobDescriptor.containsPath(projectTomlPath) && HerokuCli.runIsCnb(projectDirectory, appName)) {
+            String defaultProjectToml = IOUtils.toString(getClass().getResourceAsStream("/default-project.toml"), StandardCharsets.UTF_8);
+            sourceBlobDescriptor.addSyntheticFile(projectTomlPath, defaultProjectToml, true);
         }
 
         // Add an auto-generated system.properties to the source blob if no system.properties has been added yet.

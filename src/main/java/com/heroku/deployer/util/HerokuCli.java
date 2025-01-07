@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class HerokuCli {
@@ -20,6 +18,26 @@ public class HerokuCli {
         } else {
             return Optional.of(lines.get(0));
         }
+    }
+
+    public static boolean runIsCnb(Path workingDirectory, Optional<String> appName) throws IOException {
+        List<String> commandArguments = new ArrayList<>();
+        commandArguments.add("info");
+        commandArguments.add("--shell");
+
+        if (appName.isPresent()) {
+            commandArguments.add("--app");
+            commandArguments.add(appName.get());
+        }
+
+        List<String> lines = runRaw(workingDirectory, commandArguments.toArray(new String[0]));
+        for (String line : lines) {
+            if (line.equals("stack=cnb")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static List<String> runRaw(Path workingDirectory, String... command) throws IOException {

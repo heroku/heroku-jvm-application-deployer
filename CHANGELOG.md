@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* When the target app is using [Fir](https://devcenter.heroku.com/articles/generations#fir), a default `project.toml` will now be generated and deployed alongside the app. This ensures that OpenJDK will be installed and `Procfile` works as expected without the need for explicit configuration. ([#369](https://github.com/heroku/heroku-jvm-application-deployer/pull/369))
 
 ## [4.0.7] - 2024-07-17
 

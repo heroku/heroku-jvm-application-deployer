@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.8] - 2025-01-07
+
 ### Added
 
 * When the target app is using [Fir](https://devcenter.heroku.com/articles/generations#fir), a default `project.toml` will now be generated and deployed alongside the app. This ensures that OpenJDK will be installed and `Procfile` works as expected without the need for explicit configuration. ([#369](https://github.com/heroku/heroku-jvm-application-deployer/pull/369))
@@ -252,7 +255,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.7...HEAD
+[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.8...HEAD
+[4.0.8]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.7...v4.0.8
 [4.0.7]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.6...v4.0.7
 [4.0.6]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.5...v4.0.6
 [4.0.5]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.4...v4.0.5

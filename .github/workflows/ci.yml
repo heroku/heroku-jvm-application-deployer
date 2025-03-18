@@ -47,6 +47,24 @@ jobs:
         working-directory: "integration-test"
         run: "cargo test --locked"
 
+  rust-lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update Rust toolchain
+        run: rustup update
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3 # v2.7.7
+        with:
+          workspaces: "./integration-test"
+      - name: Clippy
+        run: cargo clippy --all-targets --all-features --locked -- --deny warnings
+        working-directory: integration-test
+      - name: rustfmt
+        run: cargo fmt -- --check
+        working-directory: integration-test
+
   maven:
     name: "Unit Tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-24.04

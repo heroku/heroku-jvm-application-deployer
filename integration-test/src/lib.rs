@@ -43,6 +43,7 @@ pub fn heroku_jvm_application_deployer_jar_path() -> PathBuf {
         let dir_entry = dir_entry.unwrap();
         let file_name = dir_entry.file_name().to_string_lossy().into_owned();
 
+        #[allow(clippy::case_sensitive_file_extension_comparisons)]
         if file_name.starts_with("heroku-jvm-application-deployer") && file_name.ends_with(".jar") {
             return dir_entry.path();
         }
@@ -171,7 +172,6 @@ where
             result @ Err(_) => match backoff_durations.next() {
                 Some(Some(backoff_duration)) => {
                     std::thread::sleep(backoff_duration);
-                    continue;
                 }
                 _ => return result,
             },

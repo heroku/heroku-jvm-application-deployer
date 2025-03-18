@@ -45,7 +45,7 @@ jobs:
         run: "./mvnw --batch-mode package"
       - name: Run integration tests
         working-directory: "integration-test"
-        run: "cargo test"
+        run: "cargo test --locked"
 
   maven:
     name: "Unit Tests (Java ${{ matrix.java-version }})"

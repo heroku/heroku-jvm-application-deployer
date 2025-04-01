@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [4.0.9] - 2025-04-01
+
+### Changed
+
+* Updated CODEOWNERS ([#394](https://github.com/heroku/heroku-jvm-application-deployer/pull/394))
+
 ## [4.0.8] - 2025-01-07
 
 ### Added

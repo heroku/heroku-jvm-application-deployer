@@ -136,7 +136,7 @@ pub fn run_command(command: &mut Command, error: &str, suppress_output: bool) ->
 
 #[must_use]
 pub fn prepare_fixture(name: &str) -> PathBuf {
-    let temp_dir = tempfile::tempdir().expect("").into_path();
+    let temp_dir = tempfile::tempdir().expect("").keep();
 
     let fixture_path = PathBuf::from(name);
 

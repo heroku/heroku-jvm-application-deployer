@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+* Help description for the `-b` and `-i` command line arguments to explicitly state that they can be passed multiple times. ([#401](https://github.com/heroku/heroku-jvm-application-deployer/pull/401))
 
 ## [4.0.8] - 2025-01-07
 

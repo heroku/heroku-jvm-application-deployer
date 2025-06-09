@@ -73,7 +73,7 @@ pub fn create_heroku_app(path: &Path, space: Option<&str>) -> HerokuAppCreateRes
 
     let output = run_command(
         Command::new("heroku").args(args).current_dir(path),
-        &format!("Could not create Heroku app in {path:?}"),
+        &format!("Could not create Heroku app in {}", path.display()),
         true,
     );
 
@@ -97,7 +97,7 @@ pub fn destroy_heroku_app(app_name: &str) {
 pub fn initialize_git_repository(path: &Path) {
     run_command(
         Command::new("git").args(["init"]).current_dir(path),
-        &format!("Could not initialize git repository in {path:?}"),
+        &format!("Could not initialize git repository in {}", path.display()),
         true,
     );
 }
@@ -107,7 +107,7 @@ pub fn create_empty_git_commit(path: &Path) {
         Command::new("git")
             .args(["commit", "--allow-empty", "-m", "empty"])
             .current_dir(path),
-        &format!("Could create empty git commit in {path:?}"),
+        &format!("Could create empty git commit in {}", path.display()),
         true,
     );
 }

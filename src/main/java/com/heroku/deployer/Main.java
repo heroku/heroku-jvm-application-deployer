@@ -33,7 +33,7 @@ public class Main implements Callable<Integer> {
     @Option(names = {"-a", "--app"}, paramLabel = "name", description = "The name of the Heroku app to deploy to. Defaults to app name from git remote.")
     private Optional<String> appName = Optional.empty();
 
-    @Option(names = {"-b", "--buildpack"}, arity = "*", paramLabel = "buildpack", defaultValue = "heroku/jvm", description = "Defaults to ${DEFAULT-VALUE}.")
+    @Option(names = {"-b", "--buildpack"}, arity = "*", paramLabel = "buildpack", defaultValue = "heroku/jvm", description = "Defaults to ${DEFAULT-VALUE}, can be passed multiple times to use multiple buildpacks.")
     private List<String> buildpacks = new ArrayList<>();
 
     @Option(names = {"--webapp-runner-version"}, paramLabel = "version", description = "The version of webapp-runner to use. Defaults to the most recent version (${DEFAULT-VALUE}).")
@@ -48,7 +48,7 @@ public class Main implements Callable<Integer> {
     @Option(names = {"-d", "--disable-auto-includes"}, description = "Disable automatic inclusion of certain files.", defaultValue = "false")
     private boolean disableAutoIncludes = false;
 
-    @Option(names = {"-i", "--include"}, arity = "*", paramLabel = "path", description = "Additional files or directories to include.")
+    @Option(names = {"-i", "--include"}, arity = "*", paramLabel = "path", description = "Additional files or directories to include, can be passed multiple times to include multiple files and directories.")
     private List<Path> includedPaths = new ArrayList<>();
 
     @Override

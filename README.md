@@ -41,18 +41,21 @@ Application for deploying Java applications to Heroku.
   -a, --app=name            The name of the Heroku app to deploy to. Defaults
                               to app name from git remote.
   -b, --buildpack[=buildpack...]
-                            Defaults to heroku/jvm.
+                            Defaults to heroku/jvm, can be passed multiple
+                              times to use multiple buildpacks.
   -d, --disable-auto-includes
                             Disable automatic inclusion of certain files.
   -h, --help                Show this help message and exit.
-  -i, --include[=path...]   Additional files or directories to include.
+  -i, --include[=path...]   Additional files or directories to include, can be
+                              passed multiple times to include multiple files
+                              and directories.
   -j, --jdk=string          Set the Heroku JDK selection string for the app (i.
                               e. 17, 21.0.1).
       --jar-opts=options    Add command line options for when the JAR is run.
   -V, --version             Print version information and exit.
       --webapp-runner-version=version
                             The version of webapp-runner to use. Defaults to
-                              the most recent version (9.0.83.0).
+                              the most recent version (10.1.41.0).
 ```
 
 ## Requirements

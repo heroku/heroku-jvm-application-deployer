@@ -35,9 +35,9 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
-          server-id: ossrh
+          server-id: central
           server-username: MAVEN_CENTRAL_USERNAME
-          server-password: MAVEN_CENTRAL_TOKEN
+          server-password: MAVEN_CENTRAL_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 

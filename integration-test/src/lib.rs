@@ -57,9 +57,10 @@ pub fn http_get_expect_200(url: &str) -> String {
     thread_sleep_backoff(10, Duration::from_secs(1), Duration::from_secs(30), || {
         ureq::get(url).call()
     })
-    .expect("")
-    .into_string()
-    .expect("")
+    .expect("http request should be successful")
+    .into_body()
+    .read_to_string()
+    .expect("http response body should be convertable to String")
 }
 
 #[must_use]

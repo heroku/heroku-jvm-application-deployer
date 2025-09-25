@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         java-version:
+          - 8
           - 21
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}

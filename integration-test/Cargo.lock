@@ -152,9 +152,9 @@ checksum = "6a82ae493e598baaea5209805c49bbf2ea7de956d50d7da0da1164f9c6d28543"
 
 [[package]]
 name = "libherokubuildpack"
-version = "0.29.3"
+version = "0.30.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "591ca6809256b788acf115e5733038a4d7eb6d81aa362cf144210cad25daab8c"
+checksum = "2b15e5eb92bd568a3f4d21c7431fd068e3e7342d5b520d6b6efe1e7fba7e8a63"
 dependencies = [
  "crossbeam-utils",
 ]

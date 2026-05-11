@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.13] - 2026-05-11
+
 ### Changed
 
 * Improved the error message when the Heroku CLI is not installed or not available on `PATH`. ([#482](https://github.com/heroku/heroku-jvm-application-deployer/pull/482))
@@ -283,7 +286,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.12...HEAD
+[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.13...HEAD
+[4.0.13]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.12...v4.0.13
 [4.0.12]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.11...v4.0.12
 [4.0.11]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.10...v4.0.11
 [4.0.10]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.9...v4.0.10

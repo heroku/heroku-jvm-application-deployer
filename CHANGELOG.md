@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+* Improved the error message when the Heroku CLI is not installed or not available on `PATH`. ([#482](https://github.com/heroku/heroku-jvm-application-deployer/pull/482))
+* Updated dependencies
 
 ## [4.0.12] - 2025-11-03
 
+### Changed
+
+* Updated dependencies
 
 ## [4.0.11] - 2025-08-01
 

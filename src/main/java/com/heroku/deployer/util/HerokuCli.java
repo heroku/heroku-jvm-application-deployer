@@ -46,7 +46,17 @@ public class HerokuCli {
 
         ProcessBuilder processBuilder = new ProcessBuilder(fullCommand);
         processBuilder.directory(workingDirectory.toFile());
-        Process process = processBuilder.start();
+
+        Process process;
+        try {
+            process = processBuilder.start();
+        } catch (IOException e) {
+            throw new IOException(
+                "Could not run the Heroku CLI. Please ensure the Heroku CLI is installed and available on PATH. " +
+                "Installation instructions: https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli",
+                e
+            );
+        }
 
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             return bufferedReader.lines().collect(Collectors.toList());

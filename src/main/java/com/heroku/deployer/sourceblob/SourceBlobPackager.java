@@ -1,5 +1,6 @@
 package com.heroku.deployer.sourceblob;
 
+import com.heroku.deployer.util.PathUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
@@ -31,7 +32,7 @@ public final class SourceBlobPackager {
                 System.out.println("       - including: " + sourceBlobPath);
             }
 
-            addIncludedPathToArchive(sourceBlobPath.toString(), content, tarArchiveOutputStream);
+            addIncludedPathToArchive(PathUtils.separatorsToUnix(sourceBlobPath), content, tarArchiveOutputStream);
         }
 
         tarArchiveOutputStream.close();

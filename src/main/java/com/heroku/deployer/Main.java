@@ -221,7 +221,7 @@ public class Main implements Callable<Integer> {
             } else if (extension.equalsIgnoreCase("war")) {
                 return Optional.of(Procfile.singleton("web", String.format(
                         "java $JAVA_OPTS -jar %s $WEBAPP_RUNNER_OPTS --port $PORT %s",
-                        WEBAPP_RUNNER_SOURCE_BLOB_PATH,
+                        PathUtils.separatorsToUnix(WEBAPP_RUNNER_SOURCE_BLOB_PATH),
                         normalizedMainFile
                 )));
             }

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 * Heroku CLI invocation on Windows. ([#490](https://github.com/heroku/heroku-jvm-application-deployer/pull/490))
+* Use Unix path separators in the auto-generated Procfile when running on Windows. ([#490](https://github.com/heroku/heroku-jvm-application-deployer/pull/490))
+* Use Unix path separators for tar archive entry names when running on Windows. ([#490](https://github.com/heroku/heroku-jvm-application-deployer/pull/490))
 
 ## [4.0.13] - 2026-05-11
 

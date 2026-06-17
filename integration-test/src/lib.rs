@@ -6,6 +6,15 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 use std::time::Duration;
 
+// The Heroku CLI ships as `heroku.cmd` on Windows. `cmd.exe` resolves the bare name
+// `heroku` via PATHEXT, but Rust's `Command` calls `CreateProcess` directly and skips
+// that resolution, so we have to name the `.cmd` extension ourselves.
+const HEROKU_PROGRAM: &str = if cfg!(windows) {
+    "heroku.cmd"
+} else {
+    "heroku"
+};
+
 pub fn prepare_test<F>(fixture_dir: &str, space: Option<&str>, f: F)
 where
     F: Fn(TestContext),
@@ -73,7 +82,7 @@ pub fn create_heroku_app(path: &Path, space: Option<&str>) -> HerokuAppCreateRes
     }
 
     let output = run_command(
-        Command::new("heroku").args(args).current_dir(path),
+        Command::new(HEROKU_PROGRAM).args(args).current_dir(path),
         &format!("Could not create Heroku app in {}", path.display()),
         true,
     );
@@ -89,7 +98,7 @@ pub struct HerokuAppCreateResult {
 
 pub fn destroy_heroku_app(app_name: &str) {
     run_command(
-        Command::new("heroku").args(["destroy", app_name, "--confirm", app_name]),
+        Command::new(HEROKU_PROGRAM).args(["destroy", app_name, "--confirm", app_name]),
         &format!("Could not destroy Heroku app {app_name}"),
         true,
     );

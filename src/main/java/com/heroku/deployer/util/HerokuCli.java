@@ -10,6 +10,14 @@ import java.util.stream.Collectors;
 
 public class HerokuCli {
 
+    // The Heroku CLI ships as `heroku.cmd` on Windows. `cmd.exe` resolves the bare name
+    // `heroku` via PATHEXT, but Java's ProcessBuilder calls `CreateProcess` directly and
+    // skips that resolution, so we have to name the `.cmd` extension ourselves.
+    private static final String HEROKU_PROGRAM =
+        System.getProperty("os.name").toLowerCase(Locale.ROOT).startsWith("windows")
+            ? "heroku.cmd"
+            : "heroku";
+
     public static Optional<String> runAuthToken(Path workingDirectory) throws IOException {
         List<String> lines = runRaw(workingDirectory,"auth:token");
 
@@ -42,7 +50,7 @@ public class HerokuCli {
 
     private static List<String> runRaw(Path workingDirectory, String... command) throws IOException {
         List<String> fullCommand =  new ArrayList<>(Arrays.asList(command));
-        fullCommand.add(0, "heroku");
+        fullCommand.add(0, HEROKU_PROGRAM);
 
         ProcessBuilder processBuilder = new ProcessBuilder(fullCommand);
         processBuilder.directory(workingDirectory.toFile());

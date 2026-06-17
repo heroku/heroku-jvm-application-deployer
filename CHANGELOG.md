@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Heroku CLI invocation on Windows. ([#490](https://github.com/heroku/heroku-jvm-application-deployer/pull/490))
 
 ## [4.0.13] - 2026-05-11
 

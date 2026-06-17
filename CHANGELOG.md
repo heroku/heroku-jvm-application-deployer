@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.14] - 2026-06-17
+
 ### Fixed
 
 * Heroku CLI invocation on Windows. ([#490](https://github.com/heroku/heroku-jvm-application-deployer/pull/490))
@@ -291,7 +294,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.13...HEAD
+[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.14...HEAD
+[4.0.14]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.13...v4.0.14
 [4.0.13]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.12...v4.0.13
 [4.0.12]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.11...v4.0.12
 [4.0.11]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.10...v4.0.11

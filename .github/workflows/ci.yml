@@ -10,12 +10,15 @@ permissions:
   contents: read
 
 jobs:
-  integration-linux:
-    name: "Integration Tests (Java ${{ matrix.java-version }})"
-    runs-on: ubuntu-24.04
+  integration:
+    name: "Integration Tests ${{ matrix.os }} (Java ${{ matrix.java-version }})"
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
         java-version:
           - 21
     env:
@@ -33,8 +36,18 @@ jobs:
           git config --global user.name "Example"
       - name: Update Rust toolchain
         run: rustup update
-      - name: Install Heroku CLI
+      - name: Install Heroku CLI (Linux)
+        if: runner.os == 'Linux'
         run: curl https://cli-assets.heroku.com/install.sh | sh
+      - name: Install Heroku CLI (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $tarballPath = "$env:RUNNER_TEMP\heroku-win32-x64.tar.gz"
+          Invoke-WebRequest -Uri "https://cli-assets.heroku.com/channels/stable/heroku-win32-x64.tar.gz" -OutFile $tarballPath
+          tar -xzf $tarballPath -C $env:RUNNER_TEMP
+          Add-Content -Path $env:GITHUB_PATH -Value "$env:RUNNER_TEMP\heroku\bin"
+          & "$env:RUNNER_TEMP\heroku\bin\heroku.cmd" --version
       - name: Package heroku-jvm-application-deployer
         run: "./mvnw --batch-mode package"
       - name: Package integration test fixtures

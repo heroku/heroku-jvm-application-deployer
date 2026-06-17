@@ -73,7 +73,16 @@ pub fn create_heroku_app(path: &Path, space: Option<&str>) -> HerokuAppCreateRes
     }
 
     let output = run_command(
-        Command::new("heroku").args(args).current_dir(path),
+        // The Heroku CLI ships as `heroku.cmd` on Windows. `cmd.exe` resolves the bare
+        // name `heroku` via PATHEXT, but Rust's `Command` calls `CreateProcess` directly
+        // and skips that resolution, so we have to name the `.cmd` extension ourselves.
+        Command::new(if cfg!(windows) {
+            "heroku.cmd"
+        } else {
+            "heroku"
+        })
+        .args(args)
+        .current_dir(path),
         &format!("Could not create Heroku app in {}", path.display()),
         true,
     );
@@ -89,7 +98,15 @@ pub struct HerokuAppCreateResult {
 
 pub fn destroy_heroku_app(app_name: &str) {
     run_command(
-        Command::new("heroku").args(["destroy", app_name, "--confirm", app_name]),
+        // The Heroku CLI ships as `heroku.cmd` on Windows. `cmd.exe` resolves the bare
+        // name `heroku` via PATHEXT, but Rust's `Command` calls `CreateProcess` directly
+        // and skips that resolution, so we have to name the `.cmd` extension ourselves.
+        Command::new(if cfg!(windows) {
+            "heroku.cmd"
+        } else {
+            "heroku"
+        })
+        .args(["destroy", app_name, "--confirm", app_name]),
         &format!("Could not destroy Heroku app {app_name}"),
         true,
     );

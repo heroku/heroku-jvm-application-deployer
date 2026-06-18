@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Preserve insertion order of entries in generated `Procfile` files. ([#497](https://github.com/heroku/heroku-jvm-application-deployer/pull/497))
 
 ## [4.0.14] - 2026-06-17
 

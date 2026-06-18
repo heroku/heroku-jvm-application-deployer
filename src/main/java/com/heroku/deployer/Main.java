@@ -83,7 +83,7 @@ public class Main implements Callable<Integer> {
                 sourceBlobDescriptor.addLocalPath(WEBAPP_RUNNER_SOURCE_BLOB_PATH, webappRunnerPath, false);
             }
         } else {
-            System.out.printf("-----> No main JAR/WAR file specified, skipping Procfile generation and webapp-runner...\n", webappRunnerVersion);
+            System.out.println("-----> No main JAR/WAR file specified, skipping Procfile generation and webapp-runner...");
         }
 
         if (!disableAutoIncludes) {

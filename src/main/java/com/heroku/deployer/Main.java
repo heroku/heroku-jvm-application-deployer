@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.heroku.deployer.resolver.ApiKeyResolver;
@@ -58,7 +59,7 @@ public class Main implements Callable<Integer> {
 
         if (!appName.isPresent()) {
             System.err.println("Error: app name not set. Use --app to set the Heroku app.");
-            System.exit(-1);
+            return -1;
         }
 
         final Path projectDirectory = Paths.get(System.getProperty("user.dir"));
@@ -67,7 +68,7 @@ public class Main implements Callable<Integer> {
         if (!apiKey.isPresent()) {
             System.err.println("Error: Heroku API key could not be found!");
             System.err.println("Set it via the HEROKU_API_KEY environment variable or ensure you're logged in Heroku CLI (e.g. heroku auth:whoami).");
-            System.exit(-1);
+            return -1;
         }
 
         SourceBlobDescriptor sourceBlobDescriptor = new SourceBlobDescriptor();
@@ -105,20 +106,22 @@ public class Main implements Callable<Integer> {
         // Add files to source blob descriptor, expanding directory paths if necessary.
         for (Path includedPath : includedPaths) {
             if (Files.isDirectory(includedPath)) {
+                List<Path> walkedPaths;
                 try (Stream<Path> paths = Files.walk(includedPath)) {
-                    paths
-                        .filter(Files::isRegularFile)
-                        .map(projectDirectory::resolve)
-                        .forEach(path -> {
-                            Optional<Path> normalizedPath = PathUtils.normalize(projectDirectory, path);
+                    walkedPaths = paths
+                            .filter(Files::isRegularFile)
+                            .map(projectDirectory::resolve)
+                            .collect(Collectors.toList());
+                }
+                for (Path path : walkedPaths) {
+                    Optional<Path> normalizedPath = PathUtils.normalize(projectDirectory, path);
 
-                            if (normalizedPath.isPresent()) {
-                                sourceBlobDescriptor.addLocalPath(normalizedPath.get(), path, false);
-                            } else {
-                                System.err.printf("Error: can't include path '%s': normalization failed!\n", includedPath);
-                                System.exit(-1);
-                            }
-                        });
+                    if (normalizedPath.isPresent()) {
+                        sourceBlobDescriptor.addLocalPath(normalizedPath.get(), path, false);
+                    } else {
+                        System.err.printf("Error: can't include path '%s': normalization failed!\n", includedPath);
+                        return -1;
+                    }
                 }
             } else if (Files.isRegularFile(includedPath)) {
                 Optional<Path> normalizedPath = PathUtils.normalize(projectDirectory, includedPath);
@@ -127,14 +130,14 @@ public class Main implements Callable<Integer> {
                     sourceBlobDescriptor.addLocalPath(normalizedPath.get(), includedPath, false);
                 } else {
                     System.err.printf("Error: can't include path '%s': normalization failed!\n", includedPath);
-                    System.exit(-1);
+                    return -1;
                 }
             } else if (!Files.exists(includedPath)) {
                 System.err.printf("Error: can't include path '%s': not found!\n", includedPath);
-                System.exit(-1);
+                return -1;
             } else {
                 System.err.printf("Error: can't include path '%s'. Only existing regular files and directories are supported!\n", includedPath);
-                System.exit(-1);
+                return -1;
             }
         }
 

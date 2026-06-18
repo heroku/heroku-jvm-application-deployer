@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,7 +13,7 @@ public class Procfile {
     private final Map<String, String> entries;
 
     public Procfile(Map<String, String> entries) {
-        this.entries = new HashMap<>(entries);
+        this.entries = new LinkedHashMap<>(entries);
     }
 
     public void add(String processType, String command) {
@@ -25,7 +25,7 @@ public class Procfile {
     }
 
     public Procfile merge(Procfile other) {
-        Map<String, String> merged = new HashMap<>(entries);
+        Map<String, String> merged = new LinkedHashMap<>(entries);
         merged.putAll(other.entries);
 
         return new Procfile(merged);
@@ -59,7 +59,7 @@ public class Procfile {
      */
     public static Procfile fromFile(Path path) throws IOException {
         if (!Files.isRegularFile(path)) {
-            return new Procfile(new HashMap<>());
+            return new Procfile(new LinkedHashMap<>());
         }
 
         Map<String, String> entries = Files.readAllLines(path)
@@ -67,7 +67,7 @@ public class Procfile {
                 .map(Procfile::parseLine)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toMap(Tuple::getA, Tuple::getB));
+                .collect(Collectors.toMap(Tuple::getA, Tuple::getB, (a, b) -> b, LinkedHashMap::new));
 
         return new Procfile(entries);
     }

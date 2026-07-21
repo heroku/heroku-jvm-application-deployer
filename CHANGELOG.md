@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+* Include the HTTP status code in the error when fetching the latest webapp-runner version fails. ([#495](https://github.com/heroku/heroku-jvm-application-deployer/pull/495))
 
 ## [4.0.14] - 2026-06-17
 

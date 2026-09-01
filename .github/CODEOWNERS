@@ -8,5 +8,8 @@
 CHANGELOG.md @Malax
 Cargo.toml @Malax
 Cargo.lock @Malax
+.mvn/ @Malax
+mvnw @Malax
+mvnw.cmd @Malax
 pom.xml @Malax
 /.github/workflows/ @Malax

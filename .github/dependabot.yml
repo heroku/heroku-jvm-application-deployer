@@ -9,12 +9,10 @@ updates:
       - "dependencies"
       - "skip changelog"
     groups:
-      maven-plugins:
+      maven-dependencies:
         update-types:
           - "minor"
           - "patch"
-        patterns:
-          - "org.apache.maven.plugins:*"
   - package-ecosystem: "cargo"
     directory: "/integration-test"
     schedule:

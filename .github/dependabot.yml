@@ -15,6 +15,12 @@ updates:
           - "patch"
         patterns:
           - "org.apache.maven.plugins:*"
+      maven-dependencies:
+        update-types:
+          - "minor"
+          - "patch"
+        exclude-patterns:
+          - "org.apache.maven.plugins:*"
   - package-ecosystem: "cargo"
     directory: "/integration-test"
     schedule:

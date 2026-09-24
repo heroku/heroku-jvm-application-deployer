@@ -37,7 +37,7 @@ public class WebappRunnerResolver {
                 return xpath.compile("/metadata/versioning/latest/text()").evaluate(document);
 
             default:
-                throw new RuntimeException("");
+                throw new RuntimeException("Unexpected HTTP status fetching webapp-runner metadata: " + response.getStatusLine().getStatusCode());
         }
     }
 

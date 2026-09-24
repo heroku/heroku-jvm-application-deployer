@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Wait for the build to complete instead of giving up after 30 seconds. Previously, successful long-running builds were reported as failed locally even though the build succeeded on Heroku. ([#496](https://github.com/heroku/heroku-jvm-application-deployer/pull/496))
 
 ## [4.0.14] - 2026-06-17
 

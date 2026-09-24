@@ -80,7 +80,8 @@ public final class Deployer {
         try {
             buildInfo = pollForNonPendingBuildInfo(deploymentDescriptor.getAppName(), buildInfo.id, herokuDeployApi);
         } catch (HerokuDeployApiException e) {
-            System.out.println(String.format("Could not get updated build information. Will try again for some time... (%s)", e.getMessage()));
+            System.err.println("Could not get updated build information: " + e.getMessage());
+            return false;
         }
 
         if (!buildInfo.status.equals("succeeded")) {
@@ -95,17 +96,26 @@ public final class Deployer {
     }
 
     private static BuildInfo pollForNonPendingBuildInfo(String appName, String buildId, HerokuDeployApi herokuDeployApi) throws IOException, InterruptedException, HerokuDeployApiException {
-        for (int i = 0; i < 15; i++) {
+        long deadline = System.currentTimeMillis() + BUILD_POLL_TIMEOUT_MILLIS;
+
+        while (true) {
             BuildInfo latestBuildInfo = herokuDeployApi.getBuildInfo(appName, buildId);
             if (!latestBuildInfo.status.equals("pending")) {
                 return latestBuildInfo;
             }
 
-            Thread.sleep(2000);
-        }
+            if (System.currentTimeMillis() >= deadline) {
+                throw new HerokuDeployApiException(String.format(
+                        "Build did not complete within %d minutes.",
+                        BUILD_POLL_TIMEOUT_MILLIS / 60_000));
+            }
 
-        return herokuDeployApi.getBuildInfo(appName, buildId);
+            Thread.sleep(BUILD_POLL_INTERVAL_MILLIS);
+        }
     }
+
+    private static final long BUILD_POLL_TIMEOUT_MILLIS = 30 * 60 * 1000L;
+    private static final long BUILD_POLL_INTERVAL_MILLIS = 2000L;
 
     private static void uploadSourceBlob(Path path, URI destination, BiConsumer<Long, Long> progressConsumer) throws IOException {
         long fileSize = Files.size(path);

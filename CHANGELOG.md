@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Close `HttpClient` and response resources to prevent leaks during repeated invocations. ([#494](https://github.com/heroku/heroku-jvm-application-deployer/pull/494))
+* Validate the HTTP status when downloading webapp-runner so error responses no longer silently end up in the source blob. ([#494](https://github.com/heroku/heroku-jvm-application-deployer/pull/494))
+* Use try-with-resources in `SourceBlobPackager.pack` and clean up the temporary archive on failure. ([#494](https://github.com/heroku/heroku-jvm-application-deployer/pull/494))
 
 ## [4.0.14] - 2026-06-17
 

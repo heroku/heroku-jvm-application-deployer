@@ -17,25 +17,27 @@ public final class SourceBlobPackager {
     public static Path pack(SourceBlobDescriptor sourceBlobDescriptor) throws IOException {
         Path tarFilePath = Files.createTempFile("heroku-deploy", "source-blob.tgz");
 
-        TarArchiveOutputStream tarArchiveOutputStream = new TarArchiveOutputStream(
-                new GzipCompressorOutputStream(new FileOutputStream(tarFilePath.toFile())));
+        try (TarArchiveOutputStream tarArchiveOutputStream = new TarArchiveOutputStream(
+                new GzipCompressorOutputStream(new FileOutputStream(tarFilePath.toFile())))) {
 
-        tarArchiveOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
+            tarArchiveOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
 
-        System.out.println("-----> Packaging application...");
-        for (Path sourceBlobPath : sourceBlobDescriptor.getContents().keySet())  {
-            SourceBlobDescriptor.SourceBlobContent content = sourceBlobDescriptor.getContents().get(sourceBlobPath);
+            System.out.println("-----> Packaging application...");
+            for (Path sourceBlobPath : sourceBlobDescriptor.getContents().keySet())  {
+                SourceBlobDescriptor.SourceBlobContent content = sourceBlobDescriptor.getContents().get(sourceBlobPath);
 
-            if (content.isHidden()) {
-                System.out.println("       - including: " + sourceBlobPath + " (hidden)");
-            } else {
-                System.out.println("       - including: " + sourceBlobPath);
+                if (content.isHidden()) {
+                    System.out.println("       - including: " + sourceBlobPath + " (hidden)");
+                } else {
+                    System.out.println("       - including: " + sourceBlobPath);
+                }
+
+                addIncludedPathToArchive(PathUtils.separatorsToUnix(sourceBlobPath), content, tarArchiveOutputStream);
             }
-
-            addIncludedPathToArchive(PathUtils.separatorsToUnix(sourceBlobPath), content, tarArchiveOutputStream);
+        } catch (IOException e) {
+            Files.deleteIfExists(tarFilePath);
+            throw e;
         }
-
-        tarArchiveOutputStream.close();
 
         System.out.println("-----> Creating build...");
         System.out.println("       - file: " + tarFilePath);

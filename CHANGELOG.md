@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Fail the deploy when the source blob upload returns a non-success HTTP status. Previously, a failed upload was reported as success and the build proceeded against a missing or stale source blob. ([#493](https://github.com/heroku/heroku-jvm-application-deployer/pull/493))
 
 ## [4.0.14] - 2026-06-17
 

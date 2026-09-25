@@ -2,6 +2,7 @@ package com.heroku.deployer.deployment;
 
 import com.heroku.deployer.api.*;
 import com.heroku.deployer.util.io.UploadProgressHttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -115,6 +116,11 @@ public final class Deployer {
         HttpPut request = new HttpPut(destination);
         request.setEntity(new UploadProgressHttpEntity(new FileEntity(path.toFile()), bytes -> progressConsumer.accept(bytes, fileSize)));
 
-        client.execute(request);
+        try (CloseableHttpResponse response = client.execute(request)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != 200) {
+                throw new IOException(String.format("Unexpected status code uploading source blob: %d", statusCode));
+            }
+        }
     }
 }

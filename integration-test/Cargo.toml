@@ -1,7 +1,7 @@
 [package]
 name = "integration-test"
 edition = "2024"
-rust-version = "1.96"
+rust-version = "1.99"
 
 [lints.rust]
 unreachable_pub = "warn"

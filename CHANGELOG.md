@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.0.15] - 2026-11-10
+
 ### Fixed
 
 * Fail the deploy when the source blob upload returns a non-success HTTP status. Previously, a failed upload was reported as success and the build proceeded against a missing or stale source blob. ([#493](https://github.com/heroku/heroku-jvm-application-deployer/pull/493))
@@ -297,7 +300,8 @@ properties](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.h
 
 *  Improved detection of Heroku API key. Now uses .netrc first.
 
-[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.14...HEAD
+[unreleased]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.15...HEAD
+[4.0.15]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.14...v4.0.15
 [4.0.14]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.13...v4.0.14
 [4.0.13]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.12...v4.0.13
 [4.0.12]: https://github.com/heroku/heroku-jvm-application-deployer/compare/v4.0.11...v4.0.12
